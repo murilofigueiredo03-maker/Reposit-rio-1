@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Ranking de esconderijos zumbi</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<script src="boneco.js"></script>
+<script src="detalhes.js"></script>
+<script src="cenario.js"></script>
+<script src="cidade.js"></script>
+<script src="escola.js"></script>
+<script src="mercado.js"></script>
+<script src="prisao.js"></script>
+<script src="marca.js"></script>
+<script src="legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <g id="cam">
+    <g id="cenarios"></g>
+    <g id="atores-fundo"></g>
+    <g id="grade"></g>
+    <g id="objetos"></g>
+    <g id="atores"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="textos"></g>
+  <g id="numero" style="opacity:0"></g>
+  <g id="final" style="opacity:0"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO (1080×1920, 57 s) — tempos casados com a narração (voz/fala.wav, transcript.json)
+   0–7.6     INTRO: rua em caos, Léo foge dos zumbis · "10 SEGUNDOS!" · "DO PIOR AO MELHOR"
+   7.6–16.7  5º ESCOLA   (3/10): comida no refeitório ✓ · vidro e portões ✗ · muita gente = muito zumbi ✗
+   16.7–24.7 4º CARRO    (4/10): foge rápido ✓ · gasolina acaba ✗ · estrada trava ✗ · vidro não segura ✗
+   24.7–32.6 3º MERCADO  (5/10): comida pra meses ✓ · todo mundo vai lá ✗ · porta de vidro ✗
+   32.6–42.3 2º SUA CASA (7/10): você conhece tudo ✓ · tranca e tapa ✓ · comida dura pouco ✗
+   42.3–52.3 1º PRISÃO   (9/10): muro alto ✓ · grades ✓ · portão de aço ✓ · torre de vigia ✓
+   52.3–57.0 ranking final + "pra onde você correria? comenta"
+   Entre um lugar e outro, o número da posição entra em tela cheia (0,9 s). */
+const W = 1080, H = 1920, Y = 1490, S = 1.25, NS = 'http://www.w3.org/2000/svg';
+const $ = q => document.querySelector(q);
+const DUR = 57.0, LARANJA = '#FF7A00', PELE_ZUMBI = '#A9C79A';
+const CENAS = { intro: [0, 7.6], escola: [7.6, 16.7], carro: [16.7, 24.7], mercado: [24.7, 32.6], casa: [32.6, 42.3], prisao: [42.3, 52.3] };
+const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
+
+// ---------- cenários ----------
+const Cn = (seed, hora, prefixo) => Cenario({ seed, luz: -1, hora, prefixo });
+const cen = {};
+cen.intro = Cidade(Cn(11, 'tarde', 'ru')).rua({ chao: 1420, caos: true });
+cen.escola = Escola(Cn(12, 'dia', 'es')).fachada({ chao: 1250 });
+{ const Z = Cidade(Cn(13, 'tarde', 'ca')); cen.carro = Z.estrada({ chao: 1000 }) + `<g id="transito" style="opacity:0">${Z.carro(470, 1090, 0.32, { cor: '#D7263D' })}${Z.carro(610, 1120, 0.38, { cor: '#8A8A90', dir: -1 })}${Z.carro(520, 1170, 0.46, { cor: '#2E9E5A' })}</g>`; }
+cen.mercado = Mercado({ seed: 5, era: '2026' }).fundo({ chao: 1360 });
+cen.casa = Cidade(Cn(14, 'interior', 'sa')).sala({ chao: 1300, cortina: 'fechada', porta: 'trancada', tv: 'noticia', manchete: 'ZUMBIS NA CIDADE' });
+const PR = Prisao(Cn(15, 'tarde', 'pr')).patio({ chao: 1380 });
+cen.prisao = PR.fundo;
+Object.entries(cen).forEach(([k, s]) => { const g = mk($('#cenarios'), 'sc-' + k); g.innerHTML = s; g.style.opacity = k === 'intro' ? 1 : 0; });
+$('#grade').innerHTML = `<g id="sc-grade" style="opacity:0">${PR.grade}</g>`;
+const C0 = Cn(3, 'tarde', 'ac');
+$('#acabamento').innerHTML = `<defs>${C0.defs()}</defs>` + C0.atmosfera({ grao: 0.25 });
+
+// objetos de cena: carro (inteiro e com vidro quebrado), carrinho de mercado com comida
+const Zc = Cidade(Cn(16, 'tarde', 'cc'));
+const D = Detalhes({ luz: -1, seed: 8 });
+$('#objetos').innerHTML = `<g id="ob-carro" style="opacity:0">${Zc.carro(650, 1475, 1.45, { cor: '#3B7DD8', portaAberta: true })}</g>`
+  + `<g id="ob-carro-q" style="opacity:0">${Zc.carro(650, 1475, 1.45, { cor: '#3B7DD8', portaAberta: true, quebrado: true })}</g>`
+  + `<g id="ob-mercado" style="opacity:0">${D.pacoteArroz(560, 1325, 0.75)}${D.pacoteFeijao(650, 1325, 0.7)}${D.pacoteArroz(705, 1330, 0.7, { cor: '#C8282E', nome: 'MACARRÃO', peso: '1 kg' })}${D.bandejaOvos(620, 1235, 0.62)}${D.carrinhoMercado(640, Y, D.escala('carrinhoMercado', S), { corAlca: LARANJA })}</g>`;
+
+// ---------- personagens ----------
+const atores = [];
+// cada personagem só existe no intervalo da sua cena (fora dele o motor manteria a última pose)
+const novo = (camada, opts, ate = DUR) => { const g = mk(camada), b = new Boneco(g, opts); b._g = g; b._ate = ate; atores.push(b); return b; };
+let sz = 20;
+// zumbi: passo arrastado (70%), sem balanço de braço, braços estendidos à frente
+const zumbi = (t0, t1, de, ate, k, { camada = $('#atores'), cor = '#6E7A5A', parado = false, dir = -1 } = {}) => {
+  const z = novo(camada, { escala: k, cor: PELE_ZUMBI, seed: sz++, figurino: { preset: 'zumbi', cor } }, t1);
+  if (parado || de[0] === ate[0]) z.base(t0, t1, 'parado', { x: de[0], y: de[1], vista: 'perfil', dir, passada: 12 });
+  else z.base(t0, t1, 'andar', { de, ate, gait: { passo: 84, bracos: 0, balanco: 7, elevar: 18, inclina: 9 } });
+  z.braco('ambos', t0, t1, 'estender');
+  z.expressao(t0, t1, 'zumbi');
+  z.cabeca(t0, t1, { inclinar: 10 + (sz % 3) * 4 });
+  return z;
+};
+// Léo
+const leo = novo($('#atores'), { escala: S, figurino: 'sobrevivente', seed: 6 });
+const fr = (x, extra = {}) => ({ x, y: Y, vista: 'frente', transicao: 0.25, ...extra });
+const pf = (x, dir = 1) => ({ x, y: Y, vista: 'perfil', dir, passada: 16, transicao: 0.25 });
+// INTRO: foge correndo e para assustado
+leo.base(0, 1.9, 'correr', { de: [980, Y], ate: [360, Y] });
+leo.base(1.9, 7.6, 'parado', fr(360));
+leo.braco('ambos', 2.1, 4.4, 'desespero');
+leo.braco('d', 4.8, 7.4, 'apontar');
+leo.expressao(0, 7.6, 'medo');
+leo.cabeca(1.9, 3.0, { virar: 0.8 });
+zumbi(0, 7.6, [1180, 1450], [700, 1450], 1.1);
+zumbi(0.4, 7.6, [1260, 1400], [860, 1400], 0.92, { cor: '#5A6A7A' });
+zumbi(1.0, 7.6, [1300, 1475], [930, 1475], 1.18, { cor: '#7A5A4A' });
+// 5º ESCOLA
+leo.base(7.6, 14.9, 'parado', pf(250));
+leo.base(14.9, 16.7, 'andar', { de: [250, Y], ate: [20, Y] });
+leo.braco('d', 9.9, 11.3, 'explicar');
+leo.braco('ambos', 13.5, 14.9, 'parar');
+leo.expressao(7.6, 13.4, 'preocupado');
+leo.expressao(13.4, 16.7, 'medo');
+zumbi(8.4, 16.7, [1180, 1480], [760, 1480], 1.2);
+zumbi(9.4, 16.7, [1240, 1430], [880, 1430], 1.02, { cor: '#5A6A7A' });
+[[560, 1300, 0.66], [640, 1320, 0.7], [720, 1290, 0.62], [800, 1330, 0.74]].forEach(([x, y, k], i) => zumbi(13.5 + i * 0.12, 16.7, [x, y], [x - 160, y], k, { camada: $('#atores-fundo'), cor: ['#4A5A3A', '#6A4A5A', '#3A4A6A', '#7A6A4A'][i] }));
+// 4º CARRO
+leo.base(16.7, 24.7, 'parado', fr(250));
+leo.braco('d', 18.8, 20.0, 'joinha');
+leo.braco('ambos', 20.2, 21.8, 'encolher');
+leo.braco('ambos', 22.3, 24.6, 'desespero');
+leo.expressao(16.7, 20.1, 'determinado');
+leo.expressao(20.1, 22.2, 'preocupado');
+leo.expressao(22.2, 24.7, 'espanto');
+zumbi(21.0, 24.7, [1130, 1440], [880, 1440], 1.05);
+zumbi(21.3, 24.7, [1200, 1490], [970, 1490], 1.2, { cor: '#7A5A4A' });
+// 3º MERCADO
+leo.base(24.7, 32.6, 'parado', pf(300));   // no mercado, empurrando o carrinho
+leo.braco('ambos', 24.9, 28.5, 'alcancar', { alvo: [640 - 224 * D.escala('carrinhoMercado', S), Y - 398 * D.escala('carrinhoMercado', S)] });
+leo.braco('ambos', 28.7, 32.5, 'desespero');
+leo.expressao(24.7, 28.6, 'alegre');
+leo.expressao(28.6, 30.4, 'surpreso');
+leo.expressao(30.4, 32.6, 'medo');
+leo.cabeca(28.8, 32.4, { virar: 1, olhar: [6, 0] });
+const gente = [['casual', 1120, 1440, 0.95], [{ preset: 'aluno', cor: '#7A4AA8' }, 1180, 1400, 0.85], ['moletom', 1150, 1470, 1.05], [{ preset: 'aluno', cor: '#2E9E5A', corCabelo: '#8A5A2A' }, 1230, 1420, 0.9]];
+gente.forEach(([fig, x, y, k], i) => {
+  const p = novo($('#atores-fundo'), { escala: k, seed: 40 + i, figurino: fig }, 32.6);
+  p.base(28.6 + i * 0.15, 32.6, 'correr', { de: [x, y], ate: [x - 520 - i * 40, y] });
+  p.expressao(28.6, 32.6, i % 2 ? 'gritando' : 'medo');
+});
+zumbi(30.5, 32.6, [1200, 1470], [1020, 1470], 1.15);
+// 2º SUA CASA (vista de frente, sala trancada)
+leo.base(32.6, 42.3, 'parado', fr(300));
+leo.braco('e', 35.2, 36.4, 'explicar');
+leo.braco('ambos', 36.8, 38.6, 'cruzar');
+leo.braco('d', 37.9, 38.7, 'joinha');
+leo.braco('ambos', 39.0, 41.0, 'encolher');
+leo.braco('ambos', 41.3, 42.3, 'desespero');
+leo.expressao(32.6, 38.9, 'determinado');
+leo.expressao(38.9, 41.2, 'triste');
+leo.expressao(41.2, 42.3, 'susto');
+leo.cabeca(41.25, 42.3, { virar: 0.8 });
+// 1º PRISÃO: Léo no pátio, zumbis presos do lado de fora do portão
+leo.base(42.3, 52.3, 'parado', fr(280));
+leo.braco('d', 45.1, 46.3, 'apontar');
+leo.braco('ambos', 47.6, 48.8, 'joinha');
+leo.braco('ambos', 49.2, 51.6, 'cintura');
+leo.expressao(42.3, 45.0, 'surpreso');
+leo.expressao(45.0, 52.3, 'alegre');
+[[640, 1372, 0.86, '#4A5A3A'], [760, 1376, 0.9, '#6A4A5A'], [880, 1370, 0.84, '#3A4A6A'], [980, 1378, 0.88, '#7A6A4A']].forEach(([x, y, k, cor], i) =>
+  zumbi(42.3, 52.3, [x, y], [x, y], k, { camada: $('#atores-fundo'), cor, parado: true, dir: i % 2 ? -1 : 1 }));
+
+// ---------- textos ----------
+const T = $('#textos');
+const add = (id, svg) => { const g = mk(T, id); g.innerHTML = svg; g.style.opacity = 0; };
+add('t-10', Marca.impacto(540, 640, '10 SEGUNDOS!', { fs: 130 }));
+add('t-pior', Marca.faixa(540, 470, 'DO PIOR AO MELHOR', { fs: 80 }));
+// selo de vantagem (✓ laranja) ou problema (✗ branco), em pílula preta
+const selo = (x, y, t, bom) => {
+  const fs = 44, w = Marca.largura(t, fs) + 120, h = 70;
+  const icone = bom ? `<circle cx="${x + 36}" cy="${y}" r="22" fill="${LARANJA}"/><path d="M${x + 25} ${y} l8 9 l15 -18" stroke="#111" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+                    : `<circle cx="${x + 36}" cy="${y}" r="22" fill="#fff"/><path d="M${x + 27} ${y - 9} l18 18 M${x + 45} ${y - 9} l-18 18" stroke="#111" stroke-width="7" stroke-linecap="round"/>`;
+  return `<rect x="${x + 8}" y="${y - h / 2 + 8}" width="${w}" height="${h}" rx="${h / 2}" fill="#000" opacity=".35"/><rect x="${x}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="#111"/>${icone}<text x="${x + 72}" y="${y + fs * 0.36}" font-size="${fs}" fill="${bom ? LARANJA : '#fff'}">${t}</text>`;
+};
+const LUGARES = [   // id, posição, nome, nota, selos [texto, bom, instante], instante da nota
+  ['escola', '5º', 'ESCOLA', '3/10', [['COMIDA NO REFEITÓRIO', 1, 10.05], ['VIDRO E PORTÕES', 0, 12.6], ['MUITA GENTE = ZUMBI', 0, 15.0]], 15.95],
+  ['carro', '4º', 'CARRO', '4/10', [['FOGE RÁPIDO', 1, 18.95], ['GASOLINA ACABA', 0, 20.1], ['ESTRADA TRAVA', 0, 21.45], ['VIDRO NÃO SEGURA', 0, 22.5]], 24.0],
+  ['mercado', '3º', 'MERCADO', '5/10', [['COMIDA PRA MESES', 1, 27.1], ['TODO MUNDO VAI LÁ', 0, 28.7], ['PORTA DE VIDRO', 0, 30.5]], 31.9],
+  ['casa', '2º', 'SUA CASA', '7/10', [['VOCÊ CONHECE TUDO', 1, 35.4], ['TRANCA E TAPA', 1, 36.95], ['COMIDA DURA POUCO', 0, 39.35]], 41.5],
+  ['prisao', '1º', 'PRISÃO', '9/10', [['MURO ALTO', 1, 45.1], ['GRADE EM TUDO', 1, 45.8], ['PORTÃO DE AÇO', 1, 46.75], ['TORRE DE VIGIA', 1, 47.65]], 50.9],
+];
+LUGARES.forEach(([id, pos, nome, nota, selos]) => {
+  add('tt-' + id, Marca.faixa(400, 470, pos + ' · ' + nome, { fs: 80 }));
+  selos.forEach(([t, bom], i) => add(`ts-${id}-${i}`, selo(50, 600 + i * 92, t, bom)));
+  add('tn-' + id, Marca.carimbo(860, 640, nota, { fs: 110 }));
+});
+// número da posição em tela cheia (transição)
+$('#numero').innerHTML = `<rect width="${W}" height="${H}" fill="${LARANJA}"/><g opacity=".12" fill="#111">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + `<circle cx="540" cy="900" r="250" fill="#111"/><text id="num-txt" x="540" y="990" font-size="260" fill="${LARANJA}" text-anchor="middle">5º</text>`
+  + `<text id="num-lugar" x="540" y="1260" font-size="96" fill="#111" text-anchor="middle">LUGAR</text>`;
+// ranking final
+const linhas = LUGARES.slice().reverse();
+$('#final').innerHTML = `<rect width="${W}" height="${H}" fill="#111"/><g opacity=".14" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + Marca.faixa(540, 440, 'RANKING FINAL', { fs: 86 })
+  + linhas.map(([, pos, nome, nota], i) => `<g id="fr-${i}" style="opacity:0"><rect x="110" y="${560 + i * 120}" width="860" height="96" rx="48" fill="${i === 0 ? LARANJA : '#2A2A30'}" stroke="#fff" stroke-width="4"/>`
+    + `<text x="170" y="${626 + i * 120}" font-size="56" fill="${i === 0 ? '#111' : LARANJA}">${pos}</text><text x="270" y="${626 + i * 120}" font-size="56" fill="${i === 0 ? '#111' : '#fff'}">${nome}</text><text x="930" y="${626 + i * 120}" font-size="52" fill="${i === 0 ? '#111' : '#fff'}" text-anchor="end">${nota}</text></g>`).join('')
+  + `<g id="fim-p">${Marca.texto(540, 1250, 'E VOCÊ? PRA ONDE CORRERIA?', { fs: 64, cor: '#fff', sombra: false })}</g>`
+  + `<g id="fim-c" transform="translate(540 1380)"><rect x="-300" y="-62" width="600" height="110" rx="55" fill="${LARANJA}"/><text y="18" font-size="54" text-anchor="middle" fill="#111">COMENTA AÍ ↓</text></g>`;
+
+// ---------- legenda ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 70, enfase: ['ZUMBI', '10', '5º', '4º', '3º', '2º', '1º', 'PRISÃO', 'COMENTA'] })
+  .esconder([[52.3, 99]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const pop = (sel, t, dur, ox, oy) => {
+  tl.fromTo(sel, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to(sel, { opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' }, t + dur);
+};
+// troca de cenário (corte seco escondido pela tela do número)
+Object.entries(CENAS).forEach(([k, [a, b]]) => { if (k !== 'intro') tl.set('#sc-' + k, { opacity: 1 }, a + 0.25); tl.set('#sc-' + k, { opacity: 0 }, b + 0.25); });
+tl.set('#sc-grade', { opacity: 1 }, CENAS.prisao[0] + 0.25);
+tl.set('#ob-carro', { opacity: 1 }, CENAS.carro[0] + 0.25); tl.set('#ob-carro', { opacity: 0 }, 22.35);
+tl.set('#ob-carro-q', { opacity: 1 }, 22.35); tl.set('#ob-carro-q', { opacity: 0 }, CENAS.carro[1] + 0.25);
+tl.to('#ob-carro-q', { x: 8, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 22.35);
+tl.to('#transito', { opacity: 1, duration: 0.4 }, 21.4);
+tl.set('#ob-mercado', { opacity: 1 }, CENAS.mercado[0] + 0.25); tl.set('#ob-mercado', { opacity: 0 }, CENAS.mercado[1] + 0.25);
+// porta da sala tremendo (batidas) e holofote da prisão varrendo
+tl.to('#sc-casa', { x: 6, duration: 0.05, yoyo: true, repeat: 7, ease: 'none' }, 41.3);
+tl.fromTo('#holofote', { rotation: -10, svgOrigin: '190 440' }, { rotation: 14, duration: 4.5, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 42.3);
+// câmera: push-in lento em cada cena
+Object.values(CENAS).forEach(([a, b]) => tl.fromTo('#cam', { scale: 1, svgOrigin: '540 1150' }, { scale: 1.06, duration: b - a - 0.3, ease: 'sine.inOut' }, a + 0.25));
+// INTRO
+pop('#t-10', 2.65, 2.0, 540, 640);
+pop('#t-pior', 5.6, 1.85, 540, 470);
+tl.to('#cam', { x: 8, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 2.65);
+// tela do número entre os lugares
+const numeros = [['5º', 7.6], ['4º', 16.7], ['3º', 24.7], ['2º', 32.6], ['1º', 42.3]];
+numeros.forEach(([n, t], i) => {
+  const t0 = t - 0.55;
+  tl.fromTo('#numero', { opacity: 0 }, { opacity: 1, duration: 0.12 }, t0);
+  tl.fromTo('#num-txt', { scale: 0.3, svgOrigin: '540 900' }, { scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t0);
+  tl.to('#numero', { opacity: 0, duration: 0.18 }, t + 0.42);
+});
+// selos, títulos e notas
+LUGARES.forEach(([id, , , , selos, tNota]) => {
+  const [a, b] = CENAS[id];
+  pop('#tt-' + id, a + 0.6, b - a - 0.75, 400, 470);
+  selos.forEach(([, , t], i) => { tl.fromTo(`#ts-${id}-${i}`, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: 'back.out(1.8)' }, t); tl.to(`#ts-${id}-${i}`, { opacity: 0, duration: 0.15 }, b + 0.1); });
+  tl.fromTo('#tn-' + id, { opacity: 0, scale: 2.4, svgOrigin: '860 640' }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power3.in' }, tNota);
+  tl.to('#tn-' + id, { opacity: 0, duration: 0.15 }, b + 0.1);
+});
+// FINAL
+tl.to('#final', { opacity: 1, duration: 0.25 }, 52.3);
+linhas.forEach((l, i) => tl.fromTo('#fr-' + i, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.25, ease: 'back.out(1.8)' }, 52.4 + i * 0.12));
+tl.fromTo('#fim-p', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 53.0);
+pop('#fim-c', 54.6, 0, 540, 1380);
+tl.to('#fim-c', { scale: 1.06, svgOrigin: '540 1380', duration: 0.3, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 55.0);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+window.__timeline = tl;
+window.__duration = DUR;
+const numTxt = $('#num-txt');
+window.__seek = t => {
+  tl.seek(t, false);
+  atores.forEach(a => { const vivo = t < a._ate; a._g.style.display = vivo ? '' : 'none'; if (vivo) a.desenhar(t); });
+  const n = numeros.filter(([, tn]) => t >= tn - 0.6).pop();
+  numTxt.textContent = n ? n[0] : '5º';
+  leg.seek(t);
+};
+window.__seek(0);
+</script></body></html>

@@ -1,0 +1,782 @@
+[
+{
+"text": "Começou",
+"start": 0.32,
+"end": 0.88
+},
+{
+"text": "o",
+"start": 0.88,
+"end": 0.96
+},
+{
+"text": "apocalipse",
+"start": 0.9,
+"end": 1.83
+},
+{
+"text": "zumbi.",
+"start": 1.83,
+"end": 2.25
+},
+{
+"text": "Você",
+"start": 2.25,
+"end": 2.53
+},
+{
+"text": "tem",
+"start": 2.53,
+"end": 2.65
+},
+{
+"text": "dez",
+"start": 2.65,
+"end": 2.86
+},
+{
+"text": "segundos",
+"start": 2.86,
+"end": 3.21
+},
+{
+"text": "pra",
+"start": 3.21,
+"end": 3.44
+},
+{
+"text": "escolher",
+"start": 3.44,
+"end": 3.91
+},
+{
+"text": "onde",
+"start": 3.91,
+"end": 4.23
+},
+{
+"text": "se",
+"start": 4.23,
+"end": 4.45
+},
+{
+"text": "esconder.",
+"start": 4.45,
+"end": 4.88
+},
+{
+"text": "Vou",
+"start": 4.88,
+"end": 5.06
+},
+{
+"text": "te",
+"start": 5.06,
+"end": 5.38
+},
+{
+"text": "mostrar,",
+"start": 5.38,
+"end": 5.75
+},
+{
+"text": "do",
+"start": 5.75,
+"end": 5.88
+},
+{
+"text": "pior",
+"start": 5.88,
+"end": 5.96
+},
+{
+"text": "ao",
+"start": 5.93,
+"end": 6.14
+},
+{
+"text": "melhor",
+"start": 6.14,
+"end": 6.56
+},
+{
+"text": "lugar.",
+"start": 6.56,
+"end": 6.92
+},
+{
+"text": "Quinto",
+"start": 8.513,
+"end": 8.853
+},
+{
+"text": "lugar:",
+"start": 8.853,
+"end": 9.303
+},
+{
+"text": "a",
+"start": 9.303,
+"end": 9.383
+},
+{
+"text": "escola.",
+"start": 9.333,
+"end": 9.843
+},
+{
+"text": "Tem",
+"start": 9.843,
+"end": 10.053
+},
+{
+"text": "comida",
+"start": 10.053,
+"end": 10.613
+},
+{
+"text": "no",
+"start": 10.613,
+"end": 10.783
+},
+{
+"text": "refeitório,",
+"start": 10.783,
+"end": 11.463
+},
+{
+"text": "mas",
+"start": 11.463,
+"end": 11.543
+},
+{
+"text": "é",
+"start": 11.463,
+"end": 11.803
+},
+{
+"text": "cheia",
+"start": 11.803,
+"end": 11.883
+},
+{
+"text": "de",
+"start": 11.803,
+"end": 12.043
+},
+{
+"text": "janelas",
+"start": 12.043,
+"end": 12.503
+},
+{
+"text": "de",
+"start": 12.503,
+"end": 12.673
+},
+{
+"text": "vidro",
+"start": 12.673,
+"end": 12.853
+},
+{
+"text": "e",
+"start": 12.853,
+"end": 13.013
+},
+{
+"text": "portões.",
+"start": 13.013,
+"end": 13.423
+},
+{
+"text": "E",
+"start": 13.423,
+"end": 13.653
+},
+{
+"text": "onde",
+"start": 13.653,
+"end": 14.033
+},
+{
+"text": "tinha",
+"start": 14.033,
+"end": 14.223
+},
+{
+"text": "muita",
+"start": 14.223,
+"end": 14.553
+},
+{
+"text": "gente,",
+"start": 14.553,
+"end": 15.053
+},
+{
+"text": "vai",
+"start": 15.053,
+"end": 15.133
+},
+{
+"text": "ter",
+"start": 15.053,
+"end": 15.263
+},
+{
+"text": "muito",
+"start": 15.263,
+"end": 15.603
+},
+{
+"text": "zumbi.",
+"start": 15.603,
+"end": 15.993
+},
+{
+"text": "Quarto",
+"start": 17.594,
+"end": 17.934
+},
+{
+"text": "lugar:",
+"start": 17.934,
+"end": 18.284
+},
+{
+"text": "o",
+"start": 18.284,
+"end": 18.364
+},
+{
+"text": "carro.",
+"start": 18.294,
+"end": 18.714
+},
+{
+"text": "Dá",
+"start": 18.714,
+"end": 18.944
+},
+{
+"text": "pra",
+"start": 18.944,
+"end": 19.024
+},
+{
+"text": "fugir",
+"start": 18.944,
+"end": 19.244
+},
+{
+"text": "rápido,",
+"start": 19.244,
+"end": 19.804
+},
+{
+"text": "mas",
+"start": 19.804,
+"end": 20.064
+},
+{
+"text": "a",
+"start": 20.064,
+"end": 20.144
+},
+{
+"text": "gasolina",
+"start": 20.064,
+"end": 20.774
+},
+{
+"text": "acaba,",
+"start": 20.774,
+"end": 21.154
+},
+{
+"text": "a",
+"start": 21.154,
+"end": 21.414
+},
+{
+"text": "estrada",
+"start": 21.414,
+"end": 21.714
+},
+{
+"text": "trava,",
+"start": 21.714,
+"end": 22.224
+},
+{
+"text": "e",
+"start": 22.224,
+"end": 22.304
+},
+{
+"text": "vidro",
+"start": 22.244,
+"end": 22.534
+},
+{
+"text": "de",
+"start": 22.534,
+"end": 22.784
+},
+{
+"text": "carro",
+"start": 22.784,
+"end": 22.994
+},
+{
+"text": "não",
+"start": 22.994,
+"end": 23.214
+},
+{
+"text": "segura",
+"start": 23.214,
+"end": 23.534
+},
+{
+"text": "ninguém.",
+"start": 23.534,
+"end": 23.924
+},
+{
+"text": "Terceiro",
+"start": 25.576,
+"end": 26.076
+},
+{
+"text": "lugar:",
+"start": 26.076,
+"end": 26.336
+},
+{
+"text": "o",
+"start": 26.336,
+"end": 26.586
+},
+{
+"text": "mercado.",
+"start": 26.586,
+"end": 27.076
+},
+{
+"text": "Comida",
+"start": 27.076,
+"end": 27.446
+},
+{
+"text": "pra",
+"start": 27.446,
+"end": 27.526
+},
+{
+"text": "meses!",
+"start": 27.476,
+"end": 27.896
+},
+{
+"text": "O",
+"start": 27.896,
+"end": 28.076
+},
+{
+"text": "problema?",
+"start": 28.076,
+"end": 28.676
+},
+{
+"text": "Todo",
+"start": 28.676,
+"end": 28.796
+},
+{
+"text": "mundo",
+"start": 28.796,
+"end": 29.176
+},
+{
+"text": "vai",
+"start": 29.176,
+"end": 29.266
+},
+{
+"text": "ter",
+"start": 29.266,
+"end": 29.416
+},
+{
+"text": "a",
+"start": 29.416,
+"end": 29.526
+},
+{
+"text": "mesma",
+"start": 29.526,
+"end": 29.806
+},
+{
+"text": "ideia.",
+"start": 29.806,
+"end": 30.306
+},
+{
+"text": "E",
+"start": 30.306,
+"end": 30.446
+},
+{
+"text": "a",
+"start": 30.446,
+"end": 30.526
+},
+{
+"text": "porta",
+"start": 30.446,
+"end": 30.816
+},
+{
+"text": "da",
+"start": 30.816,
+"end": 30.896
+},
+{
+"text": "frente",
+"start": 30.836,
+"end": 31.116
+},
+{
+"text": "é",
+"start": 31.116,
+"end": 31.366
+},
+{
+"text": "de",
+"start": 31.366,
+"end": 31.546
+},
+{
+"text": "vidro.",
+"start": 31.546,
+"end": 31.856
+},
+{
+"text": "Segundo",
+"start": 33.557,
+"end": 33.997
+},
+{
+"text": "lugar:",
+"start": 33.997,
+"end": 34.517
+},
+{
+"text": "a",
+"start": 34.517,
+"end": 34.597
+},
+{
+"text": "sua",
+"start": 34.547,
+"end": 34.837
+},
+{
+"text": "casa.",
+"start": 34.837,
+"end": 35.147
+},
+{
+"text": "Você",
+"start": 35.147,
+"end": 35.427
+},
+{
+"text": "conhece",
+"start": 35.427,
+"end": 35.847
+},
+{
+"text": "cada",
+"start": 35.847,
+"end": 36.347
+},
+{
+"text": "canto,",
+"start": 36.347,
+"end": 36.617
+},
+{
+"text": "dá",
+"start": 36.617,
+"end": 36.747
+},
+{
+"text": "pra",
+"start": 36.747,
+"end": 36.957
+},
+{
+"text": "trancar",
+"start": 36.957,
+"end": 37.297
+},
+{
+"text": "a",
+"start": 37.297,
+"end": 37.537
+},
+{
+"text": "porta",
+"start": 37.537,
+"end": 37.847
+},
+{
+"text": "e",
+"start": 37.847,
+"end": 37.927
+},
+{
+"text": "tapar",
+"start": 37.857,
+"end": 38.147
+},
+{
+"text": "as",
+"start": 38.147,
+"end": 38.467
+},
+{
+"text": "janelas.",
+"start": 38.467,
+"end": 38.927
+},
+{
+"text": "Só",
+"start": 38.927,
+"end": 39.147
+},
+{
+"text": "que",
+"start": 39.147,
+"end": 39.297
+},
+{
+"text": "a",
+"start": 39.297,
+"end": 39.377
+},
+{
+"text": "comida",
+"start": 39.337,
+"end": 39.937
+},
+{
+"text": "da",
+"start": 39.937,
+"end": 40.017
+},
+{
+"text": "despensa",
+"start": 39.957,
+"end": 40.617
+},
+{
+"text": "dura",
+"start": 40.617,
+"end": 40.797
+},
+{
+"text": "poucos",
+"start": 40.797,
+"end": 41.237
+},
+{
+"text": "dias.",
+"start": 41.237,
+"end": 41.407
+},
+{
+"text": "E",
+"start": 43.335,
+"end": 43.445
+},
+{
+"text": "o",
+"start": 43.445,
+"end": 43.725
+},
+{
+"text": "primeiro",
+"start": 43.725,
+"end": 44.205
+},
+{
+"text": "lugar:",
+"start": 44.205,
+"end": 44.625
+},
+{
+"text": "a",
+"start": 44.625,
+"end": 44.755
+},
+{
+"text": "prisão.",
+"start": 44.755,
+"end": 45.105
+},
+{
+"text": "Muro",
+"start": 45.105,
+"end": 45.415
+},
+{
+"text": "alto,",
+"start": 45.415,
+"end": 45.795
+},
+{
+"text": "grade",
+"start": 45.795,
+"end": 46.075
+},
+{
+"text": "em",
+"start": 46.075,
+"end": 46.385
+},
+{
+"text": "tudo,",
+"start": 46.385,
+"end": 46.745
+},
+{
+"text": "portão",
+"start": 46.745,
+"end": 47.025
+},
+{
+"text": "de",
+"start": 47.025,
+"end": 47.245
+},
+{
+"text": "aço",
+"start": 47.245,
+"end": 47.535
+},
+{
+"text": "e",
+"start": 47.535,
+"end": 47.645
+},
+{
+"text": "torre",
+"start": 47.645,
+"end": 48.065
+},
+{
+"text": "pra",
+"start": 48.065,
+"end": 48.205
+},
+{
+"text": "vigiar.",
+"start": 48.205,
+"end": 48.635
+},
+{
+"text": "Foi",
+"start": 48.635,
+"end": 48.715
+},
+{
+"text": "feita",
+"start": 48.665,
+"end": 49.055
+},
+{
+"text": "pra",
+"start": 49.055,
+"end": 49.255
+},
+{
+"text": "ninguém",
+"start": 49.255,
+"end": 49.575
+},
+{
+"text": "sair.",
+"start": 49.575,
+"end": 49.805
+},
+{
+"text": "Agora,",
+"start": 49.805,
+"end": 50.215
+},
+{
+"text": "serve",
+"start": 50.215,
+"end": 50.585
+},
+{
+"text": "pra",
+"start": 50.585,
+"end": 50.875
+},
+{
+"text": "ninguém",
+"start": 50.875,
+"end": 51.185
+},
+{
+"text": "entrar.",
+"start": 51.185,
+"end": 51.515
+},
+{
+"text": "E",
+"start": 52.988,
+"end": 53.078
+},
+{
+"text": "você?",
+"start": 53.078,
+"end": 53.478
+},
+{
+"text": "Pra",
+"start": 53.478,
+"end": 53.558
+},
+{
+"text": "onde",
+"start": 53.508,
+"end": 53.838
+},
+{
+"text": "você",
+"start": 53.838,
+"end": 54.088
+},
+{
+"text": "correria?",
+"start": 54.088,
+"end": 54.688
+},
+{
+"text": "Comenta",
+"start": 54.688,
+"end": 55.008
+},
+{
+"text": "aí.",
+"start": 55.008,
+"end": 55.238
+}
+]

@@ -117,3 +117,10 @@ Antes de renderizar, cada plano precisa ter:
 5. **Algo se mexendo no cenário**: vapor, ponteiro, bandeira, luzes, cortina, fumaça.
 6. **Cor da emoção** (`Paleta.grade`): rotina, nostalgia, tensão, alívio, mistério… mudando com a história.
 7. **Acabamento**: `atmosfera()` (grão) + vinheta.
+
+## Prisão / presídio (`assets/prisao.js`)
+`Prisao(Cenario({ seed, luz: -1, hora: 'tarde', prefixo }))`.`patio({ chao, muroTopo, portao: [x0, x1] })` devolve
+`{ fundo, grade, portao }`: céu de fim de tarde com fumaça, cidade ao longe, muro de concreto em placas (umidade,
+rachaduras, sujeira subindo), concertina de arame farpado, placas PENITENCIÁRIA / ÁREA RESTRITA, torre de vigia com
+holofote (`#holofote`, para girar) e pátio com faixa pintada. **Camadas:** `fundo` → quem está fora do portão
+(zumbis) → `grade` (barras de aço, travessas, corrente e cadeado) → quem está no pátio. Usado em `videos/zumbi-ranking`.
