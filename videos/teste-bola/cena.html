@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>teste — garoto jogando bola</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<script src="boneco.js"></script>
+<script src="cenario.js"></script>
+<script src="escola.js"></script>
+<script src="marca.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <g id="cam">
+    <g id="cenario"></g>
+    <g id="gol-fundo"></g>
+    <g id="atores"></g>
+    <g id="bola"></g>
+    <g id="gol-frente"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="textos"></g>
+</svg>
+<script>
+/* ROTEIRO (1080×1920, 8 s)
+   0.0–1.9  Léo entra correndo da esquerda conduzindo a bola
+   1.9–2.4  para e ajeita a bola           · faixa "EMBAIXADINHA!"
+   2.4–4.3  3 embaixadinhas (contagem 1, 2, 3)
+   4.3–5.3  chute forte → bola voa para o gol, rede estufa
+   5.2      "GOOOL!" + câmera treme
+   5.5–8.0  pula comemorando, vira para a câmera, joinha */
+const W = 1080, H = 1920, Y = 1480, X = 300, S = 1.45, R = 46;   // chão dos pés, posição parada, escala, raio da bola
+const NS = 'http://www.w3.org/2000/svg';
+const $ = q => document.querySelector(q);
+
+// ---------- cenário: fachada da escola (skill cenario-ilustrado / escola.js) ----------
+const C = Cenario({ seed: 12, luz: -1, hora: 'dia', prefixo: 'bola' });
+const E = Escola(C);
+$('#cenario').innerHTML = E.fachada({ chao: 1250 });
+$('#acabamento').innerHTML = `<defs>${C.defs()}</defs>` + C.atmosfera({ grao: 0.25 });
+
+// ---------- gol pequeno (traves de cano) ----------
+const GX0 = 800, GX1 = 1060, GY = 1455, GH = 300, PROF = 60;
+let rede = '';
+for (let i = 0; i <= 10; i++) { const x = GX0 + PROF * 0.6 + (GX1 - GX0 - PROF * 0.6) * i / 10; rede += `<path d="M${x} ${GY - GH + 30} L${x - 10} ${GY - 6}" stroke="#fff" stroke-width="3" opacity=".75"/>`; }
+for (let j = 0; j <= 7; j++) { const y = GY - GH + 30 + (GH - 36) * j / 7; rede += `<path d="M${GX0 + PROF * 0.6} ${y} L${GX1} ${y}" stroke="#fff" stroke-width="3" opacity=".75"/>`; }
+$('#gol-fundo').innerHTML = `<ellipse cx="${(GX0 + GX1) / 2}" cy="${GY + 6}" rx="${(GX1 - GX0) / 2 + 20}" ry="16" fill="#000" opacity=".18"/>`
+  + `<g id="rede">${rede}</g>`
+  + `<path d="M${GX0 + PROF * 0.6} ${GY - GH + 30} L${GX0 + PROF * 0.6} ${GY - 6} M${GX1 - 10} ${GY - GH + 30} V${GY - 6}" stroke="#D9D9D9" stroke-width="10" stroke-linecap="round"/>`;
+const trave = (d) => `<path d="${d}" stroke="#1D1D2B" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" stroke="#F4F4F4" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+$('#gol-frente').innerHTML = trave(`M${GX0} ${GY} V${GY - GH} H${GX1} V${GY}`)
+  + trave(`M${GX0} ${GY - GH} L${GX0 + PROF * 0.6} ${GY - GH + 30}`);
+
+// ---------- Léo (personagem-sobrevivente, elenco-serie) ----------
+const leo = new Boneco($('#atores'), { escala: S, figurino: 'sobrevivente', seed: 4 });
+const PAR = { x: X, y: Y, vista: 'perfil', dir: 1, passada: 18 };
+const KICKS = [ // [t0, t1, modo, força]
+  [2.4, 2.9, 'embaixadinha', 0.35], [3.1, 3.6, 'embaixadinha', 0.8], [3.8, 4.3, 'embaixadinha', 0.8], [4.4, 5.3, 'forte', 1]];
+leo.base(0, 1.9, 'correr', { de: [-260, Y], ate: [X, Y] });
+leo.base(1.9, 2.4, 'parado', PAR);
+KICKS.forEach(([a, b, modo, forca], i) => {
+  leo.base(a, b, 'chutar', { ...PAR, modo, forca, transicao: 0.05 });
+  const prox = KICKS[i + 1];
+  if (prox && prox[0] > b) leo.base(b, prox[0], 'parado', { ...PAR, transicao: 0.1 });
+});
+leo.base(5.3, 5.55, 'parado', PAR);
+leo.base(5.55, 6.4, 'pular', { x: X + 20, y: Y, vista: 'frente', altura: 120 });
+leo.base(6.4, 8.1, 'parado', { x: X + 20, y: Y, vista: 'frente' });
+leo.braco('ambos', 5.55, 6.5, 'cima');
+leo.braco('d', 6.7, 8.1, 'joinha');
+leo.expressao(1.9, 4.4, 'determinado');
+leo.expressao(4.4, 5.2, 'serio');
+leo.expressao(5.2, 8.1, 'alegre');
+leo.cabeca(2.1, 4.5, { baixar: 10, olhar: [3, 6] });
+leo.cabeca(4.9, 5.45, { virar: 1, olhar: [6, -2] });
+
+// ---------- bola (física simples: rola, saltos parabólicos, voo, quique) ----------
+const pe = t => leo.pose(t).pes[1].tz;                               // tornozelo da perna que chuta
+const contato = KICKS.map(([a, b, modo]) => {
+  const tc = (a + b) / 2, [ax, ay] = pe(tc);
+  return modo === 'forte' ? { t: tc, p: [ax + R + 14, Y - R] } : { t: tc, p: [ax + 24 * S, ay - R - 6 * S] };
+});
+contato[0].p[1] = Y - R;                                              // a 1ª embaixadinha levanta a bola do chão
+const chaoBola = [contato[3].p[0], Y - R];
+const REDE = [GX0 + 150, GY - 175], FUNDO = [GX0 + 165, GY - 18 - R];
+// segmentos: [t0, t1, de, ate, altura do arco]
+const SEG = [
+  [contato[0].t, contato[1].t, contato[0].p, contato[1].p, 300],
+  [contato[1].t, contato[2].t, contato[1].p, contato[2].p, 300],
+  [contato[2].t, 4.62, contato[2].p, chaoBola, 210],
+  [4.62, 4.76, chaoBola, chaoBola, 26],
+  [4.76, contato[3].t, chaoBola, chaoBola, 0],
+  [contato[3].t, 5.2, contato[3].p, REDE, 90],
+  [5.2, 5.5, REDE, FUNDO, -10],
+  [5.5, 5.68, FUNDO, FUNDO, 28],
+  [5.68, 9, FUNDO, FUNDO, 0]];
+const quadrilX = t => -260 + (X + 260) * Math.min(1, t / 1.9);
+const bolaParada = contato[0].p[0];
+function bolaEm(t) {
+  if (t < 1.9) {                                                     // conduzindo: à frente do pé, com toquinhos
+    const toque = Math.abs(Math.sin(t * Math.PI * 2.6)) * 18;
+    return [Math.min(quadrilX(t) + 120 + toque, bolaParada - 12), Y - R];
+  }
+  if (t < contato[0].t) { const u = Math.min(1, (t - 1.9) / 0.35); return [bolaParada - 12 + 12 * (1 - (1 - u) ** 3), Y - R]; }
+  const s = SEG.find(g => t < g[1]) || SEG[SEG.length - 1];
+  const w = Math.min(1, (t - s[0]) / (s[1] - s[0]));
+  const ease = s[4] === 90 ? 1 - (1 - w) ** 1.6 : w;                  // chute forte sai rápido
+  return [s[2][0] + (s[3][0] - s[2][0]) * ease, s[2][1] + (s[3][1] - s[2][1]) * ease - 4 * s[4] * w * (1 - w)];
+}
+const gBola = $('#bola');
+// gomos: pentágono central + 5 meios (bola de futebol clássica)
+const pent = (cx, cy, r, rot) => 'M' + [0, 1, 2, 3, 4].map(i => { const a = (rot + i * 72 - 90) * Math.PI / 180; return `${cx + Math.cos(a) * r} ${cy + Math.sin(a) * r}`; }).join(' L') + 'Z';
+let gomos = `<path d="${pent(0, 0, R * 0.36, 0)}" fill="#1D1D2B"/>`;
+for (let i = 0; i < 5; i++) { const a = (i * 72 - 90 + 36) * Math.PI / 180; gomos += `<path d="${pent(Math.cos(a) * R * 0.95, Math.sin(a) * R * 0.95, R * 0.3, i * 72 + 36)}" fill="#1D1D2B"/>`; }
+gBola.innerHTML = `<ellipse id="bola-sombra" cx="0" cy="0" rx="${R}" ry="${R * 0.22}" fill="#000" opacity=".25"/>`
+  + `<g id="bola-corpo"><defs><clipPath id="bola-clip"><circle r="${R}"/></clipPath></defs>`
+  + `<circle r="${R}" fill="#FAFAFA" stroke="#1D1D2B" stroke-width="6"/>`
+  + `<g id="bola-gira" clip-path="url(#bola-clip)">${gomos}</g>`
+  + `<circle r="${R}" fill="none" stroke="#1D1D2B" stroke-width="6"/>`
+  + `<path d="M${-R * 0.55} ${-R * 0.3} A${R * 0.7} ${R * 0.7} 0 0 1 ${-R * 0.1} ${-R * 0.68}" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" opacity=".9"/>`
+  + `<circle r="${R}" fill="#1D1D2B" opacity=".12" transform="translate(${R * 0.18} ${R * 0.18})" clip-path="url(#bola-clip)"/></g>`;
+// rastro do chute forte
+gBola.insertAdjacentHTML('afterbegin', `<path id="rastro" d="" stroke="#fff" stroke-width="10" stroke-linecap="round" fill="none" opacity="0"/>`);
+function desenharBola(t) {
+  const [x, y] = bolaEm(t);
+  const [x0] = bolaEm(Math.max(0, t - 1 / 30));
+  // giro: rola pelo chão (dx/R) + giro extra nos saltos
+  let giro = 0; for (let k = 0; k < t; k += 1 / 30) { const [a] = bolaEm(k), [b] = bolaEm(k + 1 / 30); giro += (b - a) / R; }
+  giro = giro * 180 / Math.PI + (t > 2.6 && t < 4.6 ? (t - 2.6) * 280 : 0);
+  const chao = x > GX0 && t > 5 ? GY - 4 : Y;
+  const alt = Math.max(0, chao - R - y);
+  $('#bola-sombra').setAttribute('cx', x); $('#bola-sombra').setAttribute('cy', chao - 2);
+  $('#bola-sombra').setAttribute('rx', R * (1 - Math.min(0.6, alt / 600))); $('#bola-sombra').setAttribute('opacity', 0.25 * (1 - Math.min(0.7, alt / 500)));
+  // achata um pouco ao bater no chão ou no pé
+  const squash = contato.some(c => Math.abs(t - c.t) < 0.04) || (alt < 3 && Math.abs(x - x0) < 0.5 && t > 4.5 && t < 4.8) ? 0.86 : 1;
+  $('#bola-corpo').setAttribute('transform', `translate(${x} ${y + R * (1 - squash)}) scale(${1 / squash ** 0.5} ${squash})`);
+  $('#bola-gira').setAttribute('transform', `rotate(${giro})`);
+  // rastro no voo
+  const voo = t > contato[3].t && t < 5.25;
+  const r = $('#rastro');
+  if (voo) { const pts = [0, 0.03, 0.06, 0.09].map(d => bolaEm(Math.max(contato[3].t, t - d))); r.setAttribute('d', 'M' + pts.map(p => p.join(' ')).join(' L')); r.setAttribute('opacity', 0.55); }
+  else r.setAttribute('opacity', 0);
+}
+
+// ---------- textos (identidade-visual) ----------
+const T = $('#textos');
+const pop = (id, svg) => { const g = document.createElementNS(NS, 'g'); g.id = id; g.innerHTML = svg; g.style.opacity = 0; T.appendChild(g); return g; };
+pop('t-faixa', Marca.faixa(540, 330, 'EMBAIXADINHA!'));
+['1', '2', '3'].forEach((n, i) => pop('t-n' + i, Marca.apoio(contato[i].p[0] + 120, contato[i].p[1] - 60, n, { fs: 90 })));
+pop('t-gol', Marca.impacto(540, 330, 'GOOOL!', { fs: 200 }));
+pop('t-final', Marca.carimbo(540, 520, 'QUE CHUTE!'));
+
+// ---------- timeline GSAP (câmera, rede, textos) ----------
+const tl = gsap.timeline({ paused: true });
+tl.fromTo('#cam', { scale: 1, svgOrigin: '540 1350' }, { scale: 1.07, duration: 4.8, ease: 'sine.inOut' }, 0);
+tl.to('#cam', { scale: 1.0, x: 0, duration: 0.5, ease: 'power2.out' }, 4.8);
+// tremida no gol
+[0, 1, 2, 3, 4, 5].forEach(i => tl.to('#cam', { x: (i % 2 ? -1 : 1) * (14 - i * 2), y: (i % 2 ? 1 : -1) * (8 - i), duration: 0.045, ease: 'none' }, 5.2 + i * 0.045));
+tl.to('#cam', { x: 0, y: 0, duration: 0.1 }, 5.47);
+// rede estufa
+tl.fromTo('#rede', { scaleX: 1, svgOrigin: `${GX1} ${GY - 150}` }, { scaleX: 1.12, duration: 0.12, ease: 'power2.out' }, 5.2);
+tl.to('#rede', { scaleX: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' }, 5.32);
+const entra = (id, t, dur, ox, oy) => {
+  tl.fromTo('#' + id, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to('#' + id, { opacity: 0, scale: 0.8, duration: 0.18, ease: 'power2.in' }, t + dur);
+};
+entra('t-faixa', 1.95, 2.3, 540, 330);
+contato.slice(0, 3).forEach((c, i) => entra('t-n' + i, c.t + 0.02, 0.42, c.p[0] + 120, c.p[1] - 60));
+entra('t-gol', 5.2, 0, 540, 330);
+tl.to('#t-gol', { scale: 1.06, svgOrigin: '540 330', duration: 0.35, yoyo: true, repeat: 6, ease: 'sine.inOut' }, 5.6);
+entra('t-final', 6.6, 0, 540, 520);
+
+// ---------- relógio externo (skill edit) ----------
+window.__timeline = tl;
+window.__duration = 8;
+window.__seek = t => { tl.seek(t, false); leo.desenhar(t); desenharBola(t); };
+window.__seek(0);
+</script></body></html>

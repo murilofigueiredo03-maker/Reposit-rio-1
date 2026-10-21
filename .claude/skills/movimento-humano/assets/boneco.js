@@ -289,6 +289,32 @@
         if (vista === 'frente') { pose.bracos.e = { o: 20 + dy / s * 1.6, c: 20 }; pose.bracos.d = { o: 20 + dy / s * 1.6, c: 20 }; }
         return pose;
       }
+      if (a.tipo === 'chutar') {
+        // chute de perfil: pé de apoio plantado ao lado da bola, a perna de trás (pes[1]) faz o movimento.
+        //  p.modo 'forte' (padrão): recua → bate (u = 0.5) → acompanha → volta
+        //  p.modo 'embaixadinha': o pé sobe na frente até a altura do joelho (u = 0.5) e desce
+        //  p.forca 0..1 (amplitude). Pé no contato: b.pose(t).pes[1].tz (tornozelo)
+        const u = clamp((t - a.t0) / Math.max(0.01, a.t1 - a.t0), 0, 1);
+        const k = p.forca ?? 1, tz = M.tornozelo * s, chao = p.y;
+        const pose = this.poseBase({ tipo: 'parado', p: { ...p, vista: 'perfil', dir, passada: 18 } }, t);
+        const rep = pose.pes[1].tz;
+        const chaves = p.modo === 'embaixadinha'
+          ? [[0, rep, 0], [0.5, [p.x + dir * 58 * s, chao - tz - 120 * k * s], 12], [1, rep, 0]]
+          : [[0, rep, 0], [0.38, [p.x - dir * 120 * k * s, chao - tz - 95 * k * s], -20], [0.5, [p.x + dir * 45 * s, chao - tz - 18 * s], -28],
+             [0.72, [p.x + dir * 135 * k * s, chao - tz - 150 * k * s], -34], [1, rep, 0]];
+        let i = 0; while (i < chaves.length - 2 && u > chaves[i + 1][0]) i++;
+        const [u0, A, i0] = chaves[i], [u1, B, i1] = chaves[i + 1], w = smooth((u - u0) / (u1 - u0));
+        pose.pes[1] = { tz: [lerp(A[0], B[0], w), lerp(A[1], B[1], w)], inc: lerp(i0, i1, w), chao: null };
+        pose.pes[0] = { tz: [p.x + dir * 6 * s, chao - tz], inc: 0, chao };
+        const ar = Math.sin(u * Math.PI);           // braços abrem para equilibrar
+        if (p.modo === 'embaixadinha') { pose.inclina = 3 + ar * 4; pose.bracos = { e: { o: 25 + ar * 15, c: 30 }, d: { o: -20 - ar * 10, c: 30 } }; }
+        else {
+          const tr = u < 0.38 ? smooth(u / 0.38) * -6 : u < 0.72 ? lerp(-6, -12, smooth((u - 0.38) / 0.34)) : lerp(-12, 1, smooth((u - 0.72) / 0.28));
+          pose.inclina = tr; pose.quadril[0] += dir * ar * 14 * s; pose.quadril[1] += ar * 10 * s;
+          pose.bracos = { e: { o: 30 + ar * 50, c: 25 }, d: { o: -30 - ar * 40, c: 20 } };
+        }
+        return pose;
+      }
       // locomoção: andar / correr / subir (escada) — pés plantados via IK
       const G = { ...GAIT[a.tipo], ...(p.gait || {}) };
       const chaoF = p.chao || (() => p.de[1]);
@@ -575,7 +601,7 @@
     desenhar(t) {
       const s = this.s;
       const P = this.pose(t);
-      this._t = t; { const a = this.acaoEm(this.acoes, t).atual; this._rapido = a ? ({ correr: 1, pular: 0.8, andar: 0.35, montar: 0.7 }[a.tipo] || 0) : 0; }
+      this._t = t; { const a = this.acaoEm(this.acoes, t).atual; this._rapido = a ? ({ correr: 1, pular: 0.8, chutar: 0.6, andar: 0.35, montar: 0.7 }[a.tipo] || 0) : 0; }
       if (!P) { this.g.style.display = 'none'; this.el.extras.style.display = 'none'; this.el.sombraPe.style.display = 'none'; return; }
       this.el.sombraPe.style.display = '';
       this.g.style.display = ''; this.el.extras.style.display = '';

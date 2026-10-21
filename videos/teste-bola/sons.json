@@ -1,0 +1,21 @@
+{
+  "duracao": 8,
+  "voz": "sons/silencio.wav",
+  "biblioteca": ["sons", "../../.claude/skills/sons-de-ambiente/biblioteca/escola", "../../.claude/skills/sons-de-ambiente/biblioteca/ui", "../../.claude/skills/sons-de-ambiente/biblioteca/coliseu"],
+  "ambientes": [ { "som": "amb_escola_patio", "de": 0, "ate": 8, "db": -16, "fade": 0.6 } ],
+  "passos": [ { "som": "sfx_passo_escola", "de": 0.1, "ate": 1.9, "intervalo": 0.3, "db": -10 } ],
+  "efeitos": [
+    { "som": "sfx_toque_bola", "em": 0.5, "db": -14 }, { "som": "sfx_toque_bola", "em": 1.25, "db": -14 },
+    { "som": "whoosh-short", "em": 1.95, "db": -10 },
+    { "som": "sfx_toque_bola", "em": 2.65, "db": -6 }, { "som": "pop", "em": 2.67, "db": -14 },
+    { "som": "sfx_toque_bola", "em": 3.35, "db": -6 }, { "som": "pop", "em": 3.37, "db": -14 },
+    { "som": "sfx_toque_bola", "em": 4.05, "db": -6 }, { "som": "pop", "em": 4.07, "db": -14 },
+    { "som": "sfx_quique_bola", "em": 4.62, "db": -8 }, { "som": "sfx_quique_bola", "em": 4.76, "db": -14 },
+    { "som": "sfx_chute_bola", "em": 4.85, "db": -2 }, { "som": "whoosh", "em": 4.88, "db": -8 },
+    { "som": "sfx_rede_cai", "em": 5.2, "db": -6 }, { "som": "impact-bass-1", "em": 5.2, "db": -6 },
+    { "som": "sfx_grito_multidao", "em": 5.25, "db": -6 },
+    { "som": "sfx_quique_bola", "em": 5.5, "db": -14 },
+    { "som": "chime", "em": 6.6, "db": -10 }
+  ],
+  "volume_final_lufs": -12
+}
