@@ -51,6 +51,11 @@ s += D.carrinhoMercado(700, 1700, D.escala('carrinhoMercado', 0.62));
 | `celular` | `cor` | moldura, botões laterais, câmera, barra de status, ícones de app, dock, reflexo |
 | `liquidificador` | `cor`, `suco` | base com botões e seletor, copo de vidro com medidas, alça, tampa, lâminas, suco com bolhas |
 
+| `pacoteArroz` | `cor`, `nome`, `peso` | plástico em pé, emenda soldada com serrilha e furinho, faixa do rótulo, janela com grãos, selo do peso, vincos |
+| `pacoteFeijao` | `cor`, `nome`, `peso` | plástico transparente com feijão carioca rajado, rótulo, emenda serrilhada, brilho do plástico |
+| `bandejaOvos` | `cor`, `ovo`, `faltando` | papelão moldado 2 × 6, ovos com brilho e pintinhas, divisórias, sombra dentro da bandeja |
+| `sacoPao` | `paes` (1–3) | papel pardo com dobra na boca, vincos, mancha de gordura, pães franceses saindo |
+
 | `tigela` | `cor`, `colher`, `vapor` | tigela de barro com cevada e feijão, anéis do torno, colher de pau, vapor |
 | `copo` | `cor`, `cinza` | copo de barro com água acinzentada e flocos de cinza |
 | `capacete` | `cor` | capacete de secutor: casco liso, crista baixa, dois furinhos, aba, rebites, amassadinhos |

@@ -1,0 +1,30 @@
+{
+  "duracao": 30.5,
+  "voz": "voz/fala_master.wav",
+  "biblioteca": ["sons", "../../.claude/skills/sons-de-ambiente/biblioteca/ui", "../../.claude/skills/sons-de-ambiente/biblioteca/hoje", "../../.claude/skills/sons-de-ambiente/biblioteca/roma", "../../.claude/skills/sons-de-ambiente/biblioteca/escola"],
+  "ambientes": [
+    { "som": "amb_refeitorio", "de": 0, "ate": 19.7, "db": -27, "fade": 0.5 },
+    { "som": "amb_vhs", "de": 0, "ate": 12.6, "db": -26, "fade": 0.2 }
+  ],
+  "efeitos": [
+    { "som": "whoosh-short", "em": 0.2, "db": -14 },
+    { "som": "sfx_pacote", "em": 5.0, "db": -8 }, { "som": "sfx_bip", "em": 5.05, "db": -14 },
+    { "som": "sfx_pacote", "em": 6.15, "db": -9 }, { "som": "sfx_pacote", "em": 6.35, "db": -10 }, { "som": "sfx_bip", "em": 6.3, "db": -14 },
+    { "som": "sfx_pacote", "em": 7.05, "db": -10 }, { "som": "sfx_pacote", "em": 7.3, "db": -11 }, { "som": "sfx_bip", "em": 7.2, "db": -14 },
+    { "som": "sfx_pacote", "em": 8.25, "db": -9 }, { "som": "sfx_bip", "em": 8.3, "db": -14 },
+    { "som": "impact-bass-1", "em": 9.9, "db": -12 }, { "som": "chime", "em": 9.95, "db": -12 },
+    { "som": "sfx_moeda", "em": 11.3, "db": -8 }, { "som": "pop", "em": 11.3, "db": -16 },
+    { "som": "sfx_fita", "em": 12.4, "db": -8 }, { "som": "whoosh-cinematic", "em": 12.45, "db": -12 }, { "som": "impact-bass-2", "em": 12.65, "db": -10 },
+    { "som": "whoosh-short", "em": 12.75, "db": -14 },
+    { "som": "sfx_tique", "em": 13.47, "db": -12 }, { "som": "sfx_tique", "em": 13.69, "db": -12 }, { "som": "sfx_tique", "em": 13.91, "db": -12 }, { "som": "sfx_tique", "em": 14.13, "db": -12 },
+    { "som": "impact-bass-1", "em": 14.3, "db": -6 },
+    { "som": "whoosh-short", "em": 16.15, "db": -14 }, { "som": "whoosh", "em": 16.25, "db": -12 },
+    { "som": "sfx_pacote", "em": 18.25, "db": -10 },
+    { "som": "riser", "em": 18.3, "db": -16 }, { "som": "impact-bass-2", "em": 19.7, "db": -8 },
+    { "som": "whoosh-short", "em": 21.3, "db": -14 }, { "som": "pop", "em": 23.85, "db": -12 },
+    { "som": "whoosh-short", "em": 25.3, "db": -14 }, { "som": "pop", "em": 26.25, "db": -12 },
+    { "som": "whoosh-cinematic", "em": 27.15, "db": -12 }, { "som": "pop", "em": 29.0, "db": -12 }, { "som": "chime", "em": 29.05, "db": -14 }
+  ],
+  "ducking": { "db": 6 },
+  "volume_final_lufs": -10
+}

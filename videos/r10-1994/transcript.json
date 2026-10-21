@@ -1,0 +1,447 @@
+[
+{
+"text": "Com",
+"start": 0.28,
+"end": 0.39
+},
+{
+"text": "dez",
+"start": 0.39,
+"end": 0.59
+},
+{
+"text": "reais,",
+"start": 0.59,
+"end": 0.88
+},
+{
+"text": "em",
+"start": 0.88,
+"end": 0.96
+},
+{
+"text": "mil",
+"start": 0.94,
+"end": 1.04
+},
+{
+"text": "novecentos",
+"start": 1.04,
+"end": 1.73
+},
+{
+"text": "e",
+"start": 1.73,
+"end": 1.81
+},
+{
+"text": "noventa",
+"start": 1.77,
+"end": 2.12
+},
+{
+"text": "e",
+"start": 2.12,
+"end": 2.33
+},
+{
+"text": "quatro,",
+"start": 2.33,
+"end": 2.73
+},
+{
+"text": "olha",
+"start": 2.73,
+"end": 3.08
+},
+{
+"text": "o",
+"start": 3.08,
+"end": 3.16
+},
+{
+"text": "que",
+"start": 3.08,
+"end": 3.38
+},
+{
+"text": "você",
+"start": 3.38,
+"end": 3.53
+},
+{
+"text": "levava!",
+"start": 3.53,
+"end": 4.09
+},
+{
+"text": "Cinco",
+"start": 4.726,
+"end": 4.996
+},
+{
+"text": "quilos",
+"start": 4.996,
+"end": 5.316
+},
+{
+"text": "de",
+"start": 5.316,
+"end": 5.666
+},
+{
+"text": "arroz.",
+"start": 5.666,
+"end": 5.936
+},
+{
+"text": "Dois",
+"start": 5.936,
+"end": 6.156
+},
+{
+"text": "de",
+"start": 6.156,
+"end": 6.306
+},
+{
+"text": "feijão.",
+"start": 6.306,
+"end": 6.786
+},
+{
+"text": "Duas",
+"start": 6.786,
+"end": 7.066
+},
+{
+"text": "dúzias",
+"start": 7.066,
+"end": 7.406
+},
+{
+"text": "de",
+"start": 7.406,
+"end": 7.486
+},
+{
+"text": "ovos.",
+"start": 7.406,
+"end": 7.886
+},
+{
+"text": "E",
+"start": 7.886,
+"end": 8.196
+},
+{
+"text": "dez",
+"start": 8.196,
+"end": 8.276
+},
+{
+"text": "pãezinhos.",
+"start": 8.236,
+"end": 8.896
+},
+{
+"text": "Deu",
+"start": 9.464,
+"end": 9.614
+},
+{
+"text": "nove",
+"start": 9.614,
+"end": 9.884
+},
+{
+"text": "e",
+"start": 9.884,
+"end": 10.034
+},
+{
+"text": "quarenta",
+"start": 10.034,
+"end": 10.394
+},
+{
+"text": "e",
+"start": 10.394,
+"end": 10.554
+},
+{
+"text": "dois.",
+"start": 10.554,
+"end": 10.954
+},
+{
+"text": "E",
+"start": 10.954,
+"end": 11.034
+},
+{
+"text": "ainda",
+"start": 10.984,
+"end": 11.254
+},
+{
+"text": "sobrou",
+"start": 11.254,
+"end": 11.544
+},
+{
+"text": "troco!",
+"start": 11.544,
+"end": 11.984
+},
+{
+"text": "Hoje,",
+"start": 12.82,
+"end": 13.14
+},
+{
+"text": "a",
+"start": 13.14,
+"end": 13.39
+},
+{
+"text": "mesma",
+"start": 13.39,
+"end": 13.75
+},
+{
+"text": "compra",
+"start": 13.75,
+"end": 13.97
+},
+{
+"text": "sai",
+"start": 13.97,
+"end": 14.18
+},
+{
+"text": "por",
+"start": 14.18,
+"end": 14.29
+},
+{
+"text": "sessenta",
+"start": 14.29,
+"end": 14.9
+},
+{
+"text": "e",
+"start": 14.9,
+"end": 15.02
+},
+{
+"text": "sete",
+"start": 15.02,
+"end": 15.41
+},
+{
+"text": "reais.",
+"start": 15.41,
+"end": 15.58
+},
+{
+"text": "E",
+"start": 16.193,
+"end": 16.283
+},
+{
+"text": "com",
+"start": 16.283,
+"end": 16.643
+},
+{
+"text": "dez",
+"start": 16.643,
+"end": 16.723
+},
+{
+"text": "reais?",
+"start": 16.663,
+"end": 17.113
+},
+{
+"text": "Um",
+"start": 17.113,
+"end": 17.193
+},
+{
+"text": "quilo",
+"start": 17.113,
+"end": 17.653
+},
+{
+"text": "de",
+"start": 17.653,
+"end": 17.733
+},
+{
+"text": "feijão",
+"start": 17.683,
+"end": 18.193
+},
+{
+"text": "e",
+"start": 18.193,
+"end": 18.273
+},
+{
+"text": "dois",
+"start": 18.203,
+"end": 18.463
+},
+{
+"text": "pãezinhos.",
+"start": 18.463,
+"end": 19.133
+},
+{
+"text": "Mas",
+"start": 19.843,
+"end": 20.023
+},
+{
+"text": "calma:",
+"start": 20.023,
+"end": 20.403
+},
+{
+"text": "o",
+"start": 20.403,
+"end": 20.483
+},
+{
+"text": "salário",
+"start": 20.483,
+"end": 21.013
+},
+{
+"text": "mínimo",
+"start": 21.013,
+"end": 21.353
+},
+{
+"text": "era",
+"start": 21.353,
+"end": 21.773
+},
+{
+"text": "sessenta",
+"start": 21.773,
+"end": 22.073
+},
+{
+"text": "e",
+"start": 22.073,
+"end": 22.223
+},
+{
+"text": "quatro",
+"start": 22.223,
+"end": 22.663
+},
+{
+"text": "reais.",
+"start": 22.663,
+"end": 22.853
+},
+{
+"text": "Essa",
+"start": 22.853,
+"end": 23.173
+},
+{
+"text": "compra",
+"start": 23.173,
+"end": 23.503
+},
+{
+"text": "comia",
+"start": 23.503,
+"end": 23.833
+},
+{
+"text": "quinze",
+"start": 23.833,
+"end": 24.133
+},
+{
+"text": "por",
+"start": 24.133,
+"end": 24.213
+},
+{
+"text": "cento",
+"start": 24.193,
+"end": 24.443
+},
+{
+"text": "dele.",
+"start": 24.443,
+"end": 24.883
+},
+{
+"text": "Hoje,",
+"start": 25.413,
+"end": 25.753
+},
+{
+"text": "come",
+"start": 25.753,
+"end": 26.223
+},
+{
+"text": "só",
+"start": 26.223,
+"end": 26.303
+},
+{
+"text": "quatro.",
+"start": 26.243,
+"end": 26.703
+},
+{
+"text": "Então...",
+"start": 27.419,
+"end": 27.809
+},
+{
+"text": "era",
+"start": 27.809,
+"end": 27.959
+},
+{
+"text": "mais",
+"start": 27.959,
+"end": 28.259
+},
+{
+"text": "barato",
+"start": 28.259,
+"end": 28.589
+},
+{
+"text": "ou",
+"start": 28.589,
+"end": 28.669
+},
+{
+"text": "não?",
+"start": 28.659,
+"end": 29.059
+},
+{
+"text": "Comenta",
+"start": 29.059,
+"end": 29.389
+},
+{
+"text": "aí!",
+"start": 29.389,
+"end": 29.609
+}
+]

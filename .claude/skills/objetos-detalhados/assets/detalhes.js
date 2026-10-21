@@ -50,6 +50,7 @@
       paoFrances: [320, 0.18], paoRomano: [320, 0.24], uvas: [190, 0.16], peixe: [360, 0.35], anfora: [210, 0.4], moeda: [210, 0.022],
       queijo: [430, 0.3], geladeira: [270, 0.75], carrinhoMercado: [460, 0.95], microondas: [330, 0.5], fogao: [300, 0.6],
       tv: [440, 1.0], celular: [130, 0.075], liquidificador: [190, 0.2],
+      pacoteArroz: [210, 0.24], pacoteFeijao: [160, 0.15], bandejaOvos: [330, 0.3], sacoPao: [200, 0.2],
       tigela: [300, 0.2], copo: [120, 0.1], capacete: [300, 0.4], rudis: [370, 0.75], gladio: [52, 0.08], escudo: [180, 0.65], tridente: [100, 0.2], rede: [320, 2.5], corneta: [330, 1.2], palma: [160, 0.5], leao: [640, 2.2], urso: [600, 2.0], revolver: [220, 0.25], peDeCabra: [130, 0.6], bicicleta: [480, 1.7], moto: [500, 2.0]
     };
 
@@ -648,6 +649,94 @@
         s += `<path d="M-112 -238 H-50" stroke="${L}" stroke-width="14" stroke-linecap="round"/><path d="M50 -258 Q80 -262 96 -244" stroke="${L}" stroke-width="10" fill="none" stroke-linecap="round"/>`;   // selim e guidão
         s += `<circle cx="-30" cy="-90" r="22" fill="#9AA0A8" stroke="${L}" stroke-width="4"/><path d="M-30 -112 L-150 -98 M-30 -68 L-150 -82" stroke="#5A5A62" stroke-width="3"/><g class="pedivela" data-cx="-30" data-cy="-90" transform="rotate(${f(pedal)} -30 -90)"><path d="M-30 -90 h32 M-30 -90 h-32" stroke="${L}" stroke-width="6" stroke-linecap="round"/><rect x="-6" y="-95" width="16" height="8" rx="2" fill="#22252A" transform="translate(32 0)"/><rect x="-6" y="-95" width="16" height="8" rx="2" fill="#22252A" transform="translate(-60 0)"/></g>`;
         return pos(x, y, k, s);
+      },
+
+      // ===================== MERCADO =====================
+      // pacote de arroz (plástico em pé): emenda soldada em cima com serrilha, janela mostrando os grãos, faixa do rótulo, vincos do plástico
+      pacoteArroz: (x, y, k = 1, { cor = '#1F5FAF', nome = 'ARROZ', peso = '5 kg' } = {}) => {
+        const corpo = 'M-96 -268 Q-104 -150 -102 -14 Q-60 4 0 4 Q60 4 102 -14 Q104 -150 96 -268 Z';
+        const c = clip(corpo), gv = lin([[0, '#FFFFFF'], [0.55, '#EEF0F2'], [1, '#B9C0C8']], 0, 0, 1, 0);
+        let s = `<defs>${c.def}${gv.def}</defs>` + contato(110, 12, 0.3);
+        s += `<path d="${corpo}" fill="${gv.id}" stroke="${L}" stroke-width="6"/>`;
+        s += `<g clip-path="${c.id}">`;
+        // janela transparente com grãos (arroz = bastonetes claros com sombra)
+        s += `<rect x="-70" y="-120" width="140" height="92" rx="14" fill="#F3EBD8" stroke="${tom('#F3EBD8', -0.3)}" stroke-width="3"/>`;
+        for (let i = 0; i < 70; i++) { const gx = rnd(-62, 62), gy = rnd(-112, -36), a = rnd(0, 180); s += `<ellipse cx="${f(gx)}" cy="${f(gy)}" rx="5" ry="2" transform="rotate(${f(a)} ${f(gx)} ${f(gy)})" fill="${rnd() < 0.5 ? '#FFFDF6' : '#E8DCC0'}" stroke="#C9B994" stroke-width=".8"/>`; }
+        s += `<path d="M-60 -116 L-30 -36" stroke="#fff" stroke-width="9" opacity=".45"/>`;
+        // faixa do rótulo
+        s += `<rect x="-120" y="-232" width="240" height="96" fill="${cor}"/><rect x="-120" y="-232" width="240" height="12" fill="${tom(cor, 0.25)}"/><rect x="-120" y="-148" width="240" height="12" fill="${tom(cor, -0.35)}"/>`;
+        s += `<path d="M-120 -146 Q0 -128 120 -146" stroke="#E8B400" stroke-width="7" fill="none"/>`;
+        // lado escuro (volume) e vincos
+        s += `<path d="M58 -268 Q70 -140 66 -6 L120 -6 L120 -268Z" fill="#000" opacity=".12"/><path d="M-80 -260 Q-86 -150 -84 -20" stroke="#fff" stroke-width="10" opacity=".55" fill="none"/>`;
+        s += [[-40, -250, -10, -238], [30, -40, 60, -24], [-70, -60, -46, -30]].map(([a, b, c2, d]) => `<path d="M${a} ${b} L${c2} ${d}" stroke="#9AA3AD" stroke-width="2.5" opacity=".7"/>`).join('');
+        s += `</g>`;
+        // emenda soldada em cima (serrilha) e furinho de pendurar
+        s += `<path d="M-98 -268 L98 -268 L98 -296 L-98 -296Z" fill="#E3E7EB" stroke="${L}" stroke-width="5"/>` + [...Array(14)].map((_, i) => `<path d="M${-92 + i * 13.2} -294 v24" stroke="#B4BCC4" stroke-width="2"/>`).join('') + `<ellipse cx="0" cy="-284" rx="14" ry="6" fill="#B4BCC4" stroke="${L}" stroke-width="2.5"/>`;
+        const txt = T(0, -186, nome, { fs: 44, cor: '#fff', peso: 900, fonte: "'Anton', 'DejaVu Sans Condensed', sans-serif" }) + T(0, -152, 'TIPO 1', { fs: 18, cor: '#FFE27A', peso: 700 })
+          + `<g><circle cx="${luz > 0 ? -62 : 62}" cy="-70" r="30" fill="#E8B400" stroke="${L}" stroke-width="4"/>${T(62, -62, peso, { fs: 20, cor: L, peso: 900 })}</g>`;
+        return pos(x, y, k, s, txt);
+      },
+
+      // pacote de feijão (plástico transparente): grãos marrons rajados aparecendo, rótulo vermelho, emenda com serrilha
+      pacoteFeijao: (x, y, k = 1, { cor = '#C8282E', nome = 'FEIJÃO', peso = '1 kg' } = {}) => {
+        const corpo = 'M-72 -200 Q-80 -110 -78 -12 Q-40 4 0 4 Q40 4 78 -12 Q80 -110 72 -200 Z';
+        const c = clip(corpo), gb = lin([[0, '#9A5A36'], [1, '#5E321D']], 0, 0, 1, 0);
+        let s = `<defs>${c.def}${gb.def}</defs>` + contato(84, 10, 0.3);
+        s += `<path d="${corpo}" fill="${gb.id}" stroke="${L}" stroke-width="6"/>`;
+        s += `<g clip-path="${c.id}">`;
+        for (let i = 0; i < 95; i++) {                   // feijão carioca: bege com rajas marrons
+          const gx = rnd(-76, 76), gy = rnd(-196, 0), a = rnd(0, 180), base = rnd() < 0.7 ? '#C99A6A' : '#B07A4C';
+          s += `<g transform="rotate(${f(a)} ${f(gx)} ${f(gy)})"><ellipse cx="${f(gx)}" cy="${f(gy)}" rx="9" ry="6" fill="${base}" stroke="#5E321D" stroke-width="1.2"/><path d="M${f(gx - 5)} ${f(gy - 2)} q4 3 9 0" stroke="#7A4526" stroke-width="1.6" fill="none"/></g>`;
+        }
+        s += `<rect x="-90" y="-176" width="180" height="70" fill="${cor}"/><rect x="-90" y="-176" width="180" height="10" fill="${tom(cor, 0.25)}"/><path d="M-90 -104 Q0 -92 90 -104" stroke="#FFD23F" stroke-width="6" fill="none"/>`;
+        s += `<path d="M40 -200 Q50 -100 48 -6 L90 -6 L90 -200Z" fill="#000" opacity=".18"/><path d="M-58 -96 Q-62 -50 -60 -18" stroke="#fff" stroke-width="8" opacity=".5" fill="none"/><path d="M-60 -196 L-40 -186" stroke="#fff" stroke-width="5" opacity=".5"/>`;
+        s += `</g>`;
+        s += `<path d="M-74 -200 L74 -200 L74 -222 L-74 -222Z" fill="#E3E7EB" stroke="${L}" stroke-width="5"/>` + [...Array(11)].map((_, i) => `<path d="M${-68 + i * 13.6} -220 v18" stroke="#B4BCC4" stroke-width="2"/>`).join('');
+        const txt = T(0, -128, nome, { fs: 36, cor: '#fff', peso: 900, fonte: "'Anton', 'DejaVu Sans Condensed', sans-serif" }) + T(0, -60, peso, { fs: 22, cor: '#fff', peso: 900, extra: `stroke="${L}" stroke-width="5" paint-order="stroke"` });
+        return pos(x, y, k, s, txt);
+      },
+
+      // bandeja de ovos (papelão moldado, 2 × 6, vista de cima em ângulo): ovos com brilho e pintinhas, divisórias, borda da bandeja
+      bandejaOvos: (x, y, k = 1, { cor = '#C9B79A', ovo = '#F3E2C8', faltando = 0 } = {}) => {
+        const gb = lin([[0, tom(cor, 0.15)], [1, tom(cor, -0.3)]]);
+        let s = `<defs>${gb.def}</defs>` + contato(170, 12, 0.3);
+        s += `<path d="M-165 -70 L165 -70 L150 -6 L-150 -6Z" fill="${gb.id}" stroke="${L}" stroke-width="5"/>`;      // laterais
+        s += `<path d="M-165 -70 L165 -70 L140 -118 L-140 -118Z" fill="${tom(cor, 0.1)}" stroke="${L}" stroke-width="5"/>`; // tampo
+        for (let i = 0; i < 6; i++) s += `<path d="M${-150 + i * 55 + 27} -64 q0 40 0 52" stroke="${tom(cor, -0.35)}" stroke-width="3" opacity=".7"/>`;
+        let n = 0;
+        [0, 1].forEach(row => {                           // fileira de trás primeiro
+          for (let i = 0; i < 6; i++) {
+            if (n++ < faltando) continue;
+            const ex = (-125 + i * 50) * (row ? 1.06 : 0.92), ey = row ? -66 : -100, r = row ? 24 : 21;
+            const go = rad([[0, '#FFFFFF'], [0.45, ovo], [1, tom(ovo, -0.3)]], 0.35, 0.3, 0.75);
+            s += `<defs>${go.def}</defs><ellipse cx="${f(ex)}" cy="${f(ey + r * 0.35)}" rx="${f(r * 1.05)}" ry="${f(r * 0.45)}" fill="${tom(cor, -0.45)}" opacity=".6"/>`;
+            s += `<ellipse cx="${f(ex)}" cy="${f(ey - r * 0.25)}" rx="${f(r * 0.86)}" ry="${f(r * 1.08)}" fill="${go.id}" stroke="${L}" stroke-width="3.5"/><ellipse cx="${f(ex - r * 0.3)}" cy="${f(ey - r * 0.7)}" rx="${f(r * 0.18)}" ry="${f(r * 0.28)}" fill="#fff" opacity=".85"/>`;
+            s += pontos(3, ex - r * 0.5, ex + r * 0.5, ey - r, ey + r * 0.3, tom(ovo, -0.4), 0.8, 1.6, 0.4, 0.7);
+          }
+        });
+        s += `<path d="M-150 -6 L150 -6" stroke="${tom(cor, -0.5)}" stroke-width="3"/><path d="M-160 -60 L-148 -12" stroke="#fff" stroke-width="4" opacity=".4"/>`;
+        return pos(x, y, k, s);
+      },
+
+      // saco de pão (papel pardo): dobra na boca, vincos, pães franceses saindo, mancha de gordura
+      sacoPao: (x, y, k = 1, { paes = 3 } = {}) => {
+        const corpo = 'M-86 -230 L86 -230 L94 -8 Q0 6 -94 -8 Z';
+        const c = clip(corpo), gp = lin([[0, '#E2B98A'], [0.5, '#D3A574'], [1, '#A97C4E']], 0, 0, 1, 0);
+        let s = `<defs>${c.def}${gp.def}</defs>` + contato(100, 11, 0.3);
+        // pães atrás da boca do saco (desenhados antes do papel da frente)
+        const dp = Detalhes({ luz: -1, seed: seed + 11, prefixo: prefixo + 'sp', sombra: false });   // o saco inteiro já espelha em pos()
+        const pos3 = [[-40, -222, -18, 0.42], [30, -238, 14, 0.44], [-5, -258, -4, 0.4]];
+        for (let i = 0; i < Math.min(paes, 3); i++) { const [px, py, rot, kk] = pos3[i]; s += `<g transform="rotate(${rot} ${px} ${py})">${dp.paoFrances(px, py, kk)}</g>`; }
+        s += `<path d="${corpo}" fill="${gp.id}" stroke="${L}" stroke-width="6"/>`;
+        s += `<g clip-path="${c.id}">`;
+        s += `<path d="M-86 -230 L86 -230 L88 -196 L-88 -196Z" fill="${tom('#D3A574', -0.18)}"/><path d="M-88 -196 L88 -196" stroke="${tom('#D3A574', -0.4)}" stroke-width="3"/>`;   // dobra
+        s += [[-50, -180, -54, -20], [10, -186, 6, -12], [52, -182, 58, -18]].map(([a, b, c2, d]) => `<path d="M${a} ${b} L${c2} ${d}" stroke="${tom('#D3A574', -0.25)}" stroke-width="2.5" opacity=".7"/>`).join('');
+        s += `<ellipse cx="34" cy="-80" rx="26" ry="18" fill="#8E6236" opacity=".25"/>`;    // mancha de gordura
+        s += `<path d="M-70 -186 L-74 -24" stroke="#fff" stroke-width="7" opacity=".3"/>`;
+        s += pontos(40, -80, 80, -190, -14, '#8E6236', 0.6, 1.6, 0.15, 0.35);
+        s += `</g>`;
+        const txt = T(0, -110, 'PADARIA', { fs: 24, cor: '#8E3B12', peso: 900, fonte: "'Anton', 'DejaVu Sans Condensed', sans-serif" });
+        return pos(x, y, k, s, txt);
       },
 
       // moto (de lado, para a direita): tanque, banco, motor, escapamento, farol, rodas largas; fumaça opcional

@@ -65,6 +65,7 @@ heroi.base(11, 14, 'sentar', { x: assentoX, y: assentoY, chao: 1700, dir: 1 });
 heroi.base(14, 15, 'pular', { x, y, vista: 'frente', altura: 80 });
 heroi.base(15, 16, 'deitado', { x, y, dir: 1 });  // depois 'parado' com transicao: 0.8 = levantar
 heroi.base(16, 17, 'agachar', { x, y, vista: 'perfil', quanto: 70 });
+heroi.base(17, 18, 'chutar', { x, y, dir: 1, modo: 'forte' | 'embaixadinha', forca: 1 });  // contato no meio da ação; pé: heroi.pose(t).pes[1].tz
 // BRAÇOS (por cima da base): lado 'e', 'd' ou 'ambos'
 heroi.braco('d', 3.5, 5, 'acenar');
 // gestos: acenar, cima, desespero, encolher, abanar, apontar, estender, segurar, cintura,
