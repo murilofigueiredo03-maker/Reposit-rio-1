@@ -1,0 +1,11 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Vitrine gladiadores</title>
+<style>html,body{margin:0;background:#F3EBDD}svg{display:block}</style><script src="detalhes.js"></script></head><body>
+<svg id="s" width="1600" height="1300" viewBox="0 0 1600 1300" xmlns="http://www.w3.org/2000/svg"><rect width="1600" height="1300" fill="#F3EBDD"/></svg>
+<script>
+// Vitrine dos objetos de gladiador / Coliseu (skill "objetos-detalhados")
+const D = Detalhes({ seed: 5 }), s = document.querySelector('#s');
+const itens = [['tigela', 200, 330, 0.95], ['copo', 470, 330, 1.1], ['capacete', 720, 330, 0.85], ['rudis', 1080, 300, 0.9], ['escudo', 1400, 220, 0.75],
+  ['gladio', 120, 760, 1.1], ['tridente', 290, 820, 0.95], ['rede', 560, 660, 0.9], ['corneta', 900, 760, 0.95], ['palma', 1180, 800, 0.9], ['leao', 380, 1240, 0.75], ['urso', 1100, 1240, 0.8]];
+itens.forEach(([n, x, y, k]) => { s.innerHTML += D[n](x, y, k, n === 'leao' ? { rugindo: true } : {}); s.innerHTML += `<text x="${x}" y="${y + 40}" font-family="'DejaVu Sans',sans-serif" font-size="22" font-weight="700" fill="#5A4A3A" text-anchor="middle">${n}</text>`; });
+window.__duration = 0.1; window.__seek = () => {};
+</script></body></html>

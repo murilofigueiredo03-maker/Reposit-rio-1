@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>movimento-humano — demo</title>
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1920px; height: 1080px; display: block; }
+  text { font-family: Inter, 'DejaVu Sans', sans-serif; font-weight: 800; }
+</style>
+<script src="boneco.js"></script>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="outline" x="-20%" y="-20%" width="140%" height="140%">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/>
+      <feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/>
+      <feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="#8ED1F5"/>
+  <rect y="900" width="1920" height="180" fill="#6DBE5A"/>
+  <path id="escada" fill="#B5AEA2" stroke="#1D1D2B" stroke-width="6"/>
+  <rect x="1500" y="790" width="200" height="110" fill="#B5AEA2" stroke="#1D1D2B" stroke-width="6"/>
+  <text id="rotulo" x="960" y="120" font-size="64" fill="#1D1D2B" text-anchor="middle"></text>
+  <g id="atores"></g>
+</svg>
+<script>
+// escada: 6 degraus de 70 x 40 começando em x=1000
+const ESC = { x0: 1000, y0: 900, larg: 70, alt: 40, n: 6 };
+let d = `M${ESC.x0} ${ESC.y0}`;
+for (let k = 0; k < ESC.n; k++) d += ` V${ESC.y0 - (k + 1) * ESC.alt} H${ESC.x0 + (k + 1) * ESC.larg}`;
+d += ` V${ESC.y0} Z`;
+document.querySelector('#escada').setAttribute('d', d);
+const chaoEscada = x => x < ESC.x0 ? 900 : x >= ESC.x0 + ESC.n * ESC.larg ? 900 - ESC.n * ESC.alt : 900 - (Math.floor((x - ESC.x0) / ESC.larg) + 1) * ESC.alt;
+
+const b = new Boneco(document.querySelector('#atores'), { escala: 0.8, roupa: '#C8553D', seed: 5 });
+const R = [];
+const rot = (t0, t1, txt) => R.push({ t0, t1, txt });
+// 1. andar
+b.base(0, 3.2, 'andar', { de: [120, 900], ate: [760, 900] }); rot(0, 3.2, 'andar (perfil)');
+// 2. parado de frente + acenar
+b.base(3.2, 5.2, 'parado', { x: 760, y: 900, vista: 'frente' }); b.braco('d', 3.5, 5.0, 'acenar'); b.expressao(3.4, 5.2, 'feliz'); rot(3.2, 5.2, 'parado de frente + acenar');
+// 3. correr de volta
+b.base(5.2, 7.0, 'correr', { de: [760, 900], ate: [160, 900] }); rot(5.2, 7.0, 'correr');
+// 4. andar até a escada e subir
+b.base(7.0, 9.6, 'andar', { de: [160, 900], ate: [960, 900] }); rot(7.0, 9.6, 'andar');
+b.base(9.6, 12.0, 'subir', { de: [975, 900], ate: [1395, 660], chao: chaoEscada, passo: 70 }); rot(9.6, 12.0, 'subir escada');
+// 5. parado lá em cima, comer
+b.base(12.0, 14.0, 'parado', { x: 1395, y: 660, vista: 'perfil', dir: 1 }); b.braco('e', 12.3, 13.8, 'comer'); rot(12.0, 14.0, 'comer (mão até a boca por IK)');
+// 6. pular
+b.base(14.0, 15.0, 'pular', { x: 1395, y: 660, vista: 'frente', altura: 80 }); rot(14.0, 15.0, 'pular');
+// 7. sentar (outra cena — pedra) + pensar
+b.base(15.0, 18.0, 'sentar', { x: 1580, y: 790, chao: 900, dir: -1 }); b.braco('d', 15.6, 17.8, 'queixo'); b.expressao(15.6, 18, 'pensando'); rot(15.0, 18.0, 'sentar + pensar');
+// 8. deitado → levantar
+b.base(18.0, 19.0, 'deitado', { x: 600, y: 900, vista: 'perfil', dir: 1 }); b.expressao(18, 18.8, 'dormindo');
+b.base(19.0, 21.0, 'parado', { x: 600, y: 900, vista: 'perfil', dir: 1, transicao: 0.8 }); rot(18.0, 21.0, 'deitado → levantar');
+b.base(21.0, 23.0, 'agachar', { x: 600, y: 900, vista: 'perfil', dir: 1, quanto: 70 }); b.braco('e', 21.3, 22.8, 'estender'); rot(21.0, 23.0, 'agachar + estender braço');
+
+const DUR = 23.5;
+const rotulo = document.querySelector('#rotulo');
+window.__duration = DUR;
+window.__seek = t => {
+  b.desenhar(t);
+  const r = R.find(r => t >= r.t0 && t < r.t1); rotulo.textContent = r ? r.txt : '';
+};
+window.__seek(0);
+if (!navigator.webdriver) { const t0 = performance.now(); const loop = () => { window.__seek(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

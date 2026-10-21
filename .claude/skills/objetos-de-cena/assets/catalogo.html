@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>objetos-de-cena — catálogo</title>
+<style>@font-face{font-family:'Luckiest Guy';src:url(fontes/luckiest-guy.woff2)}html,body{margin:0;background:#111;overflow:hidden}#s{width:2160px;height:2900px;display:block}text:not([font-family]){font-family:'Luckiest Guy',sans-serif}</style>
+<script src="paletas.js"></script><script src="cenario.js"></script><script src="objetos.js"></script><script src="boneco.js"></script></head><body>
+<svg id="s" viewBox="0 0 2160 2900" xmlns="http://www.w3.org/2000/svg"><defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g id="g"></g><g id="a"></g></svg>
+<script>
+// Catálogo: cada objeto na escala certa ao lado de um boneco (≈ 1,75 m)
+const C = Cenario({ epoca: 'roma', hora: 'dia', luz: 1, seed: 3, prefixo: 'cat' });
+const O = Objetos(C);
+const K = 0.36, cw = 360, ch = 400, topo = 100;
+const nomes = O.lista.filter(n => n !== 'metro');
+let s = `<defs>${C.defs()}</defs><rect width="2160" height="2900" fill="#F3E3C3"/>`;
+s += `<text x="1080" y="70" font-size="60" fill="#111" text-anchor="middle">OBJETOS DE CENA · ESCALA REAL AO LADO DO BONECO</text>`;
+const bonecos = [];
+nomes.forEach((n, i) => {
+  const cx = (i % 6) * cw, cy = topo + Math.floor(i / 6) * ch, base = cy + ch - 70;
+  s += `<rect x="${cx + 6}" y="${cy + 6}" width="${cw - 12}" height="${ch - 12}" rx="16" fill="${i < 21 ? '#EADBC0' : '#DDE6EE'}"/>`;
+  s += `<path d="M${cx + 16} ${base} H${cx + cw - 16}" stroke="#B9A88A" stroke-width="3"/>`;
+  s += n === 'mosaico' ? O.mosaico(cx + 70, base - 110, 230, 100) : O[n](cx + cw * 0.6, base, K);
+  s += `<text x="${cx + cw / 2}" y="${cy + ch - 24}" font-size="30" fill="#111" text-anchor="middle">${n}</text>`;
+  bonecos.push([cx + 46, base]);
+});
+document.querySelector('#g').innerHTML = s;
+const atores = bonecos.map(([x, y], i) => { const b = new Boneco(document.querySelector('#a'), { escala: K, roupa: '#C8553D', seed: i }); b.base(0, 9, 'parado', { x, y }); return b; });
+window.__duration = 1; window.__seek = t => atores.forEach(b => b.desenhar(0.3 + t));
+window.__seek(0);
+</script></body></html>

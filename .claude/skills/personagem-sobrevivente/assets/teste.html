@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Sobrevivente: ficha animada</title>
+<!-- Ficha do Sobrevivente no motor de bonecos: vistas, poses e expressões (comparar com ficha-oficial.png).
+     Render: node ../../edit/scripts/render.mjs teste.html x.mp4 --width 1920 --height 1080 --frames 0.6 -->
+<style>
+  html, body { margin: 0; background: #fff; overflow: hidden; }
+  @font-face { font-family: 'Luckiest Guy'; src: url(../../identidade-visual/assets/fontes/luckiest-guy.woff2); }
+  text { font-family: 'Luckiest Guy', sans-serif; }
+</style>
+<script src="../../movimento-humano/assets/boneco.js"></script>
+<script src="../../objetos-detalhados/assets/detalhes.js"></script>
+</head>
+<body>
+<svg id="stage" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="1920" height="1080" fill="#FFFFFF"/>
+  <rect width="1920" height="70" fill="#111"/><text x="40" y="52" font-size="44" fill="#fff">SOBRE<tspan fill="#FF7A00">VIVENTE</tspan> — NO MOTOR</text>
+  <g id="chao"></g><g id="g"></g><g id="rot"></g>
+</svg>
+<script>
+const NS = 'http://www.w3.org/2000/svg', g = document.querySelector('#g'), rot = document.querySelector('#rot');
+const SOB = { figurino: 'sobrevivente' };
+const B = [];
+function novo(x, y, k, rotulo, fn, pai = g) { const gg = document.createElementNS(NS, 'g'); pai.appendChild(gg); const b = new Boneco(gg, { escala: k, ...SOB, seed: B.length + 1 }); fn(b, x, y); B.push(b);
+  rot.insertAdjacentHTML('beforeend', `<rect x="${x - 80}" y="${y + 18}" width="160" height="36" rx="18" fill="#FFE2C4"/><text x="${x}" y="${y + 46}" font-size="24" text-anchor="middle" fill="#111">${rotulo}</text>`);
+  document.querySelector('#chao').insertAdjacentHTML('beforeend', `<ellipse cx="${x}" cy="${y + 2}" rx="${90 * k / 0.55}" ry="8" fill="#000" opacity=".12"/>`); return b; }
+// linha 1: vistas e poses
+const y1 = 520, k1 = 0.62;
+novo(130, y1, k1, 'FRENTE', (b, x, y) => { b.base(0, 9, 'parado', { x, y, vista: 'frente' }); b.expressao(0, 9, 'normal'); });
+novo(330, y1, k1, 'PERFIL', (b, x, y) => { b.base(0, 9, 'parado', { x, y, vista: 'perfil', dir: 1 }); });
+novo(530, y1, k1, 'ANDANDO', (b, x, y) => { b.base(0, 9, 'andar', { de: [x - 60, y], ate: [x + 600, y] }); });
+novo(750, y1, k1, 'CORRENDO', (b, x, y) => { b.base(0, 9, 'correr', { de: [x - 80, y], ate: [x + 1200, y] }); b.expressao(0, 9, 'determinado'); });
+novo(970, y1, k1, 'APONTANDO', (b, x, y) => { b.base(0, 9, 'parado', { x, y, vista: 'perfil', dir: 1 }); b.braco('d', 0, 9, 'apontar', { entrada: 0.01 }); b.expressao(0, 9, 'determinado'); });
+novo(1170, y1, k1, 'AGACHADO', (b, x, y) => { b.base(0, 9, 'agachar', { x, y, vista: 'perfil', dir: 1, quanto: 90 }); b.expressao(0, 9, 'pensando'); });
+{ const x = 1390, y = y1; document.querySelector('#chao').insertAdjacentHTML('beforeend', `<path d="M${x - 80} ${y} Q${x - 70} ${y - 120} ${x} ${y - 130} Q${x + 80} ${y - 120} ${x + 90} ${y}Z" fill="#9A9A9E" stroke="#1D1D2B" stroke-width="5"/>`);
+  novo(x, y, k1, 'SENTADO', (b) => { b.base(0, 9, 'sentar', { x: x - 10, y: y - 128, chao: y, dir: 1 }); b.expressao(0, 9, 'cansado'); }); }
+novo(1600, y1, k1, 'COMEMORANDO', (b, x, y) => { b.base(0, 9, 'parado', { x, y, vista: 'frente' }); b.braco('ambos', 0, 9, 'cima', { entrada: 0.01 }); b.expressao(0, 9, 'alegre'); });
+{ const x = 1810, y = y1, gb = document.createElementNS(NS, 'g'); g.appendChild(gb); const DT = Detalhes({ seed: 2 }); gb.setAttribute('transform', `translate(${x} ${y})`); gb.innerHTML = DT.bicicleta(0, 0, 0.42);
+  const gi = document.createElementNS(NS, 'g'); gb.appendChild(gi); const b = new Boneco(gi, { escala: 0.42, ...SOB }); b.base(0, 9, 'montar', { assento: DT.ponto('bicicleta', 'assento', 0.42), pedivela: { ...DT.ponto('bicicleta', 'pedivela', 0.42), rpm: 60 }, guidao: DT.ponto('bicicleta', 'guidao', 0.42), chao: 0 }); B.push(b);
+  rot.insertAdjacentHTML('beforeend', `<rect x="${x - 80}" y="${y + 18}" width="160" height="36" rx="18" fill="#FFE2C4"/><text x="${x}" y="${y + 46}" font-size="24" text-anchor="middle" fill="#111">BICICLETA</text>`); }
+// linha 2: expressões (rosto grande)
+const EX = [['normal', 'NEUTRO'], ['alegre', 'FELIZ'], ['surpreso', 'SURPRESO'], ['medo', 'ASSUSTADO'], ['bravo', 'BRAVO'], ['triste', 'TRISTE'], ['confuso', 'CONFUSO'], ['determinado', 'DETERMINADO'], ['pensando', 'PENSATIVO']];
+EX.forEach(([e, r], i) => novo(130 + i * 205, 1010, 0.9, r, (b, x, y) => { b.base(0, 9, 'parado', { x, y: y + 330, vista: 'frente' }); b.expressao(0, 9, e); if (e === 'pensando') b.braco('d', 0, 9, 'queixo', { entrada: 0.01 }); }));
+window.__seek = t => B.forEach(b => b.desenhar(t));
+window.__duration = 3;
+window.__seek(0.6);
+</script>
+</body>
+</html>

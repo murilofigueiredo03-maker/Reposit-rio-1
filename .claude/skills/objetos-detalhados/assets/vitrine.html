@@ -1,0 +1,15 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Vitrine de objetos detalhados</title>
+<style>html,body{margin:0;background:#F3EBDD}svg{display:block}</style><script src="detalhes.js"></script></head><body>
+<svg id="s" width="1600" height="1700" viewBox="0 0 1600 1700" xmlns="http://www.w3.org/2000/svg"><rect width="1600" height="1700" fill="#F3EBDD"/></svg>
+<script>
+// Vitrine da skill "objetos-detalhados": todos os objetos lado a lado (luz vindo da esquerda)
+const D = Detalhes({ seed: 5 }), s = document.querySelector('#s');
+const itens = [
+  ['paoFrances', 210, 300, 1.05], ['paoRomano', 590, 300, 1.05], ['queijo', 990, 300, 1.05], ['uvas', 1370, 300, 1.0],
+  ['peixe', 220, 640, 0.95], ['anfora', 580, 760, 0.95, { rotulo: 'MOLHO DE PEIXE' }], ['moeda', 960, 640, 1.1], ['celular', 1340, 700, 1.25],
+  ['geladeira', 220, 1600, 1.15], ['carrinhoMercado', 680, 1600, 0.9], ['fogao', 1110, 1600, 0.95], ['liquidificador', 1440, 1600, 0.95],
+  ['microondas', 650, 1110, 1.0], ['tv', 1200, 1110, 0.95]
+];
+itens.forEach(([n, x, y, k, o]) => { s.innerHTML += D[n](x, y, k, o || {}); s.innerHTML += `<text x="${x}" y="${y + 40}" font-family="'DejaVu Sans',sans-serif" font-size="22" font-weight="700" fill="#5A4A3A" text-anchor="middle">${n}</text>`; });
+window.__duration = 0.1; window.__seek = () => {};
+</script></body></html>

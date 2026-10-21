@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>demo animais</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}#stage{width:1920px;height:1080px;display:block}</style>
+<script src="animal.js"></script></head><body>
+<svg id="stage" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="1920" height="1080" fill="#BFE3F5"/><rect y="980" width="1920" height="100" fill="#D9B46E"/><rect y="560" width="1920" height="8" fill="#D9B46E"/>
+<g id="a"></g></svg>
+<script>
+// Demo da skill animacao-animal: leão (parado → anda → ruge → corre → pula), urso, cachorro, gato, cavalo
+const g = document.querySelector('#a'), A = [];
+const leao = new Animal(g, { especie: 'leao', escala: 0.85, seed: 3 });
+leao.base(0, 2, 'parado', { x: 300, y: 980, dir: 1 }); leao.base(2, 5, 'andar', { de: [300, 980], ate: [700, 980] });
+leao.base(5, 7, 'parado', { x: 700, y: 980 }); leao.cabeca(5.3, 6.8, { rugir: true });
+leao.base(7, 9, 'correr', { de: [700, 980], ate: [1500, 980] }); leao.base(9, 10.5, 'pular', { de: [1500, 980], ate: [1750, 980] });
+leao.base(10.5, 12, 'sentar', { x: 1750, y: 980, dir: 1 });
+A.push(leao);
+[['urso', 120, 'andar'], ['cachorro', 520, 'trotar'], ['gato', 860, 'andar'], ['cavalo', 1300, 'trotar']].forEach(([e, x, tipo], i) => {
+  const a = new Animal(g, { especie: e, escala: 0.6, seed: 10 + i });
+  a.base(0, 12, tipo, { de: [x, 560], ate: [x + (tipo === 'trotar' ? 600 : 300), 560] }); A.push(a);
+});
+window.__duration = 12; window.__seek = t => A.forEach(a => a.desenhar(t)); window.__seek(0);
+</script></body></html>

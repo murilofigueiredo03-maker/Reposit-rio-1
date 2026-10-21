@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>cenario-ilustrado — rua romana</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}#stage{width:1080px;height:1920px;display:block}text{font-family:Inter,'DejaVu Sans',sans-serif}</style>
+<script src="cenario.js"></script></head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+// ?hora=dia|tarde|amanhecer|noite  — mesma rua em horários diferentes
+const hora = new URLSearchParams(location.search).get('hora') || 'tarde';
+const C = Cenario({ seed: 21, luz: 1, hora });
+const noite = hora === 'noite';
+let s = `<defs>${C.defs()}</defs>`;
+s += C.ceu({ nuvens: 3 });
+s += C.distante({ y: 980, tipo: 'roma', profundidade: 0.1 });
+s += C.coliseu({ x: 560, base: 1060, w: 460, h: 200 });
+s += C.distante({ y: 1120, tipo: 'roma', profundidade: 0.45, cor: '#C9A27C' });
+s += C.aqueduto({ x: -40, base: 1180, w: 600, h: 300, vaos: 4 });
+s += C.cipreste(700, 1300, 360) + C.pinheiro(980, 1320, 320);
+s += C.insula({ x: 40, base: 1700, w: 600, top: 330, andares: 4, noite, luzes: noite ? ['1-0', '0-1'] : [], varal: true });
+s += C.hera(80, 1050, 380);
+s += C.insula({ x: 720, base: 1700, w: 420, top: 640, andares: 3, cor: '#D9B48A', noite, luzes: noite ? ['0-0'] : [], sacada: 0 });
+s += C.toldo(730, 1360, 300);
+s += C.calcada({ y: 1700, h: 220 });
+s += C.sombraChao(40, 600, 1700, 120) + C.sombraChao(720, 400, 1700, 120);
+s += C.anfora(680, 1760, 0.8) + C.anfora(735, 1770, 0.7);
+s += C.pombo(420, 1740, 1.2) + C.pombo(480, 1752, 1, -1);
+if (noite) s += C.lamparina(660, 1540);
+s += C.atmosfera({ raios: !noite });
+document.querySelector('#stage').innerHTML = s;
+window.__duration = 1; window.__seek = () => {};
+</script></body></html>

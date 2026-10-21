@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Física de cena: teste</title>
+<!-- Teste da skill fisica-de-cena: rua com 3 faixas em perspectiva (zumbis alternando faixas e um atravessando),
+     moto, bicicleta pedalando, carro com motorista e TV com telejornal. Render: ../../edit/scripts/render.mjs demo.html --frames 3,8,12,16,20 -->
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  @font-face { font-family: 'Luckiest Guy'; src: url(../../identidade-visual/assets/fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(../../identidade-visual/assets/fontes/anton.woff2); }
+  text:not([font-family]) { font-family: 'Luckiest Guy', sans-serif; }
+</style>
+<script src="../../edit/assets/gsap.min.js"></script>
+<script src="../../movimento-humano/assets/boneco.js"></script>
+<script src="../../paleta-de-epoca/assets/paletas.js"></script>
+<script src="../../cenario-ilustrado/assets/cenario.js"></script>
+<script src="../../cenario-ilustrado/assets/cidade.js"></script>
+<script src="../../objetos-detalhados/assets/detalhes.js"></script>
+<script src="palco.js"></script>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <g id="fundo"></g><g id="atores"></g><g id="frente"></g><g id="rotulo"></g>
+</svg>
+<script>
+const NS = 'http://www.w3.org/2000/svg', $ = s => document.querySelector(s);
+const Z = Cidade(Cenario({ seed: 3, luz: -1, hora: 'dia', prefixo: 'd' })), DT = Detalhes({ seed: 4 });
+const HEROI = { figurino: { preset: 'marca', protagonista: true } };
+const PELE_Z = { cor: '#A9C79A', corLonge: '#8FAE80', bochecha: '#6E8A50' };
+const CENAS = [[0, 6, 'RUA: 3 FAIXAS'], [6, 10, 'MOTO'], [10, 14, 'BICICLETA'], [14, 18, 'CARRO'], [18, 22, 'TV']];
+const FAIXAS = { calcadaFundo: 1330, rua: 1500, calcadaFrente: 1720 };
+const palco = Palco({ horizonte: 760, yRef: 1720, kRef: 0.6, faixas: FAIXAS });
+const grupos = [];
+function grupo(id, t0, t1, pai = '#atores') { const g = document.createElementNS(NS, 'g'); g.id = id; $(pai).appendChild(g); grupos.push([g, t0, t1]); return g; }
+const ATORES = [];
+function ator(g, opts) { const b = new Boneco(g, { seed: ATORES.length + 2, ...opts }); ATORES.push(b); return b; }
+
+// ---------- cena 1: rua com faixas ----------
+const fundoRua = grupo('rua', 0, 6, '#fundo'); fundoRua.innerHTML = Z.rua({ chao: 1250, caos: true, faixas: FAIXAS });
+function zumbi(faixa, de, ate, seed, t0 = 0, t1 = 6) {
+  const g = grupo('z' + seed, 0, 6), y = palco.y(faixa), k = palco.k(y);
+  const b = ator(g, { escala: k, figurino: { preset: 'zumbi', cor: ['#6E7A5A', '#7A5A5A', '#5A6A7A'][seed % 3] }, ...PELE_Z, seed });
+  b.base(t0, t1, 'andar', { de: [de, y], ate: [ate, y], passo: 70 * k }); b.braco('ambos', t0, t1, 'estender'); b.expressao(t0, t1, 'zumbi');
+  palco.ator(g, { y }); return [g, b];
+}
+zumbi('calcadaFundo', 900, 300, 1);
+zumbi('rua', 100, 700, 2);
+const [gz3, z3] = zumbi('calcadaFundo', 1000, 450, 3);
+palco.atravessar(gz3, z3, [[0.5, 'calcadaFundo'], [5.5, 'calcadaFrente']]);   // atravessa a rua andando para a frente
+const gH = grupo('heroi1', 0, 6), yH = palco.y('calcadaFrente');
+const h1 = ator(gH, { escala: palco.k(yH), ...HEROI }); h1.base(0, 6, 'parado', { x: 160, y: yH, vista: 'perfil', dir: 1 }); h1.expressao(0, 6, 'medo');
+palco.ator(gH, { y: yH });
+
+// ---------- cena 2: moto (pose montar: banco + pedaleira + guidão) ----------
+grupo('rua2', 6, 14, '#fundo').innerHTML = Z.rua({ chao: 1250, caos: false, faixas: FAIXAS });
+const KM = 0.8, yM = palco.y('rua'), motoG = grupo('moto', 6, 10);
+motoG.innerHTML = DT.moto(0, 0, KM, { fumaca: true });
+const gHm = document.createElementNS(NS, 'g'); motoG.appendChild(gHm);
+const hm = ator(gHm, { escala: 0.6, ...HEROI });
+hm.base(6, 10, 'montar', { assento: DT.ponto('moto', 'assento', KM), pe: DT.ponto('moto', 'pe', KM), guidao: DT.ponto('moto', 'guidao', KM), chao: 0 });
+hm.expressao(6, 10, 'alegre');
+
+// ---------- cena 3: bicicleta (pés no pedal, girando junto com a pedivela) ----------
+const KB = 0.78, bikeG = grupo('bike', 10, 14), RPM = 70;
+bikeG.innerHTML = DT.bicicleta(0, 0, KB);
+const gHb = document.createElementNS(NS, 'g'); bikeG.appendChild(gHb);
+const hb = ator(gHb, { escala: 0.6, ...HEROI });
+hb.base(10, 14, 'montar', { assento: DT.ponto('bicicleta', 'assento', KB), pedivela: { ...DT.ponto('bicicleta', 'pedivela', KB), rpm: RPM }, guidao: DT.ponto('bicicleta', 'guidao', KB), chao: 0 });
+hb.expressao(10, 14, 'feliz');
+
+// ---------- cena 4: carro com motorista (fundo do carro → boneco → porta e vidro) ----------
+grupo('rua4', 14, 18, '#fundo').innerHTML = Z.rua({ chao: 1250, caos: true, faixas: FAIXAS });
+const KC = 1.15, carroG = grupo('carro', 14, 18);
+const cF = document.createElementNS(NS, 'g'), cB = document.createElementNS(NS, 'g'), cV = document.createElementNS(NS, 'g');
+carroG.append(cF, cB, cV);
+cF.innerHTML = Z.carro(0, 0, KC, { cor: '#3B7DD8', camada: 'fundo' });
+cV.innerHTML = Z.carro(0, 0, KC, { cor: '#3B7DD8', camada: 'frente' });
+const P = Z.carro.pontos, pt = v => [v[0] * KC, v[1] * KC];
+const hc = ator(cB, { escala: 0.42, ...HEROI });
+hc.base(14, 18, 'montar', { assento: pt(P.assento), pe: pt(P.pe), guidao: pt(P.guidao), chao: 0 }); hc.expressao(14, 18, 'serio');
+
+// ---------- cena 5: sala com TV (telejornal com texto que cabe) ----------
+grupo('sala', 18, 22, '#fundo').innerHTML = Z.sala({ chao: 1700, cortina: 'fechada', tv: 'noticia', manchete: 'ATAQUES ZUMBIS NA CIDADE' });
+const gS = grupo('sofa', 18, 22), hs = ator(gS, { escala: 0.62, ...HEROI });
+hs.base(18, 22, 'sentar', { x: 300, y: 1570, chao: 1700, dir: 1 }); hs.cabeca(18, 22, { virar: 0.3 }); hs.expressao(18, 22, 'espanto');
+
+// rótulo da cena
+const rot = $('#rotulo');
+window.__seek = t => {
+  grupos.forEach(([g, a, b]) => g.style.display = t >= a && t < b ? '' : 'none');
+  ATORES.forEach(b => b.desenhar(t));
+  palco.seek(t);
+  motoG.setAttribute('transform', `translate(${(-250 + (t - 6) * 400).toFixed(1)} ${yM})`); palco.girarRodas(motoG, (t - 6) * 400 / KM);
+  const xb = -200 + (t - 10) * 330; bikeG.setAttribute('transform', `translate(${xb.toFixed(1)} ${palco.y('calcadaFrente')})`);
+  palco.girarRodas(bikeG, (t - 10) * 330 / KB); palco.pedivela(bikeG, RPM, 0, 10, t);
+  carroG.setAttribute('transform', `translate(${(100 + (t - 14) * 150).toFixed(1)} ${palco.y('rua')})`); palco.girarRodas(cV, (t - 14) * 150 / KC);
+  const c = CENAS.find(([a, b]) => t >= a && t < b);
+  rot.innerHTML = c ? `<text x="540" y="200" font-size="80" text-anchor="middle" fill="#FF7A00" stroke="#111" stroke-width="14" paint-order="stroke">${c[2]}</text>` : '';
+};
+document.fonts.ready.then(() => { Palco.caberTextos(document); window.__seek(0); });
+window.__seek(0);
+window.__duration = 22;
+</script>
+</body>
+</html>

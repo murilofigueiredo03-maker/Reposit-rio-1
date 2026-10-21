@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>retratos animais</title>
+<style>html,body{margin:0;background:#000;overflow:hidden}#stage{width:1920px;height:1080px;display:block}</style>
+<script src="animal.js"></script></head><body>
+<svg id="stage" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<rect width="1920" height="1080" fill="#F3EBDD"/><rect y="500" width="1920" height="6" fill="#D9C9A8"/><rect y="1000" width="1920" height="6" fill="#D9C9A8"/>
+<g id="a"></g></svg>
+<script>
+// Retratos da skill animacao-animal: leão de lado (parado e rugindo) e de frente; os outros bichos de frente e de lado
+const g = document.querySelector('#a'), A = [];
+const add = (e, k, x, y, f) => { const a = new Animal(g, { especie: e, escala: k, seed: 7 }); f(a, x, y); A.push(a); };
+add('leao', 0.7, 250, 500, (a, x, y) => a.base(0, 9, 'parado', { x, y, dir: 1 }));
+add('leao', 0.7, 790, 500, (a, x, y) => { a.base(0, 9, 'parado', { x, y, dir: 1 }); a.cabeca(0, 9, { rugir: true }); });
+add('leao', 0.7, 1270, 500, (a, x, y) => a.base(0, 9, 'parado', { x, y, vista: 'frente' }));
+add('leao', 0.7, 1680, 500, (a, x, y) => { a.base(0, 9, 'parado', { x, y, vista: 'frente' }); a.cabeca(0, 9, { rugir: true }); });
+add('urso', 0.7, 170, 1000, (a, x, y) => a.base(0, 9, 'parado', { x, y, vista: 'frente' }));
+add('urso', 0.62, 450, 1000, (a, x, y) => a.base(0, 9, 'parado', { x, y, dir: 1 }));
+add('cachorro', 0.8, 820, 1000, (a, x, y) => a.base(0, 9, 'parado', { x, y, vista: 'frente' }));
+add('gato', 1.0, 1080, 1000, (a, x, y) => a.base(0, 9, 'parado', { x, y, vista: 'frente' }));
+add('cavalo', 0.6, 1330, 1000, (a, x, y) => a.base(0, 9, 'parado', { x, y, vista: 'frente' }));
+add('cavalo', 0.55, 1640, 1000, (a, x, y) => a.base(0, 9, 'parado', { x, y, dir: 1 }));
+window.__duration = 9; window.__seek = t => A.forEach(a => a.desenhar(t)); window.__seek(0);
+</script></body></html>

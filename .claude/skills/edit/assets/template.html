@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cena</title>
+<!--
+  TEMPLATE DA SKILL "edit"
+  - Tudo que se move está numa única timeline GSAP (tl). Nada de CSS animation,
+    setTimeout, Date.now() ou Math.random() solto: o render pula de quadro em quadro
+    com window.__seek(t) e o resultado precisa ser idêntico sempre.
+  - Abra no navegador para prévia ao vivo; o render.mjs pausa e controla o tempo.
+  - Edite o bloco CONFIG e a seção "ROTEIRO" da timeline.
+-->
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1920px; height: 1080px; display: block; }
+  text { font-family: Inter, 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<!-- Narração com sincronia labial (opcional): gere com scripts/lipsync.py -->
+<script src="lipsync.js" onerror="window.LIPSYNC = null"></script>
+</head>
+<body>
+<svg id="stage" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7EC8F2"/><stop offset="1" stop-color="#DDF3FF"/>
+    </linearGradient>
+    <radialGradient id="sunGlow"><stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/></radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <g id="camera">
+    <rect width="1920" height="1080" fill="url(#sky)"/>
+    <g id="sun"><circle cx="1540" cy="230" r="220" fill="url(#sunGlow)"/><circle cx="1540" cy="230" r="80" fill="#FFD66B"/></g>
+    <g id="clouds" fill="#fff" opacity=".9">
+      <g id="cloud1"><ellipse cx="380" cy="200" rx="110" ry="38"/><ellipse cx="440" cy="175" rx="70" ry="45"/></g>
+      <g id="cloud2"><ellipse cx="1100" cy="140" rx="90" ry="30"/><ellipse cx="1150" cy="120" rx="55" ry="36"/></g>
+    </g>
+    <path id="hillsFar" d="M-200 760 Q 200 560 600 720 T 1400 680 T 2200 700 V1080 H-200Z" fill="#9ED8A8"/>
+    <path id="hillsNear" d="M-200 840 Q 300 700 800 820 T 1700 790 T 2300 820 V1080 H-200Z" fill="#6FC283"/>
+    <rect id="ground" x="-200" y="900" width="2400" height="300" fill="#4FA868"/>
+
+    <!-- ============ PERSONAGEM (pés em y=0 no espaço local) ============ -->
+    <g id="char" transform="translate(-300 920)">
+      <ellipse id="shadow" cx="0" cy="0" rx="110" ry="16" fill="#000" opacity=".18"/>
+      <g id="body">
+        <g id="leg-l"><rect x="-55" y="-195" width="44" height="185" rx="22" fill="#2F4B7C"/><ellipse cx="-40" cy="-10" rx="40" ry="17" fill="#232331"/></g>
+        <g id="leg-r"><rect x="11" y="-195" width="44" height="185" rx="22" fill="#2F4B7C"/><ellipse cx="40" cy="-10" rx="40" ry="17" fill="#232331"/></g>
+
+        <!-- braço de trás (direita da tela) -->
+        <g id="arm-r">
+          <rect x="82" y="-410" width="36" height="125" rx="18" fill="#E85A4B"/>
+          <g id="fore-r"><rect x="84" y="-305" width="32" height="110" rx="16" fill="#F2C29B"/><circle cx="100" cy="-192" r="23" fill="#F2C29B"/></g>
+        </g>
+
+        <g id="torso">
+          <path d="M-98 -175 L-98 -355 Q-98 -425 -35 -425 L35 -425 Q98 -425 98 -355 L98 -175 Q98 -160 83 -160 L-83 -160 Q-98 -160 -98 -175Z" fill="#FF6B5B"/>
+          <path d="M-28 -425 L0 -390 L28 -425Z" fill="#E85A4B"/>
+        </g>
+
+        <g id="head">
+          <rect x="-18" y="-450" width="36" height="40" fill="#E3AE86"/>
+          <circle cx="-93" cy="-530" r="19" fill="#F2C29B"/><circle cx="93" cy="-530" r="19" fill="#F2C29B"/>
+          <ellipse cx="0" cy="-535" rx="95" ry="102" fill="#F2C29B"/>
+          <path id="hair" d="M-98 -545 Q-110 -655 0 -650 Q108 -655 98 -548 Q70 -610 -5 -608 Q-55 -606 -70 -580 Q-82 -570 -98 -545Z" fill="#2B2A3A"/>
+          <circle cx="-58" cy="-498" r="15" fill="#FF8A80" opacity=".35"/><circle cx="58" cy="-498" r="15" fill="#FF8A80" opacity=".35"/>
+          <g id="brows" stroke="#2B2A3A" stroke-width="7" stroke-linecap="round" fill="none">
+            <path id="brow-l" d="M-52 -588 Q-35 -598 -18 -590"/><path id="brow-r" d="M18 -590 Q35 -598 52 -588"/>
+          </g>
+          <g id="eyes">
+            <g id="eye-l"><ellipse cx="-35" cy="-548" rx="15" ry="20" fill="#fff"/><circle class="pupil" cx="-33" cy="-546" r="9" fill="#2B2A3A"/><circle cx="-30" cy="-551" r="3" fill="#fff"/></g>
+            <g id="eye-r"><ellipse cx="35" cy="-548" rx="15" ry="20" fill="#fff"/><circle class="pupil" cx="37" cy="-546" r="9" fill="#2B2A3A"/><circle cx="40" cy="-551" r="3" fill="#fff"/></g>
+          </g>
+          <g id="mouth">
+            <path class="m" data-shape="smile" d="M-26 -492 Q0 -470 26 -492" stroke="#5A1E2B" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path class="m" data-shape="0" d="M-20 -486 Q0 -481 20 -486" stroke="#5A1E2B" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <ellipse class="m" data-shape="1" cx="0" cy="-485" rx="17" ry="6" fill="#5A1E2B"/>
+            <g class="m" data-shape="2"><ellipse cx="0" cy="-484" rx="20" ry="12" fill="#5A1E2B"/><ellipse cx="0" cy="-477" rx="10" ry="4" fill="#E86A7A"/></g>
+            <g class="m" data-shape="3"><ellipse cx="0" cy="-482" rx="23" ry="19" fill="#5A1E2B"/><ellipse cx="0" cy="-471" rx="13" ry="6" fill="#E86A7A"/><rect x="-14" y="-501" width="28" height="6" rx="3" fill="#fff"/></g>
+            <ellipse class="m" data-shape="4" cx="0" cy="-483" rx="13" ry="16" fill="#5A1E2B"/>
+          </g>
+        </g>
+
+        <!-- braço da frente (esquerda da tela) -->
+        <g id="arm-l">
+          <rect x="-118" y="-410" width="36" height="125" rx="18" fill="#E85A4B"/>
+          <g id="fore-l"><rect x="-116" y="-305" width="32" height="110" rx="16" fill="#F2C29B"/><circle cx="-100" cy="-192" r="23" fill="#F2C29B"/></g>
+        </g>
+      </g>
+    </g>
+
+    <!-- balão de fala -->
+    <g id="bubble" opacity="0">
+      <path d="M1000 300 h560 q40 0 40 40 v120 q0 40 -40 40 h-470 l-60 50 l10 -50 h-40 q-40 0 -40 -40 v-120 q0 -40 40 -40z" fill="#fff"/>
+      <text id="bubbleText" x="1280" y="420" font-size="52" font-weight="700" fill="#2B2A3A" text-anchor="middle"></text>
+    </g>
+  </g>
+
+  <!-- letreiro final (fora da câmera, não sofre o zoom) -->
+  <g id="endcard" opacity="0">
+    <rect width="1920" height="1080" fill="#14142B" opacity=".72"/>
+    <text id="endTitle" x="960" y="560" font-size="120" font-weight="800" fill="#fff" text-anchor="middle"></text>
+  </g>
+</svg>
+
+<script>
+// ===================== CONFIG =====================
+const CONFIG = {
+  fps: 30,
+  fala: 'Olá! Bem-vindo ao canal!',
+  titulo: 'Inscreva-se',
+  falaInicio: 4.2,              // segundo em que a fala começa
+  falaDuracaoSemAudio: 2.8,     // usada quando não há lipsync.js
+  seed: 7
+};
+
+// ===================== UTILITÁRIOS =====================
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rand = mulberry32(CONFIG.seed);
+const $ = s => document.querySelector(s);
+
+// Pivôs (svgOrigin) no espaço local do personagem — é aqui que cada parte "gira".
+const PIVOT = {
+  armL: '-100 -400', armR: '100 -400', foreL: '-100 -295', foreR: '100 -295',
+  legL: '-33 -190', legR: '33 -190', head: '0 -440', body: '0 0', torso: '0 -160',
+  eyeL: '-35 -548', eyeR: '35 -548'
+};
+gsap.set('#arm-l', { svgOrigin: PIVOT.armL, rotation: 8 });
+gsap.set('#arm-r', { svgOrigin: PIVOT.armR, rotation: -8 });
+gsap.set('#fore-l', { svgOrigin: PIVOT.foreL, rotation: -6 });
+gsap.set('#fore-r', { svgOrigin: PIVOT.foreR, rotation: 6 });
+gsap.set('#leg-l', { svgOrigin: PIVOT.legL });
+gsap.set('#leg-r', { svgOrigin: PIVOT.legR });
+gsap.set('#head', { svgOrigin: PIVOT.head });
+gsap.set('#body', { svgOrigin: PIVOT.body });
+gsap.set('#torso', { svgOrigin: PIVOT.torso });
+gsap.set('#eye-l', { svgOrigin: PIVOT.eyeL });
+gsap.set('#eye-r', { svgOrigin: PIVOT.eyeR });
+gsap.set('#camera', { svgOrigin: '960 600' });
+$('#bubbleText').textContent = CONFIG.fala;
+{ // encolhe o texto do balão até caber (520px de largura útil)
+  const tx = $('#bubbleText'); let fs = 52;
+  while (tx.getComputedTextLength() > 520 && fs > 24) tx.setAttribute('font-size', --fs);
+}
+$('#endTitle').textContent = CONFIG.titulo;
+
+// ===================== BOCA / LIPSYNC =====================
+const LS = window.LIPSYNC;
+const talkStart = LS ? LS.offset : CONFIG.falaInicio;
+const talkDur = LS ? LS.duration : CONFIG.falaDuracaoSemAudio;
+const talkEnd = talkStart + talkDur;
+// sem áudio: padrão pseudoaleatório determinístico de sílabas
+const fakeFrames = Array.from({ length: Math.ceil(talkDur * CONFIG.fps) }, (_, i) =>
+  (i % 9 === 8) ? 0 : [1, 2, 3, 2, 4, 3, 1][Math.floor(mulberry32(i + 99)() * 7)]);
+const mouths = [...document.querySelectorAll('#mouth .m')];
+function setMouth(t) {
+  let shape = 'smile';
+  if (t >= talkStart && t < talkEnd) {
+    const fps = LS ? LS.fps : CONFIG.fps;
+    const arr = LS ? LS.frames : fakeFrames;
+    shape = String(arr[Math.min(arr.length - 1, Math.floor((t - talkStart) * fps))] ?? 0);
+  }
+  mouths.forEach(m => (m.style.display = m.dataset.shape === shape ? '' : 'none'));
+}
+
+// ===================== TIMELINE =====================
+const rendering = navigator.webdriver;   // true quando o render.mjs está controlando
+const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
+const TOTAL = talkEnd + 2.6;
+
+// --- ambiente: câmera lenta, nuvens, parallax (dá vida mesmo com o personagem parado)
+tl.fromTo('#camera', { scale: 1.08 }, { scale: 1, duration: TOTAL, ease: 'none' }, 0);
+tl.to('#cloud1', { x: 160, duration: TOTAL, ease: 'none' }, 0);
+tl.to('#cloud2', { x: -120, duration: TOTAL, ease: 'none' }, 0);
+tl.fromTo('#hillsFar', { x: 40 }, { x: -40, duration: TOTAL, ease: 'none' }, 0);
+
+// --- ROTEIRO 1: entrada caminhando (0 → 2.4s)
+const STEP = 0.3, STEPS = 8, walkEnd = STEP * STEPS;
+tl.to('#char', { x: 760, duration: walkEnd, ease: 'none' }, 0);   // de x=-300 (atributo transform) até 760
+for (let i = 0; i < STEPS; i++) {
+  const t = i * STEP, s = i % 2 ? 1 : -1;
+  tl.to('#leg-l', { rotation: 24 * s, duration: STEP, ease: 'sine.inOut' }, t)
+    .to('#leg-r', { rotation: -24 * s, duration: STEP, ease: 'sine.inOut' }, t)
+    .to('#arm-l', { rotation: 8 - 22 * s, duration: STEP, ease: 'sine.inOut' }, t)
+    .to('#arm-r', { rotation: -8 + 22 * s, duration: STEP, ease: 'sine.inOut' }, t)
+    // quique: desce no contato, sobe no meio do passo
+    .to('#body', { y: -14, duration: STEP / 2, ease: 'sine.out' }, t)
+    .to('#body', { y: 0, duration: STEP / 2, ease: 'sine.in' }, t + STEP / 2);
+}
+// --- parada com assentamento (squash) e follow-through da cabeça e braços
+tl.to(['#leg-l', '#leg-r'], { rotation: 0, duration: 0.25, ease: 'power2.out' }, walkEnd)
+  .to('#body', { scaleY: 0.95, scaleX: 1.03, duration: 0.12, ease: 'power2.out' }, walkEnd)
+  .to('#body', { scaleY: 1, scaleX: 1, duration: 0.5, ease: 'elastic.out(1, 0.45)' }, walkEnd + 0.12)
+  .to('#head', { rotation: 5, duration: 0.15, ease: 'power2.out' }, walkEnd + 0.05)
+  .to('#head', { rotation: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' }, walkEnd + 0.2)
+  .to('#arm-l', { rotation: 8, duration: 0.6, ease: 'back.out(2)' }, walkEnd)
+  .to('#arm-r', { rotation: -8, duration: 0.6, ease: 'back.out(2)' }, walkEnd);
+
+// --- ROTEIRO 2: aceno (antecipação → ação → follow-through)
+const waveAt = walkEnd + 0.6;
+tl.to('#arm-r', { rotation: 6, duration: 0.15, ease: 'power1.in' }, waveAt)           // antecipação
+  .to('#arm-r', { rotation: -150, duration: 0.35, ease: 'back.out(1.6)' }, waveAt + 0.15)
+  .to('#fore-r', { rotation: -10, duration: 0.35 }, waveAt + 0.2)                      // cotovelo atrasa (overlap)
+  .to('#fore-r', { rotation: 28, duration: 0.18, ease: 'sine.inOut', repeat: 5, yoyo: true }, waveAt + 0.5)
+  .to('#head', { rotation: -4, duration: 0.4 }, waveAt + 0.15)
+  .to('#brows', { y: -6, duration: 0.2 }, waveAt + 0.15);
+const waveEnd = waveAt + 0.5 + 0.18 * 6;
+tl.to('#arm-r', { rotation: -8, duration: 0.45, ease: 'power3.inOut' }, waveEnd)
+  .to('#fore-r', { rotation: 6, duration: 0.5, ease: 'power3.inOut' }, waveEnd + 0.05)
+  .to('#head', { rotation: 0, duration: 0.5 }, waveEnd)
+  .to('#brows', { y: 0, duration: 0.3 }, waveEnd);
+
+// --- ROTEIRO 3: fala com gesto e balão
+tl.fromTo('#bubble', { opacity: 0, scale: 0.6, svgOrigin: '1060 540' },
+                     { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2)' }, talkStart - 0.2)
+  .to('#arm-l', { rotation: 35, duration: 0.45, ease: 'power3.out' }, talkStart + 0.1)
+  .to('#fore-l', { rotation: -55, duration: 0.5, ease: 'power3.out' }, talkStart + 0.15)
+  .to('#head', { rotation: 3, y: -4, duration: 0.35, ease: 'sine.inOut', repeat: Math.max(1, Math.floor(talkDur / 0.7) * 2 - 1), yoyo: true }, talkStart)
+  .to('#arm-l', { rotation: 8, duration: 0.5 }, talkEnd - 0.2)
+  .to('#fore-l', { rotation: -6, duration: 0.55 }, talkEnd - 0.15)
+  .to('#bubble', { opacity: 0, scale: 0.8, duration: 0.3, ease: 'power2.in' }, talkEnd + 0.2);
+
+// --- respiração e piscadas por toda a cena (repetições finitas!)
+tl.to('#torso', { scaleY: 1.015, duration: 0.9, ease: 'sine.inOut', repeat: Math.floor(TOTAL / 0.9) - 1, yoyo: true }, 0);
+for (let t = 1.2 + rand() * 1.2; t < TOTAL - 0.3; t += 2.2 + rand() * 1.8) {
+  tl.to(['#eye-l', '#eye-r'], { scaleY: 0.08, duration: 0.06, ease: 'power1.in', repeat: 1, yoyo: true }, t);
+  if (rand() < 0.25) tl.to(['#eye-l', '#eye-r'], { scaleY: 0.08, duration: 0.06, repeat: 1, yoyo: true }, t + 0.2); // piscada dupla
+}
+
+// --- ROTEIRO 4: letreiro final
+tl.to('#endcard', { opacity: 1, duration: 0.6, ease: 'power2.out' }, talkEnd + 0.8)
+  .fromTo('#endTitle', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, talkEnd + 1.0);
+tl.set({}, {}, TOTAL);   // fixa a duração final
+
+// ===================== API DO RENDER =====================
+window.__timeline = tl;
+window.__duration = tl.duration();
+window.__seek = t => { tl.seek(t, false); setMouth(t); };
+window.__seek(0);
+if (!rendering) {   // prévia ao vivo no navegador, em loop
+  tl.eventCallback('onUpdate', () => setMouth(tl.time()));
+  tl.repeat(-1).play();
+}
+</script>
+</body>
+</html>
