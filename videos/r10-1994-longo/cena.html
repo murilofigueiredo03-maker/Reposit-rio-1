@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>R$ 10 em 1994 vs hoje — versão longa</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<script src="boneco.js"></script>
+<script src="detalhes.js"></script>
+<script src="cenario.js"></script>
+<script src="mercado.js"></script>
+<script src="marca.js"></script>
+<script src="legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="vhs" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.78 0.22 0.06 0 0.04  0.16 0.74 0.08 0 0.03  0.10 0.16 0.58 0 0.02  0 0 0 1 0"/></filter>
+    <pattern id="linhas" width="4" height="6" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="#000" opacity=".22"/></pattern>
+    <filter id="ruido"><feTurbulence type="fractalNoise" baseFrequency="0.9 0.02" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.4"/></filter>
+  </defs>
+  <g id="cam">
+    <g id="cena">
+      <g id="fundo94"></g>
+      <g id="fundo26" style="opacity:0"></g>
+      <g id="itens"></g>
+      <g id="carrinho"></g>
+      <g id="atores"></g>
+      <g id="nota"></g>
+      <g id="acabamento"></g>
+    </g>
+    <g id="cupom"></g>
+  </g>
+  <g id="vhs-camada">
+    <rect width="1080" height="1920" fill="url(#linhas)"/>
+    <rect id="faixa-ruido" x="0" y="0" width="1080" height="60" filter="url(#ruido)" opacity=".35"/>
+    <text x="70" y="290" font-family="'DejaVu Sans Mono', monospace" font-weight="700" font-size="44" fill="#fff" stroke="#000" stroke-width="3" paint-order="stroke">▶ PLAY</text>
+    <text x="70" y="1440" font-family="'DejaVu Sans Mono', monospace" font-weight="700" font-size="44" fill="#fff" stroke="#000" stroke-width="3" paint-order="stroke">JUL. 1994</text>
+  </g>
+  <rect id="flash" width="1080" height="1920" fill="#fff" opacity="0"/>
+  <g id="textos"></g>
+  <g id="cartoes"></g>
+  <g id="final" style="opacity:0"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO (1080×1920, ~78 s) — tempos casados com a narração (voz/fala.wav, transcript.json)
+   0–15.3    1994 (fita VHS): nota de R$ 10, os 4 itens caem no carrinho, cupom R$ 9,42 e troco
+   15.3–32.5 2026: cada preço vira quando é dito → R$ 67,20 (7× mais); com R$ 10 hoje só feijão + 2 pães
+   32.6–36.2 "mas tem um detalhe" (Léo pensando)
+   36.3–45.4 CARTÃO 1: salário subiu 25×, o carrinho 7×
+   45.5–50.0 CARTÃO 2: o carrinho era 15% do salário, hoje 4%
+   50.1–52.9 "hoje está fácil?" — NÃO
+   53.0–61.9 CARTÃO 3: cesta básica de SP = 56% do mínimo hoje; em 1994, 104% (mais que o salário)
+   62.0–68.9 CARTÃO 4: DIEESE — salário necessário p/ família de 4 = R$ 7.565,86 (quase 5×)
+   69.0–73.9 conclusão: pesa menos que em 94, mas ainda pesa
+   74.0–78.2 pergunta final + comenta
+   Fontes: preços jul/1994 = Compare os preços (via InfoMoney); preços 2026 = Procon-SP (cidade de SP);
+   cesta jul/1994 R$ 67,40 = DIEESE (via Jornal do Brasil); cesta ago/2026 R$ 900,59 e salário necessário
+   R$ 7.565,86 = DIEESE/Conab (ago/2026); salário mínimo R$ 64,79 (jul/1994, R$ 70 a partir de set/94) e R$ 1.621 (2026). */
+const W = 1080, H = 1920, Y = 1490, S = 1.25, NS = 'http://www.w3.org/2000/svg';
+const $ = q => document.querySelector(q);
+const DUR = 78.2;
+const LARANJA = '#FF7A00';
+
+// ---------- cenário ----------
+$('#fundo94').innerHTML = Mercado({ seed: 5, era: '1994' }).fundo({ chao: 1360 });
+$('#fundo26').innerHTML = Mercado({ seed: 5, era: '2026' }).fundo({ chao: 1360 });
+const C = Cenario({ seed: 3, luz: -1, hora: 'interior', prefixo: 'mer' });
+$('#acabamento').innerHTML = `<defs>${C.defs()}</defs>` + C.atmosfera({ grao: 0.2 });
+
+// ---------- carrinho e produtos ----------
+const D = Detalhes({ luz: -1, seed: 4 });
+const KC = D.escala('carrinhoMercado', S), CX = 640;
+$('#carrinho').innerHTML = D.carrinhoMercado(CX, Y, KC, { corAlca: LARANJA });
+const ALCA = [CX - 224 * KC, Y - 398 * KC];
+const FUNDO_CESTO = Y - 186 * KC;
+const ZOOM = 1.8;
+const ITENS = {   // id: [desenho, x, y (base), rotação, instante em que cai]
+  arroz:   [D.pacoteArroz(0, 0, D.escala('pacoteArroz', S) * ZOOM), CX - 95, FUNDO_CESTO + 6, -4, 7.05],
+  feijao1: [D.pacoteFeijao(0, 0, D.escala('pacoteFeijao', S) * ZOOM), CX + 5, FUNDO_CESTO + 2, 3, 8.2],
+  feijao2: [D.pacoteFeijao(0, 0, D.escala('pacoteFeijao', S) * ZOOM), CX + 50, FUNDO_CESTO + 4, -6, 8.4],
+  ovos1:   [D.bandejaOvos(0, 0, D.escala('bandejaOvos', S) * ZOOM), CX - 30, FUNDO_CESTO - 92, -3, 9.35],
+  ovos2:   [D.bandejaOvos(0, 0, D.escala('bandejaOvos', S) * ZOOM, { cor: '#B9A88C' }), CX - 22, FUNDO_CESTO - 118, 2, 9.6],
+  pao:     [D.sacoPao(0, 0, D.escala('sacoPao', S) * ZOOM), CX + 120, FUNDO_CESTO + 4, 5, 10.6],
+  pao2:    [D.sacoPao(0, 0, D.escala('sacoPao', S) * ZOOM * 0.85, { paes: 2 }), CX + 40, FUNDO_CESTO + 4, 2, 999],
+};
+['arroz', 'feijao1', 'feijao2', 'pao', 'pao2', 'ovos1', 'ovos2'].forEach(id => { const g = document.createElementNS(NS, 'g'); g.id = 'it-' + id; g.innerHTML = `<g class="pos">${ITENS[id][0]}</g>`; g.style.opacity = 0; $('#itens').appendChild(g); });
+
+// ---------- Léo ----------
+const leo = new Boneco($('#atores'), { escala: S, figurino: 'sobrevivente', seed: 6 });
+const LX = 300;
+const PERFIL = { x: LX, y: Y, vista: 'perfil', dir: 1, passada: 16, transicao: 0.25 }, FRENTE = { x: LX, y: Y, vista: 'frente', transicao: 0.25 };
+leo.base(0, 5.9, 'parado', FRENTE);
+leo.base(5.9, 32.6, 'parado', PERFIL);
+leo.base(32.6, DUR, 'parado', FRENTE);
+leo.braco('d', 0.15, 5.7, 'segurar');
+leo.braco('e', 0.15, 5.7, 'cintura');
+leo.braco('ambos', 6.0, 13.8, 'alcancar', { alvo: ALCA });
+leo.braco('e', 13.8, 15.3, 'alcancar', { alvo: ALCA });
+leo.braco('d', 13.8, 15.3, 'joinha');
+leo.braco('ambos', 15.3, 27.8, 'alcancar', { alvo: ALCA });
+leo.braco('ambos', 28.0, 32.5, 'encolher');
+leo.braco('d', 32.8, 36.3, 'queixo');
+leo.braco('e', 32.8, 36.3, 'cruzar');
+leo.braco('d', 50.2, 52.0, 'explicar');
+leo.braco('ambos', 52.2, 53.0, 'parar');
+leo.braco('d', 69.1, 73.9, 'explicar');
+leo.expressao(0, 5.8, 'alegre');
+leo.expressao(5.8, 12.2, 'feliz');
+leo.expressao(12.2, 15.3, 'alegre');
+leo.expressao(15.3, 24.6, 'confuso');
+leo.expressao(24.6, 27.8, 'espanto');
+leo.expressao(27.8, 32.6, 'triste');
+leo.expressao(32.6, 36.3, 'pensando');
+leo.expressao(50.1, 52.2, 'desconfiado');
+leo.expressao(52.2, 53.0, 'serio');
+leo.expressao(69.0, 72.0, 'pensando');
+leo.expressao(72.0, DUR, 'determinado');
+leo.cabeca(0.2, 1.2, { inclinar: 6 });
+leo.cabeca(6.3, 11.4, { baixar: 6, olhar: [4, 4] });
+leo.cabeca(17.4, 24.4, { olhar: [8, -3] });
+leo.cabeca(26.4, 27.6, { gesto: 'nao' });
+leo.cabeca(33.0, 35.8, { inclinar: -8, olhar: [-3, -5] });
+leo.cabeca(52.25, 53.0, { gesto: 'nao' });
+leo.cabeca(72.1, 73.2, { gesto: 'sim' });
+
+// nota de R$ 10 (desenho próprio, não é cópia da cédula real)
+$('#nota').innerHTML = `<g id="nota-g"><g transform="rotate(-12)"><rect x="-80" y="-42" width="160" height="84" rx="8" fill="#F6A04D" stroke="#1D1D2B" stroke-width="5"/><rect x="-70" y="-32" width="140" height="64" rx="5" fill="none" stroke="#C95A00" stroke-width="3"/><circle cx="34" cy="0" r="24" fill="#FBD3A6" stroke="#C95A00" stroke-width="3"/><text x="-30" y="16" font-size="46" fill="#1D1D2B" text-anchor="middle">10</text><text x="34" y="8" font-family="'Anton', sans-serif" font-size="20" fill="#C95A00" text-anchor="middle">R$</text></g></g>`;
+
+// ---------- cupom fiscal ----------
+const CP = { x: 640, y: 470, w: 380 };
+const LINHAS = [   // texto, preço 1994, preço 2026, instante 1994, instante 2026 (quando a narração diz o preço)
+  ['ARROZ 5 KG', '4,10', '19,45', 7.05, 18.25], ['FEIJÃO 2 KG', '2,32', '15,00', 8.3, 20.45], ['OVOS 2 DÚZIAS', '2,00', '20,40', 9.45, 21.6], ['PÃO FRANCÊS 10 UN', '1,00', '12,35', 10.6, 22.85]];
+const altCupom = 600;
+const zig = `l-20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16 -20 16 -20 -16Z`;
+let cup = `<g id="cupom-g"><defs><clipPath id="cupom-clip"><rect id="cupom-corte" x="${CP.x - 20}" y="${CP.y - 20}" width="${CP.w + 40}" height="125"/></clipPath></defs><g clip-path="url(#cupom-clip)">`;
+cup += `<path d="M${CP.x + 10} ${CP.y + 10} h${CP.w} v${altCupom} ${zig}" fill="#000" opacity=".3"/><path d="M${CP.x} ${CP.y} h${CP.w} v${altCupom} ${zig}" fill="#FFFDF5" stroke="#1D1D2B" stroke-width="5"/>`;
+const tx = (x, y, t, o = '') => `<text x="${x}" y="${y}" font-family="'Anton', sans-serif" font-size="34" fill="#1D1D2B" ${o}>${t}</text>`;
+cup += tx(CP.x + CP.w / 2, CP.y + 52, 'MERCADINHO DO BAIRRO', 'text-anchor="middle" font-size="36"');
+cup += `<g id="cp-data94">${tx(CP.x + CP.w / 2, CP.y + 92, 'CUPOM · JULHO DE 1994', 'text-anchor="middle" font-size="26" fill="#555"')}</g>`;
+cup += `<g id="cp-data26" opacity="0">${tx(CP.x + CP.w / 2, CP.y + 92, 'CUPOM · 2026', 'text-anchor="middle" font-size="26" fill="#555"')}</g>`;
+cup += `<path d="M${CP.x + 20} ${CP.y + 112} h${CP.w - 40}" stroke="#1D1D2B" stroke-width="3" stroke-dasharray="10 8"/>`;
+LINHAS.forEach(([nome, p94, p26], i) => {
+  const ly = CP.y + 165 + i * 66;
+  cup += `<g id="cp-l${i}">${tx(CP.x + 24, ly, nome, 'font-size="30"')}<g id="cp-p94-${i}">${tx(CP.x + CP.w - 24, ly, p94, 'text-anchor="end" font-size="34"')}</g><g id="cp-p26-${i}" opacity="0">${tx(CP.x + CP.w - 24, ly, p26, 'text-anchor="end" font-size="34" fill="#D7263D"')}</g><path id="cp-risco-${i}" d="M${CP.x + 18} ${ly - 11} h${CP.w - 36}" stroke="#D7263D" stroke-width="6" stroke-linecap="round" opacity="0"/></g>`;
+});
+cup += `<path d="M${CP.x + 20} ${CP.y + 420} h${CP.w - 40}" stroke="#1D1D2B" stroke-width="3" stroke-dasharray="10 8"/>`;
+cup += `<g id="cp-total94">${tx(CP.x + 24, CP.y + 480, 'TOTAL', 'font-size="44"')}${tx(CP.x + CP.w - 24, CP.y + 480, 'R$ 9,42', 'text-anchor="end" font-size="44"')}</g>`;
+cup += `<g id="cp-troco">${tx(CP.x + 24, CP.y + 540, 'TROCO', 'font-size="34" fill="#2E9E5A"')}${tx(CP.x + CP.w - 24, CP.y + 540, 'R$ 0,58', 'text-anchor="end" font-size="34" fill="#2E9E5A"')}</g>`;
+cup += `<g id="cp-total26" opacity="0">${tx(CP.x + 24, CP.y + 480, 'TOTAL', 'font-size="44"')}${tx(CP.x + CP.w - 24, CP.y + 480, 'R$ 67,20', 'text-anchor="end" font-size="44" fill="#D7263D"')}</g>`;
+cup += `<g id="cp-total10" opacity="0">${tx(CP.x + 24, CP.y + 480, 'TOTAL', 'font-size="44"')}${tx(CP.x + CP.w - 24, CP.y + 480, 'R$ 9,97', 'text-anchor="end" font-size="44"')}</g>`;
+cup += `<g id="cp-feijao10" opacity="0">${tx(CP.x + 24, CP.y + 165 + 66, 'FEIJÃO 1 KG', 'font-size="30"')}${tx(CP.x + CP.w - 24, CP.y + 165 + 66, '7,50', 'text-anchor="end" font-size="34"')}</g>`;
+cup += `<g id="cp-pao10" opacity="0">${tx(CP.x + 24, CP.y + 165 + 198, 'PÃO FRANCÊS 2 UN', 'font-size="30"')}${tx(CP.x + CP.w - 24, CP.y + 165 + 198, '2,47', 'text-anchor="end" font-size="34"')}</g>`;
+cup += `</g></g>`;
+$('#cupom').innerHTML = cup;
+
+// ---------- textos da marca ----------
+const T = $('#textos');
+const add = (id, svg) => { const g = document.createElementNS(NS, 'g'); g.id = id; g.innerHTML = svg; g.style.opacity = 0; T.appendChild(g); };
+add('t-ano', Marca.faixa(320, 470, 'JULHO DE 1994', { fs: 76 }));
+add('t-9', Marca.carimbo(300, 610, 'R$ 9,42', { fs: 104 }));
+add('t-troco', Marca.apoio(300, 735, 'SOBROU TROCO!', { fs: 58 }));
+add('t-hoje', Marca.faixa(320, 470, 'HOJE (2026)', { fs: 76 }));
+add('t-67', Marca.impacto(310, 640, 'R$ 67,20', { fs: 128 }));
+add('t-7x', Marca.carimbo(300, 790, '7× MAIS', { fs: 84 }));
+add('t-10', Marca.faixa(320, 470, 'R$ 10 HOJE =', { fs: 76 }));
+add('t-detalhe', Marca.apoio(540, 560, 'MAS TEM UM DETALHE...', { fs: 66 }));
+add('t-facil', Marca.apoio(540, 560, 'HOJE ESTÁ FÁCIL?', { fs: 72 }));
+add('t-nao', Marca.impacto(540, 720, 'NÃO!', { fs: 190 }));
+add('t-menos', Marca.apoio(540, 540, 'PESA MENOS QUE EM 94...', { fs: 62 }));
+add('t-pesa', Marca.impacto(540, 770, 'MAS AINDA PESA!', { fs: 120 }));
+const P94 = { arroz: '4,10', feijao1: '2,32', ovos1: '2,00', pao: '1,00' }, P26 = { arroz: '19,45', feijao1: '15,00', ovos1: '20,40', pao: '12,35' };
+Object.keys(P94).forEach(id => {
+  add('t-p-' + id, Marca.etiqueta(ITENS[id][1], ITENS[id][2] - 230, 'R$ ' + P94[id], { fs: 40 }));
+  add('t-q-' + id, Marca.etiqueta(ITENS[id][1], ITENS[id][2] - 230, 'R$ ' + P26[id], { fs: 40, cor: '#FF4D4D' }));
+});
+
+// ---------- cartões (dados) ----------
+const BW = 800, BX = (W - BW) / 2;
+const fundoCartao = `<rect width="${W}" height="${H}" fill="#111" opacity=".94"/><g opacity=".12" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`;
+const txt = (x, y, t, o = {}) => Marca.texto(x, y, t, { fs: 52, cor: '#fff', sombra: false, ...o });
+const nota = (y, t) => t.split('|').map((l, i) => `<text x="540" y="${y + i * 30}" font-family="'DejaVu Sans', sans-serif" font-size="23" fill="#9A9AA2" text-anchor="middle">${l.trim()}</text>`).join('');
+const trilho = (x, y, w, h = 84) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="#2A2A30" stroke="#fff" stroke-width="5"/>`;
+const cartao = (id, corpo) => { const g = document.createElementNS(NS, 'g'); g.id = id; g.style.opacity = 0; g.innerHTML = fundoCartao + corpo; $('#cartoes').appendChild(g); };
+// CARTÃO 1 — quanto cada um subiu (barras em escala: 1 unidade = valor de 1994)
+const U = BW / 25;
+cartao('c1', `<g id="c1-t">${Marca.faixa(540, 520, 'QUANTO SUBIU?', { fs: 90 })}</g>`
+  + `<g id="c1-sal">${txt(BX, 700, 'SALÁRIO MÍNIMO', { ancora: 'start', cor: LARANJA })}`
+  + `<g id="c1-sal94">${txt(BX, 780, '1994: R$ 64,79', { ancora: 'start', fs: 46 })}</g><g id="c1-sal26">${txt(BX + BW, 780, '2026: R$ 1.621', { ancora: 'end', fs: 46 })}</g>`
+  + `<rect id="c1-sal-b" x="${BX}" y="810" width="${U}" height="90" rx="14" fill="${LARANJA}" stroke="#fff" stroke-width="5"/>`
+  + `<g id="c1-sal-x">${Marca.carimbo(BX + BW - 110, 965, '25×', { fs: 90 })}</g></g>`
+  + `<g id="c1-car">${txt(BX, 1120, 'O CARRINHO', { ancora: 'start', cor: LARANJA })}`
+  + `<g>${txt(BX, 1200, '1994: R$ 9,42', { ancora: 'start', fs: 46 })}${txt(BX + BW, 1200, '2026: R$ 67,20', { ancora: 'end', fs: 46 })}</g>`
+  + `<rect id="c1-car-b" x="${BX}" y="1230" width="${U}" height="90" rx="14" fill="#FFD9B3" stroke="#fff" stroke-width="5"/>`
+  + `<g id="c1-car-x">${Marca.carimbo(BX + U * 7 + 120, 1275, '7×', { fs: 90 })}</g></g>`
+  + nota(1400, 'Salário mínimo: R$ 64,79 em jul/1994 (passou a R$ 70 em set/1994) | R$ 1.621 em 2026'));
+// CARTÃO 2 — quanto do salário o carrinho comia
+const barraPct = (y, ano, sal, pct, id, rot) => `<g id="${id}">` + txt(BX, y - 40, ano, { fs: 74, ancora: 'start' }) + txt(BX + BW, y - 40, 'SALÁRIO ' + sal, { fs: 44, ancora: 'end' })
+  + trilho(BX, y, BW, 96) + `<rect id="${id}-fill" x="${BX + 6}" y="${y + 6}" width="${(BW - 12) * pct}" height="84" rx="14" fill="${LARANJA}"/>`
+  + `<g id="${id}-pct">${txt(BX + (BW - 12) * pct + 30, y + 70, rot, { fs: 50, cor: LARANJA, ancora: 'start' })}</g></g>`;
+cartao('c2', `<g id="c2-t">${Marca.faixa(540, 520, 'O CARRINHO NO SALÁRIO', { fs: 76 })}</g>`
+  + barraPct(800, '1994', 'R$ 64,79', 0.145, 'c2a', '15% DO SALÁRIO') + barraPct(1080, '2026', 'R$ 1.621', 0.041, 'c2b', '4% DO SALÁRIO'));
+// CARTÃO 3 — cesta básica completa (1 adulto, 1 mês) em São Paulo
+const BC = BW * 0.9;   // trilho = 1 salário; o que passa disso "estoura" para fora
+cartao('c3', `<g id="c3-t">${Marca.faixa(540, 520, 'CESTA BÁSICA (SP)', { fs: 84 })}</g>`
+  + txt(540, 640, 'COMIDA DE 1 PESSOA POR 1 MÊS', { fs: 40, cor: '#ccc' })
+  + `<g id="c3a">${txt(BX, 800, '2026', { fs: 74, ancora: 'start' })}${txt(BX + BW, 800, 'CESTA R$ 900,59', { fs: 44, ancora: 'end' })}`
+  + trilho(BX, 840, BC, 96) + txt(BX + BC + 12, 905, '= 1 SALÁRIO', { fs: 30, ancora: 'start', cor: '#999' })
+  + `<rect id="c3a-fill" x="${BX + 6}" y="846" width="${(BC - 12) * 0.556}" height="84" rx="14" fill="${LARANJA}"/>`
+  + `<g id="c3a-pct">${txt(BX + (BC - 12) * 0.556 + 26, 908, '56%', { fs: 58, cor: LARANJA, ancora: 'start' })}</g></g>`
+  + `<g id="c3b">${txt(BX, 1100, '1994', { fs: 74, ancora: 'start' })}${txt(BX + BW, 1100, 'CESTA R$ 67,40', { fs: 44, ancora: 'end' })}`
+  + trilho(BX, 1140, BC, 96) + txt(BX + BC + 12, 1205, '= 1 SALÁRIO', { fs: 30, ancora: 'start', cor: '#999' })
+  + `<rect id="c3b-fill" x="${BX + 6}" y="1146" width="${(BC - 12) * 1.04}" height="84" rx="14" fill="#E0312F"/>`
+  + `<g id="c3b-pct">${Marca.carimbo(540, 1330, '104%: MAIS QUE O SALÁRIO!', { fs: 54, rot: -4 })}</g></g>`
+  + nota(1440, 'DIEESE: cesta básica de São Paulo em jul/1994 e ago/2026 | comparada ao salário mínimo de cada época'));
+// CARTÃO 4 — salário necessário (DIEESE) para uma família de 4
+const pessoa = (x, y, k, cor) => `<g transform="translate(${x} ${y}) scale(${k})"><circle cx="0" cy="-118" r="30" fill="#fff" stroke="#1D1D2B" stroke-width="5"/><path d="M-34 0 V-56 Q-34 -84 0 -84 Q34 -84 34 -56 V0Z" fill="${cor}" stroke="#1D1D2B" stroke-width="5"/></g>`;
+const colY = 1330, AH = 560 / 4.67;   // altura de 1 salário mínimo
+cartao('c4', `<g id="c4-t">${Marca.faixa(540, 520, 'PARA UMA FAMÍLIA DE 4', { fs: 76 })}</g>`
+  + `<g id="c4-fam">${pessoa(225, 840, 0.75, LARANJA)}${pessoa(300, 840, 0.75, '#1F5FAF')}${pessoa(365, 848, 0.52, '#2E9E5A')}${pessoa(420, 848, 0.52, '#7A4AA8')}</g>`
+  + `<g id="c4-min"><rect x="210" y="${colY - AH}" width="240" height="${AH}" rx="12" fill="#888" stroke="#fff" stroke-width="5"/>${txt(330, colY - AH - 30, 'R$ 1.621', { fs: 52 })}${txt(330, colY + 60, 'SALÁRIO', { fs: 40 })}${txt(330, colY + 105, 'MÍNIMO', { fs: 40 })}</g>`
+  + `<g id="c4-nec"><rect id="c4-nec-b" x="630" y="${colY - AH * 4.67}" width="240" height="${AH * 4.67}" rx="12" fill="${LARANJA}" stroke="#fff" stroke-width="5"/>${txt(750, colY + 60, 'SALÁRIO', { fs: 40 })}${txt(750, colY + 105, 'NECESSÁRIO', { fs: 40 })}</g>`
+  + `<g id="c4-val">${Marca.texto(750, colY - AH * 4.67 + 80, 'R$ 7.565', { fs: 60, cor: '#fff', sombra: false })}</g>`
+  + `<g id="c4-x">${Marca.carimbo(330, 1010, 'QUASE 5×', { fs: 76 })}</g>`
+  + nota(1488, 'DIEESE, ago/2026: salário mínimo necessário | para uma família de 4 (2 adultos e 2 crianças)'));
+
+// ---------- tela final ----------
+$('#final').innerHTML = Marca.final({ id: 'fim', linhas: ['E PRA VOCÊ?', 'ERA MAIS FÁCIL'], destaque: 'ANTES OU HOJE?', chamada: 'COMENTA AÍ ↓' })
+  + nota(1390, 'Preços: jul/1994 Compare os preços (via InfoMoney) | 2026 Procon-SP (cidade de SP) | Cesta básica e salário necessário: DIEESE | Salário mínimo: R$ 64,79 (jul/94) e R$ 1.621 (2026)');
+
+// ---------- legenda dinâmica ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 70, enfase: ['R$', '1994', '9,42', '19,45', '15', '20,40', '12,35', '67,20', '25', '7', '15%', '4%', 'NÃO', '900', '7.565', 'MUITO', 'COMENTA'] })
+  .esconder([[74.0, 99]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const pop = (sel, t, dur, ox, oy) => {
+  tl.fromTo(sel, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to(sel, { opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' }, t + dur);
+};
+const mostra = (sel, t0, t1) => { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.25 }, t0); if (t1) tl.to(sel, { opacity: 0, duration: 0.2 }, t1); };
+// câmera: push-ins lentos por trecho
+tl.fromTo('#cam', { scale: 1.0, svgOrigin: '540 1100' }, { scale: 1.06, duration: 15, ease: 'sine.inOut' }, 0);
+tl.to('#cam', { scale: 1.0, duration: 0.3, ease: 'power2.out' }, 15.2);
+tl.to('#cam', { scale: 1.07, duration: 12, ease: 'sine.inOut' }, 15.5);
+tl.to('#cam', { scale: 1.0, duration: 0.4, ease: 'power2.out' }, 27.8);
+tl.to('#cam', { scale: 1.12, svgOrigin: '300 900', duration: 3.5, ease: 'sine.inOut' }, 32.6);
+tl.to('#cam', { scale: 1.0, duration: 0.01 }, 36.3);
+tl.to('#cam', { scale: 1.1, svgOrigin: '300 900', duration: 2.6, ease: 'sine.inOut' }, 50.1);
+tl.to('#cam', { scale: 1.0, duration: 0.01 }, 53.0);
+tl.to('#cam', { scale: 1.08, svgOrigin: '300 900', duration: 4.8, ease: 'sine.inOut' }, 69.0);
+
+// 1994 — gancho
+pop('#t-ano', 0.2, 5.4, 320, 470);
+tl.fromTo('#nota-g', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0.25);
+tl.to('#nota-g', { opacity: 0, duration: 0.15 }, 5.6);
+// itens caindo
+Object.entries(ITENS).forEach(([id, [, x, y, rot, t0]]) => {
+  if (t0 > 900) return;
+  const sel = `#it-${id} .pos`;
+  tl.set('#it-' + id, { opacity: 1 }, t0 - 0.35);
+  tl.fromTo(sel, { x: x - 140, y: y - 700, rotation: rot - 160, svgOrigin: '0 0' }, { x, y: y + 6, rotation: rot, duration: 0.35, ease: 'power2.in' }, t0 - 0.35);
+  tl.to(sel, { y: y - 14, duration: 0.09, ease: 'power1.out' }, t0);
+  tl.to(sel, { y, duration: 0.1, ease: 'power1.in' }, t0 + 0.09);
+  tl.to('#carrinho', { y: 5, duration: 0.06 }, t0); tl.to('#carrinho', { y: 0, duration: 0.25, ease: 'elastic.out(1, 0.4)' }, t0 + 0.06);
+});
+Object.keys(P94).forEach(id => pop('#t-p-' + id, ITENS[id][4] + 0.02, 1.0, ITENS[id][1], ITENS[id][2] - 230));
+// cupom imprimindo
+const corte = $('#cupom-corte');
+tl.fromTo('#cupom-g', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 6.5);
+LINHAS.forEach(([, , , t0], i) => tl.to(corte, { attr: { height: 125 + 66 * (i + 1) }, duration: 0.25, ease: 'steps(4)' }, t0));
+tl.to(corte, { attr: { height: 520 }, duration: 0.3, ease: 'steps(4)' }, 12.0);
+tl.to(corte, { attr: { height: 660 }, duration: 0.3, ease: 'steps(4)' }, 13.9);
+pop('#t-9', 12.3, 2.8, 300, 610);
+pop('#t-troco', 14.0, 1.1, 300, 735);
+// CORTE PARA 2026
+tl.to('#faixa-ruido', { attr: { y: 1860 }, duration: 15.0, ease: 'none' }, 0);
+tl.set('#faixa-ruido', { attr: { height: 260 }, opacity: 0.8 }, 15.05);
+tl.to('#faixa-ruido', { attr: { y: -200 }, duration: 0.2, ease: 'none' }, 15.05);
+tl.to('#flash', { opacity: 0.85, duration: 0.08 }, 15.2);
+tl.set('#vhs-camada', { opacity: 0 }, 15.28);
+tl.set('#cena', { attr: { filter: 'none' } }, 15.28);
+tl.set('#fundo26', { opacity: 1 }, 15.28);
+tl.set('#fundo94', { opacity: 0 }, 15.28);
+tl.to('#flash', { opacity: 0, duration: 0.3 }, 15.28);
+tl.set('#cp-data94', { opacity: 0 }, 15.28); tl.set('#cp-data26', { opacity: 1 }, 15.28);
+tl.set('#cp-troco', { opacity: 0 }, 15.28);
+pop('#t-hoje', 15.45, 9.0, 320, 470);
+// cada preço vira quando é dito
+LINHAS.forEach((l, i) => {
+  const t0 = l[4];
+  tl.to(`#cp-p94-${i}`, { y: -40, opacity: 0, duration: 0.14, ease: 'power2.in' }, t0);
+  tl.fromTo(`#cp-p26-${i}`, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.18, ease: 'back.out(2)' }, t0 + 0.12);
+});
+Object.keys(P26).forEach((id, i) => pop('#t-q-' + id, LINHAS[i][4] + 0.05, 1.5, ITENS[id][1], ITENS[id][2] - 230));
+tl.to('#cp-total94', { opacity: 0, duration: 0.1 }, 24.9);
+tl.fromTo('#cp-total26', { opacity: 0, scale: 1.6, svgOrigin: `${CP.x + CP.w / 2} ${CP.y + 470}` }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2)' }, 24.95);
+pop('#t-67', 25.0, 2.7, 310, 640);
+pop('#t-7x', 26.55, 1.15, 300, 790);
+tl.to('#cam', { x: 10, duration: 0.04, yoyo: true, repeat: 5, ease: 'none' }, 25.0);
+// COM R$ 10 HOJE
+pop('#t-10', 27.95, 4.5, 320, 470);
+['arroz', 'ovos1', 'ovos2', 'feijao2', 'pao'].forEach((id, k) => {
+  tl.to(`#it-${id} .pos`, { y: '-=420', x: '+=' + (k % 2 ? 260 : -260), rotation: k % 2 ? 80 : -80, duration: 0.45, ease: 'power2.in' }, 28.2 + k * 0.08);
+  tl.to('#it-' + id, { opacity: 0, duration: 0.2 }, 28.45 + k * 0.08);
+});
+tl.set('#it-pao2', { opacity: 1 }, 31.1);
+tl.fromTo('#it-pao2 .pos', { x: ITENS.pao2[1] - 120, y: ITENS.pao2[2] - 600, rotation: -120, svgOrigin: '0 0' }, { x: ITENS.pao2[1], y: ITENS.pao2[2], rotation: 2, duration: 0.35, ease: 'power2.in' }, 31.1);
+[0, 2].forEach(i => tl.to(`#cp-risco-${i}`, { opacity: 1, duration: 0.12 }, 28.3 + i * 0.1));
+tl.to(['#cp-l0', '#cp-l2'], { opacity: 0.35, duration: 0.2 }, 28.6);
+tl.to('#cp-l1', { opacity: 0, duration: 0.12 }, 30.2); tl.to('#cp-feijao10', { opacity: 1, duration: 0.15 }, 30.3);
+tl.to('#cp-l3', { opacity: 0, duration: 0.12 }, 31.35); tl.to('#cp-pao10', { opacity: 1, duration: 0.15 }, 31.45);
+tl.to('#cp-total26', { opacity: 0, duration: 0.1 }, 31.7); tl.to('#cp-total10', { opacity: 1, duration: 0.15 }, 31.75);
+// "mas tem um detalhe": cupom sai, Léo pensa
+tl.to('#cupom-g', { opacity: 0, x: 80, duration: 0.3 }, 32.6);
+pop('#t-detalhe', 34.95, 1.2, 540, 560);
+// CARTÃO 1: quanto subiu
+mostra('#c1', 36.3, 45.4);
+pop('#c1-t', 36.35, 0, 540, 520);
+tl.fromTo('#c1-sal', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 37.6);
+tl.fromTo('#c1-sal26', { opacity: 0 }, { opacity: 1, duration: 0.25 }, 39.8);
+tl.fromTo('#c1-sal-b', { attr: { width: U } }, { attr: { width: U * 25 }, duration: 1.2, ease: 'power2.inOut' }, 40.4);
+pop('#c1-sal-x', 42.8, 0, BX + BW - 110, 965);
+tl.fromTo('#c1-car', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 43.35);
+tl.fromTo('#c1-car-b', { attr: { width: U } }, { attr: { width: U * 7.13 }, duration: 0.8, ease: 'power2.inOut' }, 43.7);
+pop('#c1-car-x', 44.6, 0, BX + U * 7 + 120, 1275);
+// CARTÃO 2: % do salário
+mostra('#c2', 45.4, 50.05);
+pop('#c2-t', 45.45, 0, 540, 520);
+tl.fromTo('#c2a', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.3 }, 45.7);
+tl.fromTo('#c2a-fill', { attr: { width: 0 } }, { attr: { width: (BW - 12) * 0.145 }, duration: 0.6, ease: 'power2.out' }, 46.8);
+pop('#c2a-pct', 46.9, 0, BX + 160, 870);
+tl.fromTo('#c2b', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.3 }, 48.2);
+tl.fromTo('#c2b-fill', { attr: { width: 0 } }, { attr: { width: (BW - 12) * 0.041 }, duration: 0.5, ease: 'power2.out' }, 48.8);
+pop('#c2b-pct', 48.9, 0, BX + 100, 1150);
+// "hoje está fácil?" — NÃO
+pop('#t-facil', 50.3, 1.85, 540, 560);
+pop('#t-nao', 52.25, 0.6, 540, 720);
+// CARTÃO 3: cesta básica
+mostra('#c3', 53.0, 61.9);
+pop('#c3-t', 53.05, 0, 540, 520);
+tl.fromTo('#c3a', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 54.3);
+tl.fromTo('#c3a-fill', { attr: { width: 0 } }, { attr: { width: (BC - 12) * 0.556 }, duration: 0.8, ease: 'power2.out' }, 55.5);
+pop('#c3a-pct', 56.4, 0, BX + 470, 890);
+tl.fromTo('#c3b', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 57.9);
+tl.fromTo('#c3b-fill', { attr: { width: 0 } }, { attr: { width: (BC - 12) * 1.04 } , duration: 1.0, ease: 'power1.in' }, 59.6);
+pop('#c3b-pct', 60.7, 0, 540, 1330);
+tl.to('#c3b-fill', { x: 6, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 60.6);
+// CARTÃO 4: família de 4
+mostra('#c4', 62.0, 68.95);
+pop('#c4-t', 62.05, 0, 540, 520);
+tl.fromTo('#c4-fam', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 64.3);
+tl.fromTo('#c4-min', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 65.6);
+tl.fromTo('#c4-nec-b', { attr: { height: AH, y: colY - AH } }, { attr: { height: AH * 4.67, y: colY - AH * 4.67 }, duration: 1.3, ease: 'power2.inOut' }, 66.2);
+tl.fromTo('#c4-nec', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 66.2);
+tl.fromTo('#c4-val', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 67.5);
+pop('#c4-x', 67.6, 0, 330, 1010);
+// conclusão
+pop('#t-menos', 69.6, 4.2, 540, 540);
+pop('#t-pesa', 72.1, 1.7, 540, 770);
+// FINAL
+tl.to('#final', { opacity: 1, duration: 0.25 }, 74.0);
+tl.fromTo('#fim-t', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 74.05);
+pop('#fim-c', 76.2, 0, 540, 1180);
+tl.to('#fim-c', { scale: 1.06, svgOrigin: '540 1180', duration: 0.3, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 76.6);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+$('#cena').setAttribute('filter', 'url(#vhs)');
+window.__timeline = tl;
+window.__duration = DUR;
+window.__seek = t => {
+  tl.seek(t, false);
+  leo.desenhar(t);
+  const [mx, my] = leo.mao('d');
+  $('#nota-g').setAttribute('transform', `translate(${mx + 10} ${my - 30})`);
+  leg.seek(t);
+};
+window.__seek(0);
+</script></body></html>

@@ -42,7 +42,7 @@
     const o = { y: 1450, fs: 68, largura: 860, maiusculas: true, destaque: LARANJA, cor: '#FFFFFF', contorno: PRETO, fonte: "'Luckiest Guy', 'DejaVu Sans', sans-serif", enfase: [], ...opts };
     const pags = paginar(palavras, o);
     const enfase = new Set((o.enfase || []).map(s => s.toUpperCase()));
-    const limpa = s => s.replace(/[.,;:!?"“”]/g, '');
+    const limpa = s => s.replace(/^["“”]+|[.,;:!?"“”]+$/g, '');   // só nas pontas: "19,45" e "7.565" ficam inteiros
     let esconde = [], moves = [];
     // monta todas as páginas uma vez (texto medido no navegador para centralizar)
     grupo.innerHTML = '';
