@@ -1,0 +1,517 @@
+{
+ "duracao": 212.9,
+ "voz": "voz/fala_master.wav",
+ "biblioteca": [
+  "sons",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/ui",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/hoje",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/roma",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/escola"
+ ],
+ "ambientes": [
+  {
+   "som": "amb_refeitorio",
+   "de": 3.6,
+   "ate": 194.3,
+   "db": -31,
+   "fade": 1.0
+  },
+  {
+   "som": "amb_natureza",
+   "de": 194.3,
+   "ate": 206.5,
+   "db": -28,
+   "fade": 0.5
+  }
+ ],
+ "passos": [
+  {
+   "som": "sfx_passo_escola",
+   "de": 32.8,
+   "ate": 35.2,
+   "intervalo": 0.4,
+   "db": -16
+  }
+ ],
+ "efeitos": [
+  {
+   "som": "whoosh-cinematic",
+   "em": 0.4,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 1.4,
+   "db": -12
+  },
+  {
+   "som": "whoosh",
+   "em": 3.6,
+   "db": -14
+  },
+  {
+   "som": "whoosh-short",
+   "em": 12.6,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 22.6,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 42.25,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 55.2,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 92.0,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 108.0,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 140.8,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 173.6,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 184.6,
+   "db": -16
+  },
+  {
+   "som": "whoosh-short",
+   "em": 195.0,
+   "db": -16
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 70.2,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 70.5,
+   "db": -14
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 121.8,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 122.1,
+   "db": -14
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 155.4,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 155.7,
+   "db": -14
+  },
+  {
+   "som": "pop",
+   "em": 5.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 12.9,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 15.0,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 18.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 23.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 26.7,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 27.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 27.9,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 42.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 46.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 50.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 57.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 58.0,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 60.0,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 65.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 67.2,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 67.9,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 68.5,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 73.0,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 77.7,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 82.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 94.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 97.8,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 99.7,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 104.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 111.1,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 113.7,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 125.5,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 128.0,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 134.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 137.8,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 142.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 145.7,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 151.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 157.9,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 162.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 164.7,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 169.1,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 169.8,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 170.2,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 171.1,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 176.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 177.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 178.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 179.9,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 181.5,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 183.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 186.9,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 188.4,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 191.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 192.6,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 200.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 201.3,
+   "db": -18
+  },
+  {
+   "som": "pop",
+   "em": 202.9,
+   "db": -18
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 10.0,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 20.4,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 29.9,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 40.8,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 63.9,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 90.4,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 119.2,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 204.5,
+   "db": -12
+  },
+  {
+   "som": "chime",
+   "em": 131.2,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 197.4,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 206.0,
+   "db": -12
+  },
+  {
+   "som": "sfx_moeda",
+   "em": 26.9,
+   "db": -12
+  },
+  {
+   "som": "chime",
+   "em": 27.0,
+   "db": -20
+  },
+  {
+   "som": "chime",
+   "em": 32.8,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 87.0,
+   "db": -10
+  },
+  {
+   "som": "sfx_clique_vazio",
+   "em": 61.4,
+   "db": -14
+  },
+  {
+   "som": "riser",
+   "em": 59.4,
+   "db": -20
+  },
+  {
+   "som": "sfx_tique",
+   "em": 96.8,
+   "db": -14
+  },
+  {
+   "som": "sfx_moeda",
+   "em": 111.1,
+   "db": -14
+  },
+  {
+   "som": "sfx_moeda",
+   "em": 113.7,
+   "db": -12
+  },
+  {
+   "som": "whoosh",
+   "em": 61.4,
+   "db": -16
+  },
+  {
+   "som": "sfx_queda",
+   "em": 145.6,
+   "db": -12
+  }
+ ],
+ "ducking": {
+  "db": 6
+ },
+ "volume_final_lufs": -12
+}

@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>O caso da Dona Marta</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1920px; height: 1080px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<script src="boneco.js"></script>
+<script src="detalhes.js"></script>
+<script src="cenario.js"></script>
+<script src="padaria.js"></script>
+<script src="marca.js"></script>
+<script src="legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <g id="cam">
+    <g id="sc-dentro"></g>
+    <g id="sc-fora" style="opacity:0"></g>
+    <g id="atras"></g>
+    <g id="balcao"></g>
+    <g id="frente"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="cartoes"></g>
+  <g id="textos"></g>
+  <g id="abertura"></g>
+  <g id="creditos" style="opacity:0"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO (1920×1080, ~3min33) — baseado nos 20 slides do Caso 5 (Direito Empresarial).
+   Tempos casados com a narração (voz/fala.wav, transcript.json).
+     0.0   abertura (título)                         · 4.0   a padaria e a Dona Marta
+    12.7   MEI: teto R$ 81 mil × R$ 480 mil (5,9×)   · 22.6  um caixa só (casa + padaria)
+    32.8   o Carlos chega: +3 padarias               · 42.3  os 3 problemas
+    55.3   por que cai nela (patrimônio único)       · 70.4  MISSÃO 1 · defender os bens
+    92.0   MISSÃO 2 · o imposto (regra dos 20%)       · 108.0 quanto custa regularizar
+   122.0   MISSÃO 3 · Ltda × SLU × S.A.               · 140.8 o que a Ltda não resolve
+   155.6   MISSÃO 4 · contrato social                 · 173.6 plano de 30 dias
+   184.6   crescer em etapas                          · 194.3 conclusão (fachada) · 206 créditos */
+const W = 1920, H = 1080, NS = 'http://www.w3.org/2000/svg', DUR = 212.9;
+const $ = q => document.querySelector(q);
+const LARANJA = '#FF7A00', PRETO = '#111111', CREME = '#FFF8EE', VERMELHO = '#C8282E';
+const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
+
+// ---------- cenários ----------
+const P = Padaria({ seed: 3 });
+const dentro = P.interior({ chao: 880 });
+$('#sc-dentro').innerHTML = dentro.fundo;
+$('#balcao').innerHTML = `<g id="balcao-g">${dentro.balcao}</g>`;
+$('#sc-fora').innerHTML = P.fachada({ chao: 900 });
+const C0 = Cenario({ seed: 3, luz: -1, hora: 'interior', prefixo: 'ac', w: W, h: H });
+$('#acabamento').innerHTML = `<defs>${C0.defs()}</defs>` + C0.atmosfera({ w: W, h: H, grao: 0.18 });
+
+// ---------- personagens ----------
+const atores = [];
+const novo = (camada, opts, ate = DUR) => { const g = mk(camada), b = new Boneco(g, opts); b._g = g; b._ate = ate; atores.push(b); return b; };
+const FIG_MARTA = { tronco: 'tunicaLonga', cor: '#C8553D', mangas: 'curta', pes: 'sapato', corPes: '#5A3420', cabelo: 'coque', corCabelo: '#B9B9B9', extras: ['avental'], cinto: 'none' };
+const FIG_CARLOS = { tronco: 'camiseta', cor: '#9ED3F0', mangas: 'longa', pernas: 'calca', corPernas: '#2E3A4A', pes: 'sapato', corPes: '#3A2A20', cabelo: 'curto', corCabelo: '#3A2418' };
+const FIM = 194.3;                                   // a partir daqui: fachada
+const marta = novo($('#atras'), { escala: 1.0, seed: 3, figurino: FIG_MARTA });
+const padeiro = novo($('#atras'), { escala: 0.92, seed: 9, figurino: { preset: 'merendeira', cor: '#F2F2EE' } }, 12.4);
+const carlos = novo($('#frente'), { escala: 1.08, seed: 5, figurino: FIG_CARLOS });
+// Marta atrás do balcão (de 4 s até a conclusão), depois na frente da padaria
+const MX = 430, MY = 860;
+marta.base(0, FIM, 'parado', { x: MX, y: MY, vista: 'frente' });
+marta.base(FIM, DUR, 'parado', { x: 640, y: 960, vista: 'frente', transicao: 0 });
+padeiro.base(0, 12.4, 'parado', { x: 180, y: 850, vista: 'perfil', dir: 1 });
+padeiro.braco('ambos', 0, 12.4, 'segurar');
+padeiro.expressao(0, 12.4, 'feliz');
+// gestos e emoções da Marta (acompanhando a narração)
+marta.braco('d', 4.6, 6.2, 'acenar');
+marta.braco('ambos', 7.4, 9.6, 'explicar');
+marta.braco('e', 10.0, 11.8, 'queixo');
+marta.braco('d', 13.6, 16.0, 'explicar');
+marta.braco('d', 26.3, 29.6, 'alcancar', { alvo: [770, 545] });
+marta.braco('ambos', 30.0, 32.0, 'encolher');
+marta.braco('ambos', 42.4, 45.6, 'desespero');
+marta.braco('ambos', 46.6, 49.8, 'cabeca');
+marta.braco('ambos', 50.3, 54.4, 'desespero');
+marta.braco('e', 57.4, 60.6, 'queixo');
+marta.braco('ambos', 66.6, 69.4, 'encolher');
+marta.braco('d', 72.0, 74.0, 'explicar');
+marta.braco('ambos', 87.0, 88.9, 'parar');
+marta.braco('d', 89.5, 91.0, 'apontar');
+marta.braco('e', 97.0, 99.5, 'testa');
+marta.braco('d', 104.4, 106.8, 'joinha');
+marta.braco('ambos', 113.7, 116.6, 'cabeca');
+marta.braco('ambos', 131.3, 133.6, 'cima');
+marta.braco('d', 145.6, 148.8, 'apontar');
+marta.braco('d', 160.3, 162.6, 'explicar');
+marta.braco('ambos', 176.0, 183.5, 'cintura');
+marta.braco('d', 187.0, 190.0, 'explicar');
+marta.braco('ambos', 197.4, 199.6, 'cintura');
+marta.braco('d', 204.4, 206.2, 'joinha');
+[[4.0, 'alegre'], [9.8, 'preocupado'], [12.4, 'pensando'], [22.4, 'normal'], [29.8, 'confuso'], [32.8, 'surpreso'], [35.0, 'alegre'],
+ [40.6, 'preocupado'], [42.3, 'susto'], [46.6, 'medo'], [50.3, 'espanto'], [55.3, 'preocupado'], [63.8, 'triste'], [70.4, 'determinado'],
+ [87.0, 'serio'], [92.0, 'confuso'], [99.6, 'aliviado'], [108.0, 'preocupado'], [118.6, 'determinado'], [122.0, 'pensando'], [131.0, 'feliz'],
+ [140.8, 'serio'], [151.6, 'determinado'], [156.0, 'alegre'], [173.6, 'determinado'], [184.6, 'feliz'], [194.3, 'alegre']]
+  .forEach(([t, e], i, a) => marta.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
+marta.cabeca(22.6, 26.2, { virar: 0.5, olhar: [6, 3] });
+marta.cabeca(33.0, 35.0, { virar: 0.8, olhar: [8, 0] });
+marta.cabeca(90.3, 91.0, { gesto: 'nao' });
+// Carlos entra pela porta e fica ao lado do balcão
+const CX = 880, CY = 960;
+carlos.base(32.8, 35.2, 'andar', { de: [1980, CY], ate: [CX, CY] });
+carlos.base(35.2, FIM, 'parado', { x: CX, y: CY, vista: 'frente' });
+carlos.base(FIM, DUR, 'parado', { x: 880, y: 960, vista: 'frente', transicao: 0 });
+carlos.braco('d', 35.4, 36.6, 'acenar');
+carlos.braco('ambos', 36.8, 39.0, 'explicar');
+carlos.braco('d', 38.0, 39.6, 'contar', { n: 3 });
+carlos.braco('ambos', 40.6, 42.0, 'encolher');
+carlos.braco('d', 131.3, 133.8, 'joinha');
+carlos.braco('d', 163.8, 165.6, 'apontar');
+carlos.braco('d', 184.8, 186.6, 'contar', { n: 3 });
+carlos.braco('ambos', 197.4, 199.6, 'cruzar');
+carlos.braco('d', 204.4, 206.2, 'joinha');
+[[32.8, 'alegre'], [40.6, 'preocupado'], [42.3, 'surpreso'], [55.3, 'pensando'], [70.4, 'determinado'], [108.0, 'preocupado'],
+ [122.0, 'pensando'], [131.0, 'alegre'], [140.8, 'serio'], [156.0, 'feliz'], [173.6, 'determinado'], [184.6, 'pensando'], [190.5, 'alegre'], [194.3, 'alegre']]
+  .forEach(([t, e], i, a) => carlos.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
+
+// ---------- peças de texto e cartões ----------
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const T = (x, y, t, { fs = 40, cor = PRETO, anc = 'middle', fonte = '' } = {}) => `<text x="${x}" y="${y}" font-size="${fs}" fill="${cor}" text-anchor="${anc}"${fonte ? ` font-family="${fonte}"` : ''}>${esc(t)}</text>`;
+const nota = (x, y, t, anc = 'middle') => `<text x="${x}" y="${y}" font-family="'DejaVu Sans', sans-serif" font-size="20" fill="#7A7A82" text-anchor="${anc}">${esc(t)}</text>`;
+const ok = (x, y, r = 22) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${LARANJA}" stroke="${PRETO}" stroke-width="3"/><path d="M${x - r * 0.45} ${y} l${r * 0.35} ${r * 0.4} l${r * 0.65} ${r * 0.75 * -1}" stroke="${PRETO}" stroke-width="${r * 0.3}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+const nao = (x, y, r = 22) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${VERMELHO}" stroke="${PRETO}" stroke-width="3"/><path d="M${x - r * 0.4} ${y - r * 0.4} l${r * 0.8} ${r * 0.8} M${x + r * 0.4} ${y - r * 0.4} l${r * -0.8} ${r * 0.8}" stroke="#fff" stroke-width="${r * 0.3}" stroke-linecap="round"/>`;
+const pilula = (x, y, t, { fs = 34, fundo = PRETO, cor = LARANJA, icone = '' } = {}) => {
+  const w = Marca.largura(t, fs) + fs * 1.2 + (icone ? 56 : 0), h = fs * 1.6;
+  return `<rect x="${x}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="${fundo}"/>${icone ? icone(x + 34, y) : ''}<text x="${x + (icone ? 62 : fs * 0.6)}" y="${y + fs * 0.36}" font-size="${fs}" fill="${cor}">${esc(t)}</text>`;
+};
+// cartão no lado direito (a cena continua à esquerda)
+const CX0 = 1040, CY0 = 110, CW = 820, CH = 800, CXM = CX0 + CW / 2;
+const cartao = (id, titulo, corpo, { escuro = false } = {}) => {
+  const g = mk($('#cartoes'), id); g.style.opacity = 0;
+  g.innerHTML = `<rect x="${CX0 + 12}" y="${CY0 + 14}" width="${CW}" height="${CH}" rx="28" fill="#000" opacity=".3"/>`
+    + `<rect x="${CX0}" y="${CY0}" width="${CW}" height="${CH}" rx="28" fill="${escuro ? '#1C1C22' : CREME}" stroke="${PRETO}" stroke-width="6"/>`
+    + `<path d="M${CX0} ${CY0 + 28} a28 28 0 0 1 28 -28 h${CW - 56} a28 28 0 0 1 28 28 v82 h-${CW}Z" fill="${LARANJA}" stroke="${PRETO}" stroke-width="6"/>`
+    + Marca.texto(CXM, CY0 + 76, titulo, { fs: 50, cor: '#fff', sombra: false }) + corpo;
+  return g;
+};
+const parte = (id, svg) => `<g id="${id}" style="opacity:0">${svg}</g>`;
+
+// 1. MEI × faturamento
+const BW = 640, BX = CX0 + 90;
+cartao('c-mei', 'O MEI E O TETO',
+  parte('mei-fatos', pilula(CX0 + 60, 210 + 50, 'MEI HÁ 5 ANOS', { fs: 32 }) + pilula(CX0 + 400, 260, 'SEM CONTRATO SOCIAL', { fs: 32, cor: '#fff' }))
+  + parte('mei-teto', T(BX, 370, 'LIMITE DO MEI', { anc: 'start', fs: 38 }) + `<rect x="${BX}" y="390" width="${BW * 81 / 480}" height="70" rx="12" fill="#9AA0A8" stroke="${PRETO}" stroke-width="4"/>` + T(BX + BW * 81 / 480 + 20, 440, 'R$ 81 MIL/ANO', { anc: 'start', fs: 40 }))
+  + parte('mei-fat', T(BX, 550, 'A PADARIA FATURA', { anc: 'start', fs: 38 }) + `<rect id="mei-barra" x="${BX}" y="570" width="${BW}" height="70" rx="12" fill="${LARANJA}" stroke="${PRETO}" stroke-width="4"/>` + T(BX + BW - 20, 620, 'R$ 480 MIL/ANO', { anc: 'end', fs: 40, cor: '#fff' }))
+  + parte('mei-x', Marca.carimbo(CXM, 760, '5,9× O TETO!', { fs: 72 }))
+  + nota(CXM, 880, 'Teto do MEI em 2026: R$ 81 mil por ano (LC 123/2006)'));
+// 2. um caixa só
+cartao('c-caixa', 'UM CAIXA SÓ',
+  parte('cx-caixa', `<rect x="${CXM - 150}" y="230" width="300" height="140" rx="20" fill="${PRETO}"/>` + T(CXM, 292, 'CAIXA DA', { fs: 40, cor: LARANJA }) + T(CXM, 342, 'PADARIA', { fs: 40, cor: LARANJA }))
+  + [['lampada', 'CONTA DE LUZ', CX0 + 170], ['carrinho', 'MERCADO', CXM], ['escola', 'ESCOLA', CX0 + CW - 170]].map(([ic, t, x], i) =>
+    parte('cx-' + i, `<path d="M${CXM} 372 Q${(CXM + x) / 2} 420 ${x} 470" stroke="${PRETO}" stroke-width="6" fill="none" stroke-dasharray="14 10"/>` + P.icone(ic, x, 600, 0.95) + T(x, 660, t, { fs: 34 }))).join('')
+  + parte('cx-fim', Marca.carimbo(CXM, 780, 'CASA + PADARIA = TUDO JUNTO', { fs: 50, rot: -4 })));
+// 3. os 3 problemas
+const prob = (i, y, ic, a, b) => parte('pb-' + i, `<circle cx="${CX0 + 80}" cy="${y}" r="40" fill="${PRETO}"/>` + T(CX0 + 80, y + 16, String(i + 1), { fs: 46, cor: LARANJA }) + P.icone(ic, CX0 + 200, y + 50, 0.75) + T(CX0 + 280, y - 6, a, { anc: 'start', fs: 40 }) + T(CX0 + 280, y + 40, b, { anc: 'start', fs: 30, cor: VERMELHO }));
+cartao('c-prob', '3 PROBLEMAS', prob(0, 290, 'documento', 'FORNECEDOR: R$ 120 MIL', 'COM PEDIDO DE PENHORA') + prob(1, 490, 'balanca', 'FISCO: ÚLTIMOS 5 ANOS', 'IMPOSTOS DO MEI ESTOURADO') + prob(2, 690, 'loja', 'ALUGUEL: R$ 800 MIL', 'ASSINADO NO NOME DELA'));
+// 4. patrimônio único
+cartao('c-pessoa', 'POR QUE CAI NELA?',
+  parte('ps-a', `<g id="ps-c1"><circle cx="${CXM - 170}" cy="370" r="130" fill="#F3D9A8" stroke="${PRETO}" stroke-width="6" opacity=".95"/>${T(CXM - 170, 384, 'PADARIA', { fs: 40 })}</g>`)
+  + parte('ps-b', `<g id="ps-c2"><circle cx="${CXM + 170}" cy="370" r="130" fill="#F7C9A8" stroke="${PRETO}" stroke-width="6" opacity=".95"/>${T(CXM + 170, 360, 'DONA', { fs: 40 })}${T(CXM + 170, 405, 'MARTA', { fs: 40 })}</g>`)
+  + parte('ps-cnpj', pilula(CX0 + 190, 540, 'CNPJ = SÓ UM CADASTRO', { fs: 32, cor: '#fff' }))
+  + parte('ps-igual', Marca.carimbo(CXM, 540, 'MESMA PESSOA!', { fs: 64 }))
+  + parte('ps-resp', T(CXM, 650, 'RESPONDEM PELAS DÍVIDAS:', { fs: 38, cor: VERMELHO }))
+  + ['casa', 'carro', 'cofrinho'].map((ic, i) => parte('ps-i' + i, P.icone(ic, CXM - 230 + i * 230, 840, 0.9) + T(CXM - 230 + i * 230, 870, ['CASA', 'CARRO', 'POUPANÇA'][i], { fs: 28 }))).join('')
+  + nota(CXM, 900, 'CC, art. 391 · CPC, art. 789 · LC 123/2006, art. 18-A'));
+// 5. missão 1
+const linha = (id, y, ic, a, b, ref) => parte(id, P.icone(ic, CX0 + 110, y + 50, 0.72) + ok(CX0 + 165, y + 20, 18) + T(CX0 + 210, y, a, { anc: 'start', fs: 36 }) + T(CX0 + 210, y + 38, b, { anc: 'start', fs: 28, cor: '#555' }) + nota(CX0 + 210, y + 64, ref, 'start'));
+cartao('c-m1', 'MISSÃO 1 · DEFENDER OS BENS',
+  linha('m1-a', 280, 'casa', 'CASA = BEM DE FAMÍLIA', 'NÃO PODE SER PENHORADA', 'Lei 8.009/1990')
+  + linha('m1-b', 395, 'maquina', 'MÁQUINAS E POUPANÇA', 'ATÉ 40 SALÁRIOS MÍNIMOS', 'CPC, art. 833')
+  + linha('m1-c', 510, 'documento', 'NEGOCIAR A DÍVIDA', '30% DE ENTRADA + ATÉ 6 PARCELAS', 'CPC, art. 916')
+  + parte('m1-alerta', `<rect x="${CX0 + 40}" y="620" width="${CW - 80}" height="140" rx="20" fill="${VERMELHO}" stroke="${PRETO}" stroke-width="5"/>` + nao(CX0 + 100, 690, 30)
+    + Marca.texto(CX0 + 150, 678, 'PASSAR A CASA PRO FILHO', { fs: 40, cor: '#fff', ancora: 'start', sombra: false }) + Marca.texto(CX0 + 150, 730, 'AGORA = FRAUDE', { fs: 40, cor: '#FFD9B3', ancora: 'start', sombra: false })
+    + nota(CX0 + 50, 800, 'Fraude à execução (CPC, art. 792) · contra credores (CC, art. 158)', 'start'))
+  + parte('m1-nao', Marca.carimbo(CX0 + CW - 150, 850, 'NÃO PODE!', { fs: 50, rot: -6 })));
+// 6. missão 2 — régua dos 20%
+const RX = CX0 + 60, RW = 480, RY = 330;
+cartao('c-m2', 'MISSÃO 2 · O IMPOSTO',
+  parte('m2-regua', `<rect x="${RX}" y="${RY}" width="${RW * 0.45}" height="80" fill="#C9C2B4" stroke="${PRETO}" stroke-width="4"/><rect x="${RX + RW * 0.45}" y="${RY}" width="${RW * 0.2}" height="80" fill="#FFC48A" stroke="${PRETO}" stroke-width="4"/><rect x="${RX + RW * 0.65}" y="${RY}" width="${RW * 0.35}" height="80" fill="${VERMELHO}" stroke="${PRETO}" stroke-width="4"/>`
+    + T(RX + RW * 0.225, RY + 52, 'MEI OK', { fs: 30 }) + T(RX + RW * 0.55, RY + 52, '+20%', { fs: 30 }) + T(RX + RW * 0.825, RY + 52, 'ESTOUROU', { fs: 30, cor: '#fff' })
+    + T(RX + RW * 0.45, RY - 18, 'R$ 81 MIL', { fs: 26 }) + T(RX + RW * 0.65, RY + 120, 'R$ 97,2 MIL', { fs: 26 }))
+  + parte('m2-marta', `<path d="M${RX + RW + 10} ${RY + 40} h120" stroke="${PRETO}" stroke-width="8" stroke-dasharray="14 10"/><path d="M${RX + RW + 140} ${RY + 20} l30 20 l-30 20Z" fill="${PRETO}"/>` + `<circle cx="${RX + RW + 170}" cy="${RY - 40}" r="46" fill="${LARANJA}" stroke="${PRETO}" stroke-width="5"/>` + T(RX + RW + 170, RY - 30, 'R$ 480', { fs: 26 }) + T(RX + RW + 170, RY - 4, 'MIL', { fs: 22 }))
+  + parte('m2-retro', pilula(CX0 + 60, 530, 'DESENQUADRA DESDE JANEIRO DAQUELE ANO', { fs: 30, cor: '#fff' }))
+  + parte('m2-simples', `<rect x="${CX0 + 60}" y="610" width="${CW - 120}" height="150" rx="20" fill="#E8F3E8" stroke="${PRETO}" stroke-width="5"/>` + ok(CX0 + 120, 685, 30) + T(CX0 + 170, 670, 'NÃO É EXPULSA DO SIMPLES', { anc: 'start', fs: 38 }) + T(CX0 + 170, 718, 'CONTINUA COMO EPP', { anc: 'start', fs: 34, cor: '#2E7A3E' }))
+  + parte('m2-epp', nota(CXM, 790, 'EPP: de R$ 360 mil a R$ 4,8 milhões por ano · LC 123/2006, arts. 3º e 18-A')));
+// 7. custo
+cartao('c-custo', 'QUANTO CUSTA ACERTAR?',
+  parte('ct-a', `<rect x="${CX0 + 60}" y="220" width="${CW - 120}" height="190" rx="20" fill="${PRETO}"/>` + T(CX0 + 100, 280, 'PAGANDO POR CONTA PRÓPRIA', { anc: 'start', fs: 32, cor: LARANJA }) + T(CX0 + 100, 360, '≈ R$ 140 MIL', { anc: 'start', fs: 72, cor: '#fff' }) + T(CX0 + 100, 396, '5 ANOS DE DIFERENÇA + SELIC, SEM MULTA', { anc: 'start', fs: 24, cor: '#bbb' }))
+  + parte('ct-b', `<rect x="${CX0 + 60}" y="440" width="${CW - 120}" height="190" rx="20" fill="#fff" stroke="${VERMELHO}" stroke-width="6"/>` + T(CX0 + 100, 500, 'SE O FISCO CHEGAR PRIMEIRO', { anc: 'start', fs: 32, cor: VERMELHO }) + T(CX0 + 100, 580, '+ ≈ R$ 105 MIL', { anc: 'start', fs: 72, cor: VERMELHO }) + T(CX0 + 100, 616, 'MULTA DE 75%', { anc: 'start', fs: 24, cor: '#555' }))
+  + parte('ct-c', Marca.carimbo(CXM, 720, 'PAGAR ANTES DA FISCALIZAÇÃO!', { fs: 46, rot: -3 }))
+  + nota(CXM, 860, 'Estimativa ilustrativa · CTN, art. 138 · Lei 9.430/1996, art. 44') + nota(CXM, 888, 'Confirmar os valores com o contador'));
+// 8. missão 3 — tipo societário
+const coluna = (id, x, titulo, sub, bom, destaque) => parte(id, `<rect x="${x - 120}" y="230" width="240" height="330" rx="20" fill="${destaque ? LARANJA : '#fff'}" stroke="${PRETO}" stroke-width="${destaque ? 7 : 4}"/>`
+  + (bom ? ok(x, 300, 34) : nao(x, 300, 34)) + T(x, 400, titulo, { fs: 46 }) + sub.map((s, i) => T(x, 455 + i * 38, s, { fs: 26, cor: destaque ? PRETO : '#555' })).join(''));
+cartao('c-m3', 'MISSÃO 3 · TIPO DE EMPRESA',
+  coluna('m3-sa', CX0 + 150, 'S.A.', ['CARA', 'FORA DO', 'SIMPLES'], false) + coluna('m3-slu', CXM, 'SLU', ['SÓ SERVE', 'COM 1 DONO'], false) + coluna('m3-ltda', CX0 + CW - 150, 'LTDA', ['MÃE + FILHO', 'NO SIMPLES', 'CUSTO BAIXO'], true, true)
+  + parte('m3-quotas', pilula(CX0 + 60, 640, 'CADA SÓCIO RESPONDE ATÉ AS SUAS QUOTAS', { fs: 30, cor: '#fff', icone: (x, y) => ok(x, y, 20) }))
+  + parte('m3-cnpj', pilula(CX0 + 60, 730, 'MESMO CNPJ: SÓ TRANSFORMA O REGISTRO', { fs: 30, cor: '#fff', icone: (x, y) => ok(x, y, 20) }))
+  + nota(CXM, 880, 'CC, arts. 968 §3º, 1.052 a 1.087 · LC 123/2006, art. 3º §4º, X · Lei 6.404/1976'));
+// 9. limites da Ltda
+cartao('c-lim', 'A LTDA NÃO FAZ MILAGRE',
+  parte('lm-esc', `<g id="lm-escudo">${P.icone('escudo', CXM, 420, 1.6)}</g>` + Marca.texto(CXM, 320, 'LTDA', { fs: 44, cor: '#fff', sombra: false }))
+  + parte('lm-trinca', `<path d="M${CXM + 10} 216 l-24 50 l30 30 l-36 52 l26 40" stroke="${PRETO}" stroke-width="9" fill="none" stroke-linejoin="round"/>`)
+  + parte('lm-a', pilula(CX0 + 60, 520, 'DÍVIDAS ANTIGAS CONTINUAM COM ELA', { fs: 30, cor: '#fff', icone: (x, y) => nao(x, y, 20) }))
+  + parte('lm-b', pilula(CX0 + 60, 610, 'MISTUROU AS CONTAS? ART. 50: JUIZ ALCANÇA', { fs: 28, cor: '#fff', icone: (x, y) => nao(x, y, 20) }))
+  + parte('lm-c', `<rect x="${CX0 + 60}" y="670" width="${CW - 120}" height="140" rx="20" fill="${PRETO}"/>` + Marca.texto(CXM, 730, '"A MISTURA DE HOJE É A', { fs: 40, cor: '#fff', sombra: false }) + Marca.texto(CXM, 782, 'PROVA DO CREDOR AMANHÃ"', { fs: 40, cor: LARANJA, sombra: false }))
+  + nota(CXM, 880, 'CC, art. 50 (Lei 13.874/2019) · CDC, art. 28 §5º · CTN, art. 135'));
+// 10. missão 4 — contrato social (pizza 70/30)
+const pizza = (cx, cy, r) => { const a = 0.7 * 2 * Math.PI, x = cx + r * Math.sin(a), y = cy - r * Math.cos(a);
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#9ED3F0" stroke="${PRETO}" stroke-width="5"/><path d="M${cx} ${cy} L${cx} ${cy - r} A${r} ${r} 0 1 1 ${x} ${y}Z" fill="${LARANJA}" stroke="${PRETO}" stroke-width="5"/>`
+    + T(cx - 30, cy + 40, '70%', { fs: 44 }) + T(cx - r * 0.55, cy - r * 0.35, '30%', { fs: 34 }); };
+cartao('c-m4', 'MISSÃO 4 · CONTRATO SOCIAL',
+  parte('m4-cap', T(CX0 + 230, 272, 'CAPITAL: R$ 100 MIL', { fs: 34 }))
+  + parte('m4-pizza', `<g id="m4-pz">${pizza(CX0 + 230, 420, 130)}</g>` + T(CX0 + 230, 600, 'MARTA', { fs: 30, cor: LARANJA }) + T(CX0 + 230, 636, 'CARLOS', { fs: 30, cor: '#3B7DD8' }))
+  + parte('m4-papeis', T(CX0 + 430, 300, 'MARTA:', { anc: 'start', fs: 34, cor: LARANJA }) + T(CX0 + 430, 340, 'OPERAÇÃO E FINANÇAS', { anc: 'start', fs: 28 }) + T(CX0 + 430, 410, 'CARLOS:', { anc: 'start', fs: 34, cor: '#3B7DD8' }) + T(CX0 + 430, 450, 'EXPANSÃO', { anc: 'start', fs: 28 }))
+  + parte('m4-ass', `<rect x="${CX0 + 420}" y="490" width="350" height="130" rx="18" fill="${PRETO}"/>` + T(CX0 + 595, 540, 'ACIMA DE R$ 50 MIL:', { fs: 28, cor: '#fff' }) + T(CX0 + 595, 590, 'ASSINAM OS DOIS', { fs: 34, cor: LARANJA }))
+  + ['PRÓ-LABORE', 'LUCROS', 'SAÍDA DE SÓCIO', 'CONFLITOS'].map((t, i) => parte('m4-r' + i, pilula(CX0 + 60 + (i % 2) * 370, 700 + Math.floor(i / 2) * 76, t, { fs: 28, cor: '#fff', icone: (x, y) => ok(x, y, 18) }))).join('')
+  + nota(CXM, 862, 'CC, arts. 997, 1.054, 1.055, 1.065 e 1.076') + nota(CXM, 888, 'Valores sugeridos, ajustáveis pelos sócios'));
+// 11. plano de 30 dias
+const passos = [['DEFENDER OS BENS', 'DIAS 1 A 5'], ['SEPARAR AS CONTAS', 'DIAS 1 A 10'], ['REGULARIZAR O IMPOSTO', 'DIAS 5 A 20'], ['ABRIR A LTDA COM O CARLOS', 'DIAS 10 A 25'], ['ALUGUEL NO NOME DA EMPRESA', 'DIAS 15 A 30']];
+cartao('c-plano', 'PLANO DE 30 DIAS',
+  `<path d="M${CX0 + 100} 280 V${280 + 4 * 112}" stroke="${PRETO}" stroke-width="6" stroke-dasharray="12 10"/>`
+  + passos.map(([a, b], i) => parte('pl-' + i, `<circle cx="${CX0 + 100}" cy="${280 + i * 112}" r="38" fill="${LARANJA}" stroke="${PRETO}" stroke-width="5"/>` + T(CX0 + 100, 296 + i * 112, String(i + 1), { fs: 42 })
+    + T(CX0 + 170, 282 + i * 112, a, { anc: 'start', fs: 36 }) + T(CX0 + 170, 318 + i * 112, b, { anc: 'start', fs: 24, cor: '#777' }))).join('')
+  + parte('pl-fim', pilula(CX0 + 40, 862, 'BENS PROTEGIDOS · EMPRESA REGULAR · PRONTA PRA CRESCER', { fs: 21, cor: '#fff' })));
+// 12. expansão em etapas
+const fase = (i, x, t1, t2, sub) => parte('fs-' + i, P.icone('loja', x, 400, i === 2 ? 0.95 : 1.1) + (i === 2 ? P.icone('loja', x + 70, 410, 0.7) : '') + `<rect x="${x - 115}" y="450" width="230" height="56" rx="28" fill="${PRETO}"/>` + T(x, 489, t1, { fs: 30, cor: LARANJA })
+  + T(x, 560, t2[0], { fs: 32 }) + T(x, 600, t2[1] || '', { fs: 32 }) + T(x, 650, sub, { fs: 24, cor: '#777' }));
+cartao('c-exp', 'CRESCER EM ETAPAS',
+  fase(0, CX0 + 150, 'FASE 1', ['ARRUMAR', 'A CASA'], 'MESES 1 A 3') + fase(1, CXM, 'FASE 2', ['1 NOVA', 'UNIDADE'], 'MESES 4 A 9') + fase(2, CX0 + CW - 150, 'FASE 3', ['UNIDADES', '2 E 3'], 'SÓ SE A 1ª DER CERTO')
+  + parte('fs-set', `<path d="M${CX0 + 255} 400 h70 M${CXM + 105} 400 h70" stroke="${PRETO}" stroke-width="8"/><path d="M${CX0 + 325} 385 l22 15 l-22 15Z M${CXM + 175} 385 l22 15 l-22 15Z" fill="${PRETO}"/>`)
+  + parte('fs-gat', pilula(CX0 + 60, 760, 'GATILHOS: LUCRO, RESERVA DE CAIXA E IMPOSTOS EM DIA', { fs: 24, cor: '#fff' })));
+// 13. conclusão (na fachada)
+const gf = mk($('#cartoes'), 'c-fim'); gf.style.opacity = 0;
+gf.innerHTML = `<g transform="translate(0 250)"><rect x="1192" y="132" width="680" height="560" rx="28" fill="#000" opacity=".3"/><rect x="1180" y="120" width="680" height="560" rx="28" fill="${CREME}" stroke="${PRETO}" stroke-width="6"/>`
+  + parte('fi-esc', P.icone('escudo', 1300, 330, 1.2) + Marca.texto(1580, 230, 'ESCUDO', { fs: 56, cor: LARANJA, sombra: false }) + Marca.texto(1580, 290, '= DISCIPLINA', { fs: 48, cor: PRETO, contorno: PRETO, espessura: 0, sombra: false }))
+  + ['CONTA SEPARADA', 'CONTABILIDADE EM DIA', 'CONTRATOS NO NOME DA EMPRESA'].map((t, i) => parte('fi-' + i, pilula(1220, 420 + i * 82, t, { fs: 30, cor: '#fff', icone: (x, y) => ok(x, y, 20) }))).join('') + '</g>';
+const tf = mk($('#textos'), 't-todo'); tf.style.opacity = 0; tf.innerHTML = Marca.carimbo(1690, 300, 'TODO DIA!', { fs: 76, rot: 6 });
+
+// textos soltos
+const solto = (id, svg) => { const g = mk($('#textos'), id); g.style.opacity = 0; g.innerHTML = svg; };
+solto('t-anos', Marca.etiqueta(560, 250, 'HÁ 5 ANOS', { fs: 40 }));
+solto('t-problema', Marca.impacto(1450, 420, 'UM PROBLEMA...', { fs: 96 }));
+solto('t-mais3', [0, 1, 2].map(i => P.icone('loja', 1300 + i * 150, 420, 1.05)).join('') + Marca.impacto(1450, 300, '+3 PADARIAS', { fs: 90 }));
+solto('t-3prob', Marca.carimbo(1450, 600, '3 PROBLEMAS!', { fs: 90 }));
+
+// ---------- abertura e créditos ----------
+$('#abertura').innerHTML = `<g id="ab"><rect width="${W}" height="${H}" fill="#1B2232"/><rect width="18" height="${H}" fill="#8E2E3A"/>`
+  + `<g opacity=".08" fill="${LARANJA}">${[0, 1, 2, 3, 4, 5, 6].map(k => `<rect x="${120 + k * 260}" y="0" width="90" height="${H}"/>`).join('')}</g>`
+  + `<g id="ab-sup">${Marca.texto(960, 300, 'DIREITO EMPRESARIAL · ESTUDO DE CASO 5', { fs: 40, cor: '#E8C27A', sombra: false })}</g>`
+  + `<g id="ab-tit">${Marca.texto(960, 450, 'O EMPREENDEDOR QUE', { fs: 110, cor: '#fff' })}${Marca.texto(960, 580, 'NÃO SABIA O QUE TINHA', { fs: 110, cor: LARANJA })}</g>`
+  + `<g id="ab-sub">${Marca.faixa(960, 740, 'O CASO DA DONA MARTA', { fs: 70 })}</g></g>`;
+$('#creditos').innerHTML = `<rect width="${W}" height="${H}" fill="#1B2232"/><rect width="18" height="${H}" fill="#8E2E3A"/>`
+  + Marca.texto(960, 200, 'DIREITO EMPRESARIAL · ESTUDO DE CASO 5', { fs: 40, cor: '#E8C27A', sombra: false })
+  + Marca.texto(960, 320, 'O EMPREENDEDOR QUE NÃO SABIA O QUE TINHA', { fs: 66, cor: '#fff', sombra: false })
+  + Marca.texto(960, 450, 'ALUNOS', { fs: 40, cor: LARANJA, sombra: false })
+  + Marca.texto(960, 520, 'ISABELLA RIBEIRO · JOÃO MORALLIS · LUANA LEME', { fs: 46, cor: '#fff', sombra: false })
+  + Marca.texto(960, 585, 'LUCAS LAROCA · MURILO FIGUEIREDO · RAFAEL BERBEL', { fs: 46, cor: '#fff', sombra: false })
+  + Marca.texto(960, 700, 'PROFESSOR: IVAN SERRA BRAGA', { fs: 40, cor: '#E8C27A', sombra: false })
+  + Marca.texto(960, 760, 'CURSO DE ADMINISTRAÇÃO · OUTUBRO DE 2026', { fs: 34, cor: '#BFC6D4', sombra: false })
+  + `<text x="960" y="900" font-family="'DejaVu Sans', sans-serif" font-size="22" fill="#8A93A6" text-anchor="middle">Animação feita a partir dos slides do grupo · valores e prazos conforme o parecer apresentado</text>`;
+
+// ---------- legenda (embaixo, como em vídeo de aula) ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 1012, fs: 52, largura: 1500, enfase: ['MEI', '81', '480', '6', '120', '800', '40', '30%', '20%', '140', '75%', '105', 'LTDA', '50', '70%', 'DISCIPLINA', 'FRAUDE', 'NÃO', 'PODE'] })
+  .esconder([[0, 3.9], [206, 999]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const mostra = (sel, t, ate, { x = 60 } = {}) => { tl.fromTo(sel, { opacity: 0, x }, { opacity: 1, x: 0, duration: 0.35, ease: 'back.out(1.6)' }, t); if (ate) tl.to(sel, { opacity: 0, duration: 0.25 }, ate); };
+const surge = (sel, t, ox, oy, ate) => { tl.fromTo(sel, { opacity: 0, scale: 0.3, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(2)' }, t); if (ate) tl.to(sel, { opacity: 0, duration: 0.2 }, ate); };
+const item = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, t);
+// abertura
+tl.fromTo('#ab-sup', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.2);
+tl.fromTo('#ab-tit', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.5);
+surge('#ab-sub', 1.4, 960, 740);
+tl.to('#ab', { opacity: 0, duration: 0.5 }, 3.6);
+// câmera: push-in lento contínuo e ajustes por bloco
+tl.fromTo('#cam', { scale: 1.08, svgOrigin: '520 520' }, { scale: 1.0, duration: 8, ease: 'sine.inOut' }, 3.6);
+// 1. a padaria
+surge('#t-anos', 5.6, 560, 250, 9.0);
+surge('#t-problema', 10.0, 1450, 420, 12.4);
+// 2. MEI
+mostra('#c-mei', 12.6, 22.3);
+item('#mei-fatos', 12.9); item('#mei-teto', 15.0);
+item('#mei-fat', 18.4); tl.fromTo('#mei-barra', { attr: { width: BW * 81 / 480 } }, { attr: { width: BW }, duration: 1.2, ease: 'power2.out' }, 18.6);
+surge('#mei-x', 20.4, CXM, 760);
+// 3. um caixa só
+mostra('#c-caixa', 22.6, 32.4);
+item('#cx-caixa', 23.3); item('#cx-0', 26.7); item('#cx-1', 27.3); item('#cx-2', 27.9); surge('#cx-fim', 29.9, CXM, 780);
+// 4. Carlos chega
+surge('#t-mais3', 37.6, 1450, 380, 40.5);
+surge('#t-3prob', 40.8, 1450, 600, 42.2);
+// 5. os 3 problemas
+mostra('#c-prob', 42.25, 54.8);
+item('#pb-0', 42.3); item('#pb-1', 46.6); item('#pb-2', 50.3);
+// 6. por que cai nela
+mostra('#c-pessoa', 55.2, 70.0);
+item('#ps-a', 57.6); item('#ps-b', 58.0); item('#ps-cnpj', 60.0);
+tl.to('#ps-cnpj', { opacity: 0, duration: 0.2 }, 61.3);
+tl.to('#ps-c1', { x: 120, duration: 0.9, ease: 'power2.inOut' }, 61.4); tl.to('#ps-c2', { x: -120, duration: 0.9, ease: 'power2.inOut' }, 61.4);
+surge('#ps-igual', 63.9, CXM, 540);
+item('#ps-resp', 65.4); surge('#ps-i0', 67.2, CXM - 230, 800); surge('#ps-i1', 67.9, CXM, 800); surge('#ps-i2', 68.5, CXM + 230, 800);
+// 7. missão 1
+mostra('#c-m1', 70.4, 91.6);
+item('#m1-a', 73.0); item('#m1-b', 77.7); item('#m1-c', 82.6);
+tl.fromTo('#m1-alerta', { opacity: 0, scale: 0.8, svgOrigin: `${CXM} 690` }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(2)' }, 87.0);
+tl.to('#m1-alerta', { x: 6, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 90.0);
+surge('#m1-nao', 90.4, CX0 + CW - 150, 850);
+// 8. missão 2
+mostra('#c-m2', 92.0, 107.8);
+item('#m2-regua', 94.4); tl.fromTo('#m2-marta', { opacity: 0, x: -200 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power2.out' }, 96.8);
+item('#m2-retro', 97.8); item('#m2-simples', 99.7); item('#m2-epp', 104.4);
+// 9. custo
+mostra('#c-custo', 108.0, 121.4);
+item('#ct-a', 111.1); item('#ct-b', 113.7); surge('#ct-c', 119.2, CXM, 720);
+// 10. missão 3
+mostra('#c-m3', 122.0, 140.6);
+item('#m3-sa', 125.5); item('#m3-slu', 128.0); tl.fromTo('#m3-ltda', { opacity: 0, scale: 0.6, svgOrigin: `${CX0 + CW - 150} 400` }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2.4)' }, 131.2);
+item('#m3-quotas', 134.6); item('#m3-cnpj', 137.8);
+// 11. limites
+mostra('#c-lim', 140.8, 155.2);
+item('#lm-esc', 141.0); item('#lm-a', 142.3); item('#lm-trinca', 145.6); tl.to('#lm-escudo', { x: 8, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 145.6); item('#lm-b', 145.7); item('#lm-c', 151.6);
+// 12. missão 4
+mostra('#c-m4', 155.6, 173.2);
+item('#m4-cap', 157.9); tl.fromTo('#m4-pizza', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 159.2); tl.fromTo('#m4-pz', { rotation: -90, scale: 0.4, svgOrigin: `${CX0 + 230} 420` }, { rotation: 0, scale: 1, duration: 0.7, ease: 'back.out(1.6)' }, 159.2);
+item('#m4-papeis', 162.4); item('#m4-ass', 164.7);
+[169.1, 169.8, 170.2, 171.1].forEach((t, i) => item('#m4-r' + i, t));
+// 13. plano de 30 dias
+mostra('#c-plano', 173.6, 184.4);
+[176.3, 177.3, 178.4, 179.9, 181.5].forEach((t, i) => item('#pl-' + i, t)); item('#pl-fim', 183.3);
+// 14. expansão
+mostra('#c-exp', 184.6, 194.2);
+item('#fs-0', 186.9); item('#fs-set', 188.3); item('#fs-1', 188.4); item('#fs-2', 191.6); item('#fs-gat', 192.6);
+// 15. conclusão: corte para a fachada
+tl.set('#sc-dentro', { opacity: 0 }, FIM); tl.set('#balcao', { opacity: 0 }, FIM); tl.set('#sc-fora', { opacity: 1 }, FIM);
+tl.fromTo('#cam', { scale: 1.06, svgOrigin: '760 700' }, { scale: 1.0, duration: 11, ease: 'sine.inOut' }, FIM);
+mostra('#c-fim', 195.0, 206.0);
+surge('#fi-esc', 197.4, 1400, 510); item('#fi-0', 200.3); item('#fi-1', 201.3); item('#fi-2', 202.9);
+surge('#t-todo', 204.5, 1690, 300, 206.0);
+// créditos
+tl.to('#creditos', { opacity: 1, duration: 0.6 }, 206.0);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+window.__timeline = tl;
+window.__duration = DUR;
+window.__seek = t => {
+  tl.seek(t, false);
+  atores.forEach(a => { const vivo = t < a._ate; a._g.style.display = vivo ? '' : 'none'; if (vivo) a.desenhar(t); });
+  leg.seek(t);
+};
+window.__seek(0);
+</script></body></html>
