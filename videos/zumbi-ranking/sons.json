@@ -1,5 +1,5 @@
 {
- "duracao": 57.0,
+ "duracao": 64.84,
  "voz": "voz/fala_master.wav",
  "biblioteca": [
   "sons",
@@ -18,7 +18,7 @@
   {
    "som": "amb_tensao",
    "de": 7.0,
-   "ate": 52.5,
+   "ate": 60.3,
    "db": -30,
    "fade": 0.8
   },
@@ -324,13 +324,53 @@
    "db": -12
   },
   {
-   "som": "chime",
-   "em": 52.4,
+   "som": "whoosh-cinematic",
+   "em": 52.2,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 52.45,
+   "db": -10
+  },
+  {
+   "som": "pop",
+   "em": 55.45,
    "db": -12
   },
   {
    "som": "pop",
-   "em": 54.6,
+   "em": 55.85,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 56.55,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 57.3,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 58.2,
+   "db": -8
+  },
+  {
+   "som": "whoosh-short",
+   "em": 60.3,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 60.4,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 62.45,
    "db": -12
   }
  ],

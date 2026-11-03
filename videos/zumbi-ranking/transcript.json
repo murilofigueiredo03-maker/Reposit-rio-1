@@ -740,43 +740,148 @@
 "end": 51.515
 },
 {
-"text": "E",
-"start": 52.988,
-"end": 53.078
+"text": "Dica",
+"start": 52.798,
+"end": 53.098
 },
 {
-"text": "você?",
-"start": 53.078,
-"end": 53.478
+"text": "bônus:",
+"start": 53.098,
+"end": 53.488
 },
 {
-"text": "Pra",
-"start": 53.478,
-"end": 53.558
+"text": "não",
+"start": 53.488,
+"end": 53.568
+},
+{
+"text": "importa",
+"start": 53.498,
+"end": 54.038
 },
 {
 "text": "onde",
-"start": 53.508,
-"end": 53.838
+"start": 54.038,
+"end": 54.288
 },
 {
 "text": "você",
-"start": 53.838,
-"end": 54.088
+"start": 54.288,
+"end": 54.588
+},
+{
+"text": "se",
+"start": 54.588,
+"end": 54.758
+},
+{
+"text": "esconda.",
+"start": 54.758,
+"end": 55.308
+},
+{
+"text": "Leve",
+"start": 55.308,
+"end": 55.518
+},
+{
+"text": "água,",
+"start": 55.518,
+"end": 55.898
+},
+{
+"text": "comida,",
+"start": 55.898,
+"end": 56.328
+},
+{
+"text": "uma",
+"start": 56.328,
+"end": 56.638
+},
+{
+"text": "lanterna",
+"start": 56.638,
+"end": 57.128
+},
+{
+"text": "e",
+"start": 57.128,
+"end": 57.208
+},
+{
+"text": "um",
+"start": 57.128,
+"end": 57.378
+},
+{
+"text": "rádio.",
+"start": 57.378,
+"end": 57.798
+},
+{
+"text": "Sem",
+"start": 57.798,
+"end": 57.878
+},
+{
+"text": "isso,",
+"start": 57.798,
+"end": 58.258
+},
+{
+"text": "nenhum",
+"start": 58.258,
+"end": 58.438
+},
+{
+"text": "esconderijo",
+"start": 58.438,
+"end": 59.318
+},
+{
+"text": "dura.",
+"start": 59.318,
+"end": 59.598
+},
+{
+"text": "E",
+"start": 60.828,
+"end": 60.918
+},
+{
+"text": "você?",
+"start": 60.918,
+"end": 61.318
+},
+{
+"text": "Pra",
+"start": 61.318,
+"end": 61.398
+},
+{
+"text": "onde",
+"start": 61.348,
+"end": 61.678
+},
+{
+"text": "você",
+"start": 61.678,
+"end": 61.928
 },
 {
 "text": "correria?",
-"start": 54.088,
-"end": 54.688
+"start": 61.928,
+"end": 62.528
 },
 {
 "text": "Comenta",
-"start": 54.688,
-"end": 55.008
+"start": 62.528,
+"end": 62.848
 },
 {
 "text": "aí.",
-"start": 55.008,
-"end": 55.238
+"start": 62.848,
+"end": 63.078
 }
 ]

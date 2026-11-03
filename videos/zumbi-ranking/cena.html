@@ -31,6 +31,7 @@
   </g>
   <g id="textos"></g>
   <g id="numero" style="opacity:0"></g>
+  <g id="bonus" style="opacity:0"></g>
   <g id="final" style="opacity:0"></g>
   <g id="legenda"></g>
 </svg>
@@ -42,11 +43,12 @@
    24.7–32.6 3º MERCADO  (5/10): comida pra meses ✓ · todo mundo vai lá ✗ · porta de vidro ✗
    32.6–42.3 2º SUA CASA (7/10): você conhece tudo ✓ · tranca e tapa ✓ · comida dura pouco ✗
    42.3–52.3 1º PRISÃO   (9/10): muro alto ✓ · grades ✓ · portão de aço ✓ · torre de vigia ✓
-   52.3–57.0 ranking final + "pra onde você correria? comenta"
+   52.3–60.3 DICA BÔNUS: kit de sobrevivência (água, comida, lanterna, rádio)
+   60.3–64.8 ranking final + "pra onde você correria? comenta"
    Entre um lugar e outro, o número da posição entra em tela cheia (0,9 s). */
 const W = 1080, H = 1920, Y = 1490, S = 1.25, NS = 'http://www.w3.org/2000/svg';
 const $ = q => document.querySelector(q);
-const DUR = 57.0, LARANJA = '#FF7A00', PELE_ZUMBI = '#A9C79A';
+const DUR = 64.84, LARANJA = '#FF7A00', PELE_ZUMBI = '#A9C79A';
 const CENAS = { intro: [0, 7.6], escola: [7.6, 16.7], carro: [16.7, 24.7], mercado: [24.7, 32.6], casa: [32.6, 42.3], prisao: [42.3, 52.3] };
 const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
 
@@ -194,9 +196,24 @@ $('#final').innerHTML = `<rect width="${W}" height="${H}" fill="#111"/><g opacit
   + `<g id="fim-p">${Marca.texto(540, 1250, 'E VOCÊ? PRA ONDE CORRERIA?', { fs: 64, cor: '#fff', sombra: false })}</g>`
   + `<g id="fim-c" transform="translate(540 1380)"><rect x="-300" y="-62" width="600" height="110" rx="55" fill="${LARANJA}"/><text y="18" font-size="54" text-anchor="middle" fill="#111">COMENTA AÍ ↓</text></g>`;
 
+// dica bônus: kit de sobrevivência
+const L_ = '#1D1D2B';
+const KIT = {
+  agua: `<rect x="-34" y="-150" width="68" height="150" rx="18" fill="#9ED3F0" stroke="${L_}" stroke-width="6"/><rect x="-20" y="-178" width="40" height="30" rx="6" fill="#3B7DD8" stroke="${L_}" stroke-width="5"/><rect x="-34" y="-100" width="68" height="44" fill="#3B7DD8" opacity=".85"/><path d="M-20 -140 V-20" stroke="#fff" stroke-width="8" opacity=".5"/>`,
+  comida: `<rect x="-58" y="-120" width="116" height="120" rx="10" fill="#B9C0C8" stroke="${L_}" stroke-width="6"/><ellipse cx="0" cy="-120" rx="58" ry="14" fill="#DDE2E7" stroke="${L_}" stroke-width="5"/><rect x="-58" y="-92" width="116" height="62" fill="#D7263D"/><text x="0" y="-50" font-size="30" fill="#fff" text-anchor="middle">FEIJÃO</text><path d="M-44 -108 V-10" stroke="#fff" stroke-width="7" opacity=".45"/>`,
+  lanterna: `<path d="M40 -110 L150 -150 L150 -30 L40 -70Z" fill="#FFF3C4" opacity=".75"/><rect x="-90" y="-112" width="110" height="44" rx="10" fill="#2A2E36" stroke="${L_}" stroke-width="5"/><path d="M20 -122 L48 -132 V-48 L20 -58Z" fill="#9AA0A8" stroke="${L_}" stroke-width="5"/><rect x="-50" y="-104" width="22" height="12" rx="4" fill="${LARANJA}"/>`,
+  radio: `<rect x="-80" y="-120" width="160" height="110" rx="14" fill="#7A5A3A" stroke="${L_}" stroke-width="6"/><path d="M50 -120 L90 -190" stroke="${L_}" stroke-width="6" stroke-linecap="round"/><circle cx="-34" cy="-65" r="32" fill="#2A2E36" stroke="${L_}" stroke-width="4"/>${[-50, -34, -18].map(x => `<path d="M${x} -90 V-40" stroke="#555" stroke-width="3"/>`).join('')}<rect x="14" y="-100" width="50" height="22" rx="4" fill="#FFE27A" stroke="${L_}" stroke-width="3"/><circle cx="40" cy="-50" r="14" fill="#C9A24A" stroke="${L_}" stroke-width="4"/>`,
+};
+const itensKit = [['agua', 'ÁGUA', 290, 980], ['comida', 'COMIDA', 790, 980], ['lanterna', 'LANTERNA', 290, 1300], ['radio', 'RÁDIO', 790, 1300]];
+$('#bonus').innerHTML = `<rect width="${W}" height="${H}" fill="#111"/><g opacity=".14" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + `<g id="bn-t">${Marca.faixa(540, 480, 'DICA BÔNUS', { fs: 96 })}</g>`
+  + `<g id="bn-s">${Marca.texto(540, 640, 'KIT DE SOBREVIVÊNCIA', { fs: 60, cor: '#fff', sombra: false })}</g>`
+  + itensKit.map(([k, nome, x, y], i) => `<g id="bn-${i}" style="opacity:0"><rect x="${x - 210}" y="${y - 250}" width="420" height="290" rx="30" fill="#2A2A30" stroke="${LARANJA}" stroke-width="6"/><g transform="translate(${x} ${y - 36}) scale(1.3)">${KIT[k]}</g>${Marca.texto(x, y + 10, nome, { fs: 54, cor: LARANJA, sombra: false })}</g>`).join('')
+  + `<g id="bn-fim" style="opacity:0">${Marca.carimbo(540, 1460, 'SEM ISSO, NÃO DURA!', { fs: 70 })}</g>`;
+
 // ---------- legenda ----------
 const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 70, enfase: ['ZUMBI', '10', '5º', '4º', '3º', '2º', '1º', 'PRISÃO', 'COMENTA'] })
-  .esconder([[52.3, 99]]);
+  .esconder([[60.3, 99]]);
 
 // ---------- timeline ----------
 const tl = gsap.timeline({ paused: true });
@@ -237,12 +254,19 @@ LUGARES.forEach(([id, , , , selos, tNota]) => {
   tl.fromTo('#tn-' + id, { opacity: 0, scale: 2.4, svgOrigin: '860 640' }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power3.in' }, tNota);
   tl.to('#tn-' + id, { opacity: 0, duration: 0.15 }, b + 0.1);
 });
+// DICA BÔNUS
+tl.to('#bonus', { opacity: 1, duration: 0.25 }, 52.3);
+pop('#bn-t', 52.45, 0, 540, 480);
+tl.fromTo('#bn-s', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 53.4);
+[55.45, 55.85, 56.55, 57.3].forEach((t, i) => pop('#bn-' + i, t, 0, itensKit[i][2], itensKit[i][3] - 100));
+pop('#bn-fim', 58.2, 0, 540, 1460);
+tl.to('#bn-fim', { scale: 1.06, svgOrigin: '540 1460', duration: 0.3, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 58.7);
 // FINAL
-tl.to('#final', { opacity: 1, duration: 0.25 }, 52.3);
-linhas.forEach((l, i) => tl.fromTo('#fr-' + i, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.25, ease: 'back.out(1.8)' }, 52.4 + i * 0.12));
-tl.fromTo('#fim-p', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 53.0);
-pop('#fim-c', 54.6, 0, 540, 1380);
-tl.to('#fim-c', { scale: 1.06, svgOrigin: '540 1380', duration: 0.3, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 55.0);
+tl.to('#final', { opacity: 1, duration: 0.25 }, 60.3);
+linhas.forEach((l, i) => tl.fromTo('#fr-' + i, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.25, ease: 'back.out(1.8)' }, 60.4 + i * 0.12));
+tl.fromTo('#fim-p', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 60.85);
+pop('#fim-c', 62.45, 0, 540, 1380);
+tl.to('#fim-c', { scale: 1.06, svgOrigin: '540 1380', duration: 0.3, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 62.85);
 tl.set({}, {}, DUR);
 
 // ---------- relógio externo (skill edit) ----------
