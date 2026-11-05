@@ -1,0 +1,385 @@
+{
+ "duracao": 69.14,
+ "voz": "voz/fala_master.wav",
+ "biblioteca": [
+  "sons",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/ui",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/hoje",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/roma"
+ ],
+ "ambientes": [
+  {
+   "som": "amb_natureza",
+   "de": 0,
+   "ate": 7.05,
+   "db": -26,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_sala",
+   "de": 7.05,
+   "ate": 21.05,
+   "db": -28,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_fogo",
+   "de": 21.05,
+   "ate": 32.35,
+   "db": -18,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_sala",
+   "de": 32.35,
+   "ate": 43.45,
+   "db": -28,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_choque",
+   "de": 32.4,
+   "ate": 38.15,
+   "db": -20,
+   "fade": 0.05
+  },
+  {
+   "som": "amb_natureza",
+   "de": 43.45,
+   "ate": 63.5,
+   "db": -26,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_tensao",
+   "de": 0,
+   "ate": 63.3,
+   "db": -34,
+   "fade": 1.0
+  }
+ ],
+ "passos": [
+  {
+   "som": "sfx_passo_rua",
+   "de": 23.4,
+   "ate": 24.5,
+   "intervalo": 0.22,
+   "db": -14
+  },
+  {
+   "som": "sfx_passo_rua",
+   "de": 32.1,
+   "ate": 33.6,
+   "intervalo": 0.22,
+   "db": -14
+  },
+  {
+   "som": "sfx_passo_rua",
+   "de": 44.2,
+   "ate": 45.9,
+   "intervalo": 0.12,
+   "db": -20
+  }
+ ],
+ "efeitos": [
+  {
+   "som": "whoosh-short",
+   "em": 0.2,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 0.45,
+   "db": -10
+  },
+  {
+   "som": "pop",
+   "em": 3.85,
+   "db": -14
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 6.2,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 6.55,
+   "db": -10
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 20.2,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 20.55,
+   "db": -10
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 31.5,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 31.85,
+   "db": -10
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 42.6,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 42.95,
+   "db": -10
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 52.0,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 52.35,
+   "db": -10
+  },
+  {
+   "som": "pop",
+   "em": 10.5,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 11.5,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 13.35,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 15.45,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 18.4,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 23.5,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 26.6,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 28.1,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 29.6,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 34.1,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 37.1,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 39.3,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 41.5,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 46.3,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 47.4,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 49.4,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 54.8,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 57.5,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 58.4,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 60.0,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 60.6,
+   "db": -16
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 13.45,
+   "db": -20
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 13.83,
+   "db": -20
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 14.21,
+   "db": -20
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 14.59,
+   "db": -20
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 14.97,
+   "db": -20
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 15.5,
+   "db": -22
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 16.06,
+   "db": -22
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 16.62,
+   "db": -22
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 17.18,
+   "db": -22
+  },
+  {
+   "som": "sfx_baque_madeira",
+   "em": 17.74,
+   "db": -22
+  },
+  {
+   "som": "chime",
+   "em": 19.3,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 24.3,
+   "db": -10
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 34.6,
+   "db": -10
+  },
+  {
+   "som": "sfx_clique_vazio",
+   "em": 38.1,
+   "db": -6
+  },
+  {
+   "som": "sfx_latido",
+   "em": 46.0,
+   "db": -6
+  },
+  {
+   "som": "sfx_latido",
+   "em": 47.3,
+   "db": -8
+  },
+  {
+   "som": "sfx_splash",
+   "em": 52.9,
+   "db": -6
+  },
+  {
+   "som": "sfx_bolhas",
+   "em": 55.0,
+   "db": -12
+  },
+  {
+   "som": "sfx_bolhas",
+   "em": 57.0,
+   "db": -14
+  },
+  {
+   "som": "sfx_vidro",
+   "em": 58.6,
+   "db": -10
+  },
+  {
+   "som": "sfx_splash",
+   "em": 60.1,
+   "db": -10
+  },
+  {
+   "som": "chime",
+   "em": 61.2,
+   "db": -14
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 63.2,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 65.3,
+   "db": -12
+  },
+  {
+   "som": "chime",
+   "em": 65.35,
+   "db": -14
+  }
+ ],
+ "ducking": {
+  "db": 6
+ },
+ "volume_final_lufs": -10
+}
