@@ -1,0 +1,132 @@
+{
+ "duracao": 34.49,
+ "voz": "voz/fala_master.wav",
+ "biblioteca": [
+  "sons",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/ui",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/escola",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/hoje"
+ ],
+ "ambientes": [
+  {
+   "som": "amb_sala",
+   "de": 0,
+   "ate": 34.49,
+   "db": -30,
+   "fade": 0.5
+  },
+  {
+   "som": "amb_tensao",
+   "de": 10.8,
+   "ate": 24.9,
+   "db": -32,
+   "fade": 1.0
+  }
+ ],
+ "efeitos": [
+  {
+   "som": "whoosh",
+   "em": 0.2,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 2.85,
+   "db": -8
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 4.75,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 8.45,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 11.2,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 12.6,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 16.55,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 17.5,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 9.9,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 8.8,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 12.95,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 17.85,
+   "db": -12
+  },
+  {
+   "som": "whoosh-short",
+   "em": 20.35,
+   "db": -14
+  },
+  {
+   "som": "pop",
+   "em": 21.35,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 23.4,
+   "db": -12
+  },
+  {
+   "som": "sfx_chamando",
+   "em": 24.95,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 26.3,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 26.55,
+   "db": -8
+  },
+  {
+   "som": "pop",
+   "em": 29.1,
+   "db": -12
+  },
+  {
+   "som": "chime",
+   "em": 29.15,
+   "db": -14
+  }
+ ],
+ "ducking": {
+  "db": 6
+ },
+ "volume_final_lufs": -10
+}
