@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Picada de cobra — o que fazer</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<script src="boneco.js"></script>
+<script src="cenario.js"></script>
+<script src="marca.js"></script>
+<script src="legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <g id="cam">
+    <g id="trilha"></g>
+    <g id="cobra-g"></g>
+    <g id="atores"></g>
+    <g id="frente"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="flash" style="opacity:0"></g>
+  <g id="cartoes"></g>
+  <g id="textos"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO (1080×1920, 63 s) — tempos casados com a narração (voz/fala.wav, transcript.json)
+   0–8.5    na trilha: a jararaca vem rastejando e dá o bote no tornozelo do Léo · "PICADA DE COBRA"
+   8.5–18.8 OS RISCOS: jararaca ≈ 85% dos acidentes · necrose · sangramentos · rins
+   18.8–28.6 NÃO FAÇA: amarrar (garrote) · cortar · chupar o veneno · pó de café, alho…
+   28.6–38.3 O CERTO: água e sabão · calma · membro na horizontal · foto de longe · nunca tentar pegar
+   38.3–48.0 HOSPITAL: 192 · soro antiofídico · de graça pelo SUS
+   48.0–56.0 PREVENÇÃO: bota e luva · olhar antes de pôr a mão (buraco, mato alto, lenha)
+   56.0–63.1 "salva e manda pra quem faz trilha" + SAMU 192 · Disque-Intoxicação 0800 722 6001
+   Fontes: Ministério da Saúde (acidentes ofídicos), Instituto Butantan, guias de vigilância. */
+const W = 1080, H = 1920, Y = 1500, NS = 'http://www.w3.org/2000/svg', DUR = 63.13;
+const $ = q => document.querySelector(q);
+const LARANJA = '#FF7A00', L_ = '#1D1D2B', VERM = '#D7263D';
+const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
+
+// ---------- cenário: trilha no mato ----------
+const C = Cenario({ seed: 51, luz: -1, hora: 'tarde', prefixo: 'tr' });
+let s = `<defs>${C.defs()}</defs>` + C.ceu({ nuvens: 3, astroX: 820, astroY: 300 });
+s += C.distante({ y: 1060, tipo: 'colinas', profundidade: 0.2 }) + C.distante({ y: 1180, tipo: 'colinas', profundidade: 0.5 });
+[[90, 1240, 420], [220, 1260, 360], [930, 1250, 440], [1030, 1270, 380]].forEach(([x, b, h]) => { s += C.pinheiro(x, b, h); });
+s += `<rect y="1230" width="${W}" height="${H - 1230}" fill="#7FA34A"/><rect y="1230" width="${W}" height="60" fill="#6E9A3E"/>`;
+s += `<path d="M380 1230 Q470 1380 300 1520 Q140 1680 260 1920 L720 1920 Q560 1700 700 1520 Q840 1360 560 1230Z" fill="#C9A26A"/><path d="M380 1230 Q470 1380 300 1520 Q140 1680 260 1920" stroke="#A9824A" stroke-width="8" fill="none"/>`;
+for (let i = 0; i < 30; i++) { const x = (i * 97) % W, yb = 1260 + (i * 53) % 640; s += `<path d="M${x} ${yb} q-8 -40 -18 -60 M${x} ${yb} q2 -50 6 -72 M${x} ${yb} q10 -40 22 -56" stroke="${i % 2 ? '#4E7A2A' : '#5E8A34'}" stroke-width="6" fill="none" stroke-linecap="round"/>`; }
+// pedra onde ele senta
+s += `<ellipse cx="440" cy="1500" rx="130" ry="26" fill="#000" opacity=".2"/><path d="M320 1500 Q310 1420 380 1395 Q450 1375 520 1400 Q570 1420 560 1500Z" fill="#9AA0A8" stroke="${L_}" stroke-width="6"/><path d="M350 1440 Q400 1410 470 1415" stroke="#C9CFD5" stroke-width="10" fill="none" stroke-linecap="round"/>`;
+$('#trilha').innerHTML = s;
+// capim alto na frente (primeiro plano)
+$('#frente').innerHTML = [...Array(9)].map((_, i) => { const x = 700 + i * 48, yb = 1900; return `<path d="M${x} ${yb} q-20 -120 -40 -200 M${x} ${yb} q6 -150 14 -230 M${x} ${yb} q26 -110 50 -180" stroke="${i % 2 ? '#3E6A22' : '#4E7A2A'}" stroke-width="12" fill="none" stroke-linecap="round"/>`; }).join('');
+$('#acabamento').innerHTML = C.atmosfera({ grao: 0.22 });
+
+// ---------- jararaca: corpo em ondas (muda a cada quadro), manchas escuras, cabeça triangular ----------
+const COB = { x: 1300, y: 1530, len: 420, fase: 0, k: 1.8, boca: 0 };
+function corpoCobra({ x, y, len, fase, k = 1, dir = -1, boca = 0 }) {
+  const pts = [];
+  for (let i = 0; i <= 40; i++) { const u = i / 40; pts.push([x - dir * u * len * k, y + Math.sin(u * 9 - fase) * 22 * k * (0.4 + u * 0.6)]); }
+  const d = 'M' + pts.map(p => p.map(v => v.toFixed(1)).join(' ')).join(' L');
+  const [hx, hy] = pts[0];
+  const larg = 30 * k;
+  let g = `<path d="${d}" stroke="${L_}" stroke-width="${larg + 10}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+    + `<path d="${d}" stroke="#9A7444" stroke-width="${larg}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+    + `<path d="${d}" stroke="#4A3420" stroke-width="${larg * 0.75}" fill="none" stroke-dasharray="${14 * k} ${22 * k}"/>`
+    + `<path d="${d}" stroke="#C9A27A" stroke-width="${larg * 0.18}" fill="none" stroke-dasharray="${8 * k} ${28 * k}" stroke-dashoffset="${-10 * k}"/>`;
+  // cabeça triangular (jararaca), olho, língua
+  const a = 18 * k * dir;
+  g += `<g transform="translate(${hx.toFixed(1)} ${hy.toFixed(1)})"><path d="M${-dir * 10 * k} ${-24 * k} L${dir * 40 * k} ${-6 * k - boca * 10 * k} L${dir * 46 * k} ${4 * k} L${dir * 40 * k} ${10 * k + boca * 14 * k} L${-dir * 10 * k} ${24 * k}Z" fill="#8A6A3A" stroke="${L_}" stroke-width="${5 * k}" stroke-linejoin="round"/>`
+    + `<circle cx="${dir * 18 * k}" cy="${-8 * k}" r="${6 * k}" fill="#F2C230" stroke="${L_}" stroke-width="${2 * k}"/><rect x="${dir * 17 * k - 1.5 * k}" y="${-13 * k}" width="${3 * k}" height="${10 * k}" fill="${L_}"/>`
+    + (boca > 0.3 ? `<path d="M${dir * 30 * k} ${-2 * k} l${dir * 6 * k} ${10 * k} M${dir * 36 * k} ${-2 * k} l${dir * 4 * k} ${10 * k}" stroke="#fff" stroke-width="${3 * k}"/>` : `<path d="M${dir * 46 * k} ${4 * k} l${dir * 18 * k} 0 l${dir * 6 * k} -6 M${dir * 64 * k} ${4 * k} l${dir * 6 * k} 6" stroke="${VERM}" stroke-width="${3 * k}" fill="none"/>`)
+    + `</g>`;
+  return g;
+}
+
+// ---------- Léo ----------
+const leo = new Boneco($('#atores'), { escala: 1.15, figurino: 'sobrevivente', seed: 6 });
+const SENTA = { x: 440, y: 1405, chao: Y, dir: 1 };
+leo.base(0, 1.75, 'andar', { de: [80, Y], ate: [440, Y] });
+leo.base(1.75, 2.5, 'pular', { x: 440, y: Y, vista: 'frente', altura: 90 });
+leo.base(2.5, 8.4, 'sentar', { ...SENTA, transicao: 0.4 });
+leo.base(8.4, 32.0, 'sentar', { ...SENTA, transicao: 0 });
+leo.base(32.0, 38.4, 'sentar', { ...SENTA, estica: 140, transicao: 0.6 });
+leo.base(38.4, 48.1, 'sentar', { ...SENTA, estica: 140, transicao: 0 });
+leo.base(48.1, DUR, 'parado', { x: 440, y: Y, vista: 'frente', transicao: 0.4 });
+leo.braco('ambos', 1.8, 2.5, 'desespero');
+leo.braco('ambos', 2.6, 6.0, 'alcancar', { alvo: [560, 1420] });
+leo.braco('d', 6.4, 8.2, 'explicar');
+leo.braco('ambos', 21.4, 23.0, 'parar');
+leo.braco('d', 23.2, 27.3, 'apontar');
+leo.braco('ambos', 29.8, 31.0, 'alcancar', { alvo: [600, 1430] });
+leo.braco('ambos', 31.2, 32.0, 'cintura');
+leo.braco('d', 34.4, 36.2, 'contar', { n: 1 });
+leo.braco('ambos', 36.4, 37.6, 'parar');
+leo.braco('d', 40.5, 42.0, 'contar', { n: 1 });
+leo.braco('d', 46.4, 47.8, 'joinha');
+leo.braco('ambos', 49.8, 51.0, 'explicar');
+leo.braco('d', 51.1, 55.0, 'apontar');
+leo.braco('d', 57.6, 60.6, 'joinha');
+[[0, 'normal'], [1.75, 'susto'], [2.5, 'medo'], [6.6, 'preocupado'], [19.5, 'serio'], [29.2, 'determinado'], [31.2, 'aliviado'], [34.2, 'determinado'],
+ [38.9, 'determinado'], [46.4, 'feliz'], [48.5, 'determinado'], [56.5, 'alegre']].forEach(([t, e], i, a) => leo.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
+leo.cabeca(0.9, 1.75, { baixar: 8, olhar: [6, 6] });
+leo.cabeca(2.6, 6.0, { baixar: 12, olhar: [5, 7] });
+
+// ---------- textos e cartões ----------
+const T = $('#textos');
+const add = (id, svg, pai = T) => { const g = mk(pai, id); g.innerHTML = svg; g.style.opacity = 0; return g; };
+add('t-ai', Marca.impacto(700, 1180, 'AI!!', { fs: 150 }));
+add('t-titulo', Marca.faixa(540, 470, 'PICADA DE COBRA', { fs: 84 }));
+add('t-vida', Marca.apoio(540, 640, 'PODE SALVAR UMA VIDA', { fs: 62 }));
+const selo = (x, y, t, bom) => {
+  const fs = 40, w = Marca.largura(t, fs) + 112, h = 66;
+  const icone = bom ? `<circle cx="${x + 33}" cy="${y}" r="21" fill="${LARANJA}"/><path d="M${x + 22} ${y} l8 8 l15 -17" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+                    : `<circle cx="${x + 33}" cy="${y}" r="21" fill="${VERM}"/><path d="M${x + 24} ${y - 9} l18 18 M${x + 42} ${y - 9} l-18 18" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`;
+  return `<rect x="${x + 7}" y="${y - h / 2 + 7}" width="${w}" height="${h}" rx="${h / 2}" fill="#000" opacity=".35"/><rect x="${x}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="#111"/>${icone}<text x="${x + 66}" y="${y + fs * 0.36}" font-size="${fs}" fill="${bom ? LARANJA : '#fff'}">${t}</text>`;
+};
+add('t-nao', Marca.faixa(540, 470, 'NÃO FAÇA!', { fs: 92 }));
+const NAO = [['AMARRAR (GARROTE)', 21.5], ['CORTAR O LOCAL', 23.15], ['CHUPAR O VENENO', 23.65], ['PÓ DE CAFÉ, ALHO...', 25.3]];
+NAO.forEach(([t], i) => add('tn-' + i, selo(50, 600 + i * 86, t, false)));
+add('t-certo', Marca.faixa(540, 470, 'O CERTO', { fs: 92 }));
+const CERTO = [['LAVAR COM ÁGUA E SABÃO', 29.85, 1], ['MANTER A CALMA', 31.15, 1], ['MEMBRO NA HORIZONTAL', 32.05, 1], ['FOTO DA COBRA, DE LONGE', 34.45, 1], ['NUNCA TENTE PEGAR', 36.35, 0]];
+CERTO.forEach(([t, , b], i) => add('tc-' + i, selo(50, 600 + i * 86, t, b)));
+// cartões em tela cheia
+const fundoCartao = `<rect width="${W}" height="${H}" fill="#111"/><g opacity=".14" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`;
+const linhaRisco = (id, y, t1, t2) => `<g id="${id}" style="opacity:0"><rect x="90" y="${y - 70}" width="900" height="150" rx="30" fill="#2A2A30" stroke="${VERM}" stroke-width="6"/><circle cx="170" cy="${y + 5}" r="44" fill="${VERM}"/><text x="170" y="${y + 26}" font-size="60" fill="#fff" text-anchor="middle">!</text>${Marca.texto(240, y - 4, t1, { fs: 52, cor: '#fff', ancora: 'start', sombra: false })}${Marca.texto(240, y + 48, t2, { fs: 34, cor: '#FFB27A', ancora: 'start', sombra: false })}</g>`;
+add('c-riscos', fundoCartao + Marca.faixa(540, 470, 'OS RISCOS', { fs: 96 })
+  + `<g id="r-cobra" style="opacity:0"><g id="r-cobra-desenho"></g>${Marca.texto(540, 880, 'JARARACA', { fs: 80, cor: LARANJA, sombra: false })}${Marca.texto(540, 950, 'CAUSA CERCA DE 85% DOS ACIDENTES', { fs: 40, cor: '#fff', sombra: false })}</g>`
+  + linhaRisco('r-1', 1110, 'NECROSE', 'O TECIDO EM VOLTA MORRE') + linhaRisco('r-2', 1290, 'SANGRAMENTOS', 'O SANGUE PARA DE COAGULAR DIREITO') + linhaRisco('r-3', 1470, 'OS RINS PODEM PARAR', 'A PRINCIPAL CAUSA DE MORTE'), $('#cartoes'));
+const soro = `<g transform="translate(540 1010)"><rect x="-70" y="-220" width="140" height="40" rx="8" fill="#9AA0A8" stroke="${L_}" stroke-width="5"/><rect x="-46" y="-250" width="92" height="36" rx="6" fill="${VERM}" stroke="${L_}" stroke-width="5"/><path d="M-90 -180 h180 v200 q0 40 -40 40 h-100 q-40 0 -40 -40Z" fill="#CFEAF6" stroke="${L_}" stroke-width="7"/><path d="M-90 -40 h180 v60 q0 40 -40 40 h-100 q-40 0 -40 -40Z" fill="#F2E8C9"/><rect x="-74" y="-150" width="148" height="90" rx="8" fill="#fff" stroke="${L_}" stroke-width="4"/><text y="-112" font-family="'Anton', sans-serif" font-size="30" fill="${L_}" text-anchor="middle">SORO</text><text y="-76" font-family="'Anton', sans-serif" font-size="24" fill="${VERM}" text-anchor="middle">ANTIOFÍDICO</text><path d="M-70 -170 L-60 0" stroke="#fff" stroke-width="12" opacity=".5"/></g>`;
+add('c-hosp', fundoCartao + Marca.faixa(540, 470, 'VÁ RÁPIDO PRO HOSPITAL', { fs: 70 })
+  + `<g id="h-192" style="opacity:0"><rect x="290" y="560" width="500" height="130" rx="65" fill="${VERM}" stroke="#fff" stroke-width="6"/>${Marca.texto(540, 648, 'LIGUE 192', { fs: 70, cor: '#fff', sombra: false })}</g>`
+  + `<g id="h-soro" style="opacity:0">${soro}${Marca.texto(540, 1170, 'SORO ANTIOFÍDICO', { fs: 66, cor: LARANJA, sombra: false })}${Marca.texto(540, 1235, 'SÓ NO HOSPITAL', { fs: 44, cor: '#fff', sombra: false })}</g>`
+  + `<g id="h-sus" style="opacity:0">${Marca.carimbo(540, 1400, 'DE GRAÇA PELO SUS!', { fs: 80 })}</g>`, $('#cartoes'));
+// prevenção: ícones
+const bota = `<path d="M-50 -170 h70 v120 q40 4 60 26 q14 18 0 34 h-130Z" fill="#5A3A22" stroke="${L_}" stroke-width="7" stroke-linejoin="round"/><path d="M-50 -10 h130" stroke="#2A1A10" stroke-width="12"/><path d="M-40 -150 h50" stroke="#8A5A30" stroke-width="8"/>`;
+const luva = `<path d="M-50 0 v-90 q0 -16 14 -16 v-60 q0 -14 14 -14 q12 0 12 14 v50 v-74 q0 -14 14 -14 q12 0 12 14 v74 v-64 q0 -14 14 -14 q12 0 12 14 v70 v-44 q0 -14 14 -14 q12 0 12 14 v100 q0 40 -40 54Z" fill="#F2B705" stroke="${L_}" stroke-width="6" stroke-linejoin="round"/>`;
+const buraco = `<ellipse cx="0" cy="-30" rx="90" ry="40" fill="#7A5A3A" stroke="${L_}" stroke-width="6"/><ellipse cx="0" cy="-26" rx="60" ry="24" fill="#1A120A"/>`;
+const capim = [...Array(7)].map((_, i) => `<path d="M${-60 + i * 20} 0 q${-10 + i * 3} -100 ${-20 + i * 6} -170" stroke="${i % 2 ? '#3E6A22' : '#5E8A34'}" stroke-width="12" fill="none" stroke-linecap="round"/>`).join('');
+const lenha = [0, 1, 2].map(i => `<g transform="translate(${(i - 1) * 50} ${-30 - (i === 1 ? 50 : 0)})"><rect x="-80" y="-24" width="160" height="48" rx="24" fill="#8A5A30" stroke="${L_}" stroke-width="5"/><ellipse cx="80" cy="0" rx="22" ry="24" fill="#C9A26A" stroke="${L_}" stroke-width="5"/><circle cx="80" cy="0" r="8" fill="none" stroke="#8A5A30" stroke-width="3"/></g>`).join('');
+const quadro = (x, y, icone, t) => `<g transform="translate(${x} ${y})"><rect x="-150" y="-230" width="300" height="300" rx="30" fill="#2A2A30" stroke="${LARANJA}" stroke-width="6"/><g transform="translate(0 0)">${icone}</g></g>${Marca.texto(x, y + 130, t, { fs: 44, cor: '#fff', sombra: false })}`;
+add('c-prev', fundoCartao + Marca.faixa(540, 470, 'PRA EVITAR', { fs: 96 })
+  + `<g id="p-1" style="opacity:0">${quadro(300, 860, bota, 'BOTA')}${quadro(780, 860, luva, 'LUVA')}</g>`
+  + `<g id="p-2" style="opacity:0">${Marca.texto(540, 1100, 'OLHE ANTES DE PÔR A MÃO EM:', { fs: 44, cor: LARANJA, sombra: false })}</g>`
+  + `<g id="p-3" style="opacity:0">${quadro(200, 1460, buraco, 'BURACOS')}</g><g id="p-4" style="opacity:0">${quadro(540, 1460, capim, 'MATO ALTO')}</g><g id="p-5" style="opacity:0">${quadro(880, 1460, lenha, 'LENHA')}</g>`, $('#cartoes'));
+add('c-fim', fundoCartao + `<g id="f-t">${Marca.texto(540, 600, 'SALVA ESSE VÍDEO', { fs: 92, cor: '#fff', sombra: false })}${Marca.impacto(540, 740, 'E MANDA PRA QUEM', { fs: 90 })}${Marca.impacto(540, 850, 'FAZ TRILHA!', { fs: 100 })}</g>`
+  + `<g id="f-n" style="opacity:0"><rect x="110" y="960" width="400" height="160" rx="24" fill="#2A2A30" stroke="${LARANJA}" stroke-width="5"/>${Marca.texto(310, 1030, 'SAMU', { fs: 48, cor: '#fff', sombra: false })}${Marca.texto(310, 1090, '192', { fs: 56, cor: LARANJA, sombra: false })}`
+  + `<rect x="570" y="960" width="400" height="160" rx="24" fill="#2A2A30" stroke="${LARANJA}" stroke-width="5"/>${Marca.texto(770, 1025, 'DISQUE-INTOXICAÇÃO', { fs: 30, cor: '#fff', sombra: false })}${Marca.texto(770, 1088, '0800 722 6001', { fs: 44, cor: LARANJA, sombra: false })}</g>`
+  + `<text x="540" y="1250" font-family="'DejaVu Sans', sans-serif" font-size="23" fill="#9A9AA2" text-anchor="middle">Conteúdo informativo. Fontes: Ministério da Saúde e Instituto Butantan.</text>`
+  + `<text x="540" y="1282" font-family="'DejaVu Sans', sans-serif" font-size="23" fill="#9A9AA2" text-anchor="middle">Em caso de picada, procure atendimento imediatamente.</text>`, $('#cartoes'));
+// jararaca grande no cartão de riscos (desenho fixo)
+$('#r-cobra-desenho').innerHTML = corpoCobra({ x: 900, y: 730, len: 340, fase: 1.2, k: 2.3, dir: 1 });
+// clarão do bote
+$('#flash').innerHTML = `<rect width="${W}" height="${H}" fill="#fff"/>`;
+
+// ---------- legenda ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 66, enfase: ['COBRA', 'JARARACA', 'RINS', 'NÃO', 'ÁGUA', 'SABÃO', 'CALMA', 'HORIZONTAL', 'NUNCA', '192', 'SORO', 'SUS', 'BOTA', 'LUVA'] })
+  .esconder([[56.0, 99]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const pop = (sel, t, dur, ox, oy) => {
+  tl.fromTo(sel, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to(sel, { opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' }, t + dur);
+};
+const mostra = (sel, a, b) => { tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.25 }, a); if (b) tl.to(sel, { opacity: 0, duration: 0.2 }, b); };
+const entra = (sel, t, b) => { tl.fromTo(sel, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: 'back.out(1.8)' }, t); if (b) tl.to(sel, { opacity: 0, duration: 0.15 }, b); };
+// cobra: rasteja até o tornozelo, dá o bote, recua
+tl.fromTo(COB, { x: 1300 }, { x: 680, duration: 1.55, ease: 'none' }, 0.2);
+tl.to(COB, { x: 560, boca: 1, duration: 0.1, ease: 'power3.out' }, 1.75);
+tl.to(COB, { x: 680, boca: 0, duration: 0.25, ease: 'power2.in' }, 1.85);
+tl.to(COB, { x: 1500, duration: 2.0, ease: 'power1.in' }, 2.6);
+tl.to(COB, { fase: 60, duration: 4.6, ease: 'none' }, 0);
+tl.fromTo('#flash', { opacity: 0 }, { opacity: 0.85, duration: 0.05 }, 1.78); tl.to('#flash', { opacity: 0, duration: 0.3 }, 1.83);
+tl.to('#cam', { x: 12, duration: 0.04, yoyo: true, repeat: 7, ease: 'none' }, 1.8);
+pop('#t-ai', 1.82, 1.2, 700, 1180);
+pop('#t-titulo', 2.4, 6.0, 540, 470);
+pop('#t-vida', 6.6, 1.8, 540, 640);
+tl.fromTo('#cam', { scale: 1.0, svgOrigin: '440 1400' }, { scale: 1.12, duration: 6, ease: 'sine.inOut' }, 2.5);
+// riscos
+mostra('#c-riscos', 8.5, 18.8);
+tl.fromTo('#r-cobra', { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }, 9.6);
+entra('#r-1', 13.4); entra('#r-2', 15.9); entra('#r-3', 17.1);
+// não faça
+tl.to('#cam', { scale: 1.0, duration: 0.01 }, 18.8);
+pop('#t-nao', 19.5, 9.0, 540, 470);
+NAO.forEach(([, t], i) => entra('#tn-' + i, t, 28.6));
+// o certo
+pop('#t-certo', 29.0, 9.2, 540, 470);
+CERTO.forEach(([, t], i) => entra('#tc-' + i, t, 38.3));
+tl.fromTo('#cam', { scale: 1.0, svgOrigin: '520 1420' }, { scale: 1.08, duration: 9, ease: 'sine.inOut' }, 29.0);
+// hospital
+mostra('#c-hosp', 38.3, 48.0);
+pop('#h-192', 40.55, 0, 540, 625); tl.fromTo('#h-soro', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.8)' }, 43.2); pop('#h-sus', 46.3, 0, 540, 1400);
+// prevenção
+mostra('#c-prev', 48.0, 56.0);
+pop('#p-1', 49.75, 0, 540, 800); tl.fromTo('#p-2', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 51.0);
+pop('#p-3', 52.85, 0, 200, 1400); pop('#p-4', 53.35, 0, 540, 1400); pop('#p-5', 53.95, 0, 880, 1400);
+// final
+mostra('#c-fim', 56.0);
+tl.fromTo('#f-t', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 56.1);
+tl.fromTo('#f-n', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 58.0);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+window.__timeline = tl;
+window.__duration = DUR;
+window.__seek = t => {
+  tl.seek(t, false);
+  leo.desenhar(t);
+  $('#cobra-g').innerHTML = t < 4.7 ? corpoCobra({ x: COB.x, y: COB.y, len: COB.len, fase: COB.fase, k: COB.k, dir: -1, boca: COB.boca }) : '';
+  leg.seek(t);
+};
+window.__seek(0);
+</script></body></html>
