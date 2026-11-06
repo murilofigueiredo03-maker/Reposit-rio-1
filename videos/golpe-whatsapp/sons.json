@@ -1,5 +1,5 @@
 {
- "duracao": 34.49,
+ "duracao": 59.44,
  "voz": "voz/fala_master.wav",
  "biblioteca": [
   "sons",
@@ -11,14 +11,14 @@
   {
    "som": "amb_sala",
    "de": 0,
-   "ate": 34.49,
+   "ate": 59.44,
    "db": -30,
    "fade": 0.5
   },
   {
    "som": "amb_tensao",
-   "de": 10.8,
-   "ate": 24.9,
+   "de": 11.7,
+   "ate": 30.6,
    "db": -32,
    "fade": 1.0
   }
@@ -36,92 +36,137 @@
   },
   {
    "som": "sfx_notificacao",
-   "em": 4.75,
+   "em": 5.25,
    "db": -12
   },
   {
    "som": "sfx_notificacao",
-   "em": 8.45,
+   "em": 8.95,
    "db": -12
   },
   {
    "som": "sfx_notificacao",
-   "em": 11.2,
+   "em": 12.1,
    "db": -12
   },
   {
    "som": "sfx_notificacao",
-   "em": 12.6,
+   "em": 13.5,
    "db": -12
   },
   {
    "som": "sfx_notificacao",
-   "em": 16.55,
+   "em": 17.55,
    "db": -12
   },
   {
    "som": "sfx_notificacao",
-   "em": 17.5,
+   "em": 18.5,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 25.4,
+   "db": -12
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 27.0,
    "db": -12
   },
   {
    "som": "pop",
-   "em": 9.9,
+   "em": 10.4,
+   "db": -14
+  },
+  {
+   "som": "pop",
+   "em": 22.6,
    "db": -14
   },
   {
    "som": "impact-bass-2",
-   "em": 8.8,
+   "em": 9.3,
    "db": -12
   },
   {
    "som": "impact-bass-2",
-   "em": 12.95,
+   "em": 13.85,
    "db": -12
   },
   {
    "som": "impact-bass-2",
-   "em": 17.85,
+   "em": 18.85,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 27.35,
    "db": -12
   },
   {
    "som": "whoosh-short",
-   "em": 20.35,
+   "em": 30.6,
    "db": -14
   },
   {
    "som": "pop",
-   "em": 21.35,
+   "em": 31.55,
    "db": -12
   },
   {
    "som": "pop",
-   "em": 23.4,
+   "em": 33.6,
    "db": -12
   },
   {
-   "som": "sfx_chamando",
-   "em": 24.95,
-   "db": -14
+   "som": "pop",
+   "em": 35.5,
+   "db": -12
   },
   {
-   "som": "chime",
-   "em": 26.3,
+   "som": "pop",
+   "em": 37.55,
+   "db": -12
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 43.8,
    "db": -12
   },
   {
    "som": "impact-bass-1",
-   "em": 26.55,
+   "em": 45.95,
+   "db": -10
+  },
+  {
+   "som": "chime",
+   "em": 46.0,
+   "db": -14
+  },
+  {
+   "som": "sfx_chamando",
+   "em": 48.95,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 50.3,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 50.55,
    "db": -8
   },
   {
    "som": "pop",
-   "em": 29.1,
+   "em": 53.1,
    "db": -12
   },
   {
    "som": "chime",
-   "em": 29.15,
+   "em": 53.15,
    "db": -14
   }
  ],

@@ -33,17 +33,19 @@
   <g id="legenda"></g>
 </svg>
 <script>
-/* ROTEIRO (1080×1920, ~34 s) — teste do formato "conversa no celular" para a Fatos Úteis
+/* ROTEIRO (1080×1920, ~59 s) — formato "conversa no celular" para a Fatos Úteis
    0.3   gancho: "se a sua mãe receber essa mensagem, cuidado: é golpe"
-   4.2   conversa: oi mãe · troquei de número (⚠ NÚMERO NOVO) · resposta da mãe
-   10.8  pressa: conta pra pagar hoje, app travou (⚠ PRESSA)
-   16.4  pede Pix pra conta de outra pessoa (⚠ PIX PRA OUTRA PESSOA)
-   20.4  o que fazer: ligar pro número antigo · chamada de vídeo
-   24.9  a mãe liga pro número antigo → o Léo de verdade atende: "EU NÃO TROQUEI DE NÚMERO!"
-   29.0  "manda pra sua mãe"
+   4.7   conversa: oi mãe · troquei de número (⚠ NÚMERO NOVO) · resposta da mãe
+   11.7  pressa: conta pra pagar hoje, app travou (⚠ PRESSA)
+   17.4  pede Pix pra conta de outra pessoa (⚠ PIX PRA OUTRA PESSOA)
+   22.0  a mãe pede pra ligar · "o microfone quebrou" · "faz logo!!" (⚠ NÃO QUER LIGAR)
+   30.6  o que fazer: número antigo · chamada de vídeo · outra pessoa da família · desconfiar de número não salvo
+   43.9  proteja o seu WhatsApp: verificação em duas etapas
+   48.9  a mãe liga pro número antigo → o Léo de verdade atende: "EU NÃO TROQUEI DE NÚMERO!"
+   53.1  "manda pra sua mãe"
    Fontes: orientações contra o golpe do falso parente (confirmar por outro canal, ligar pro número antigo,
    chamada de vídeo, desconfiar de número não salvo). Número e nomes da conversa são fictícios. */
-const W = 1080, H = 1920, NS = 'http://www.w3.org/2000/svg', DUR = 34.49;
+const W = 1080, H = 1920, NS = 'http://www.w3.org/2000/svg', DUR = 59.44;
 const $ = q => document.querySelector(q);
 const LARANJA = '#FF7A00', L_ = '#1D1D2B', VERDE = '#1F6E5E', VERM = '#D7263D';
 const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
@@ -56,7 +58,7 @@ $('#fundo').innerHTML = `<g style="filter: blur(6px)">${Cidade(Cenario({ seed: 4
 const mae = new Boneco($('#mae-g'), { escala: 1.0, seed: 12, figurino: { tronco: 'tunicaLonga', cor: '#8E4AA8', mangas: 'curta', pes: 'sapato', corPes: '#3A2A20', cabelo: 'cacheado', corCabelo: '#5A3A2A', cinto: 'none' } });
 mae.base(0, DUR, 'parado', { x: 120, y: 1560, vista: 'frente' });
 mae.braco('d', 0, DUR, 'segurar');
-[[0, 'feliz'], [8.4, 'pensando'], [12.6, 'preocupado'], [17.6, 'desconfiado'], [20.4, 'determinado'], [26.3, 'espanto'], [28.6, 'aliviado']].forEach(([t, e], i, a) => mae.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
+[[0, 'feliz'], [8.9, 'pensando'], [13.5, 'preocupado'], [18.5, 'desconfiado'], [22.4, 'pensando'], [25.4, 'desconfiado'], [27.0, 'bravo'], [30.6, 'determinado'], [50.3, 'espanto'], [52.6, 'aliviado']].forEach(([t, e], i, a) => mae.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
 mae.cabeca(0, DUR, { olhar: [6, -2], inclinar: -6 });
 
 // ---------- celular ----------
@@ -83,20 +85,23 @@ $('#celular').innerHTML = cel;
 // o Léo de verdade, na chamada de vídeo (dentro da tela)
 const leo = new Boneco($('#leo-video'), { escala: 1.15, seed: 6, figurino: 'sobrevivente' });
 leo.base(0, DUR, 'parado', { x: W / 2, y: PY + PH + 260, vista: 'frente' });
-leo.braco('ambos', 26.6, 28.6, 'desespero');
-leo.braco('d', 28.8, DUR, 'apontar');
-leo.expressao(0, 28.6, 'espanto'); leo.expressao(28.6, DUR, 'serio');
+leo.braco('ambos', 50.6, 52.6, 'desespero');
+leo.braco('d', 52.8, DUR, 'apontar');
+leo.expressao(0, 52.6, 'espanto'); leo.expressao(52.6, DUR, 'serio');
 $('#leo-video').setAttribute('clip-path', 'url(#tela)');
 
 // ---------- mensagens ----------
 const MSGS = [   // [quem: 'ele' | 'mae', linhas, hora, aparece em, alerta]
-  ['ele', ['Oi mãe, tudo bem?'], '14:02', 4.75],
-  ['ele', ['Troquei de número,', 'salva esse aqui'], '14:02', 8.45, 'NÚMERO NOVO'],
-  ['mae', ['Oi filho! Salvei sim'], '14:03', 9.9],
-  ['ele', ['Mãe, tô com um', 'probleminha...'], '14:03', 11.2],
-  ['ele', ['Preciso pagar uma conta', 'HOJE e o app do banco', 'travou'], '14:04', 12.6, 'PRESSA'],
-  ['ele', ['Faz um Pix de R$ 1.500', 'pra mim? Amanhã', 'te devolvo'], '14:04', 16.55],
-  ['ele', ['A chave tá no nome', 'de um amigo, tá?'], '14:05', 17.5, 'PIX PRA OUTRA PESSOA'],
+  ['ele', ['Oi mãe, tudo bem?'], '14:02', 5.25],
+  ['ele', ['Troquei de número,', 'salva esse aqui'], '14:02', 8.95, 'NÚMERO NOVO'],
+  ['mae', ['Oi filho! Salvei sim'], '14:03', 10.4],
+  ['ele', ['Mãe, tô com um', 'probleminha...'], '14:03', 12.1],
+  ['ele', ['Preciso pagar uma conta', 'HOJE e o app do banco', 'travou'], '14:04', 13.5, 'PRESSA'],
+  ['ele', ['Faz um Pix de R$ 1.500', 'pra mim? Amanhã', 'te devolvo'], '14:04', 17.55],
+  ['ele', ['A chave tá no nome', 'de um amigo, tá?'], '14:05', 18.5, 'PIX PRA OUTRA PESSOA'],
+  ['mae', ['Me liga, filho?'], '14:05', 22.6],
+  ['ele', ['Não dá mãe, o microfone', 'do celular quebrou'], '14:06', 25.4],
+  ['ele', ['Faz logo, por favor!!', 'É urgente'], '14:06', 27.0, 'NÃO QUER LIGAR'],
 ];
 const chat = $('#chat'), alertas = mk(mk($('#efeitos'), 'alertas-clip'), 'alertas');
 $('#alertas-clip').setAttribute('clip-path', 'url(#area-alertas)');
@@ -125,10 +130,16 @@ const T = $('#textos');
 const add = (id, svg) => { const g = mk(T, id); g.innerHTML = svg; g.style.opacity = 0; };
 add('t-golpe', Marca.carimbo(540, 1600, 'É GOLPE!', { fs: 120 }));
 add('t-dicas', `<rect x="${PX - 26}" y="${PY - 26}" width="${PW + 52}" height="${PH + 52}" rx="66" fill="#111" opacity=".88"/>` + Marca.faixa(540, 560, 'ANTES DE PAGAR:', { fs: 74 }));
-const dica = (id, yy, t1, t2) => add(id, `<rect x="220" y="${yy - 70}" width="640" height="180" rx="30" fill="#2A2A30" stroke="${LARANJA}" stroke-width="6"/><circle cx="300" cy="${yy + 20}" r="44" fill="${LARANJA}"/><path d="M278 ${yy + 20} l16 18 l30 -36" stroke="#111" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` + Marca.texto(370, yy + 6, t1, { fs: 46, cor: '#fff', ancora: 'start', sombra: false }) + Marca.texto(370, yy + 62, t2, { fs: 46, cor: LARANJA, ancora: 'start', sombra: false }));
-dica('t-d1', 780, 'LIGUE PRO', 'NÚMERO ANTIGO');
-dica('t-d2', 1010, 'FAÇA UMA', 'CHAMADA DE VÍDEO');
-add('t-d3', Marca.texto(540, 1250, 'NUNCA PIX COM PRESSA', { fs: 44, cor: '#fff', sombra: false }) + Marca.texto(540, 1305, 'PRA CONTA DE TERCEIRO', { fs: 44, cor: '#fff', sombra: false }));
+const dica = (id, yy, t1, t2) => add(id, `<rect x="220" y="${yy - 70}" width="640" height="180" rx="30" fill="#2A2A30" stroke="${LARANJA}" stroke-width="6"/><circle cx="300" cy="${yy + 20}" r="44" fill="${LARANJA}"/><path d="M278 ${yy + 20} l16 18 l30 -36" stroke="#111" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` + Marca.texto(370, yy + 6, t1, { fs: 40, cor: '#fff', ancora: 'start', sombra: false }) + Marca.texto(370, yy + 58, t2, { fs: 40, cor: LARANJA, ancora: 'start', sombra: false }));
+dica('t-d1', 740, 'LIGUE PRO', 'NÚMERO ANTIGO');
+dica('t-d2', 940, 'FAÇA UMA', 'CHAMADA DE VÍDEO');
+dica('t-d3', 1140, 'CONFIRME COM ALGUÉM', 'DA FAMÍLIA');
+dica('t-d4', 1340, 'DESCONFIE DE NÚMERO', 'NÃO SALVO');
+// proteção do WhatsApp: verificação em duas etapas
+const cadeado = `<g transform="translate(540 900)"><path d="M-80 -60 V-120 a80 80 0 0 1 160 0 V-60" fill="none" stroke="#9AA0A8" stroke-width="30"/><rect x="-130" y="-70" width="260" height="210" rx="30" fill="#F2B705" stroke="#111" stroke-width="8"/><circle cx="0" cy="20" r="26" fill="#111"/><path d="M0 30 v50" stroke="#111" stroke-width="20" stroke-linecap="round"/></g>`;
+add('t-2fa', `<rect x="${PX - 26}" y="${PY - 26}" width="${PW + 52}" height="${PH + 52}" rx="66" fill="#111" opacity=".92"/>` + Marca.faixa(540, 560, 'PROTEJA O SEU WHATSAPP', { fs: 56 })
+  + `<g id="t-2fa-c">${cadeado}</g>` + Marca.texto(540, 1170, 'ATIVE A VERIFICAÇÃO', { fs: 56, cor: '#fff', sombra: false }) + Marca.texto(540, 1240, 'EM DUAS ETAPAS', { fs: 66, cor: LARANJA, sombra: false })
+  + Marca.texto(540, 1330, 'ASSIM NINGUÉM CLONA A SUA CONTA', { fs: 34, cor: '#ccc', sombra: false }));
 add('t-balao', Marca.balao(540, 640, 'EU NÃO TROQUEI DE NÚMERO!', { fs: 46, ponta: [-40, 150] }));
 add('t-cta', Marca.carimbo(540, 1610, 'MANDA PRA SUA MÃE!', { fs: 84 }) + `<g transform="translate(540 1750)"><rect x="-260" y="-48" width="520" height="86" rx="43" fill="${LARANJA}"/><text y="14" font-size="40" text-anchor="middle" fill="#111">COMPARTILHA ↓</text></g>`);
 
@@ -143,8 +154,8 @@ const pop = (sel, t, dur, ox, oy) => {
 };
 // celular entra de baixo; câmera aproxima devagar
 tl.fromTo('#celular', { y: 1300 }, { y: 0, duration: 0.7, ease: 'back.out(1.2)' }, 0.2);
-tl.fromTo('#cam', { scale: 1.0, svgOrigin: '540 930' }, { scale: 1.05, duration: 20, ease: 'sine.inOut' }, 0);
-pop('#t-golpe', 2.85, 1.6, 540, 1600);
+tl.fromTo('#cam', { scale: 1.0, svgOrigin: '540 930' }, { scale: 1.05, duration: 30, ease: 'sine.inOut' }, 0);
+pop('#t-golpe', 2.85, 1.9, 540, 1600);
 // mensagens (com "digitando…" antes das dele) e rolagem do chat quando enche
 const BASE = 1330;
 let rol = 0;
@@ -161,26 +172,28 @@ MSGS.forEach(([quem, , , t, alerta], i) => {
 });
 tl.to('.pt', { y: -8, duration: 0.18, yoyo: true, repeat: 99, stagger: 0.09, ease: 'sine.inOut' }, 3.5);
 // o que fazer
-tl.to('#t-dicas', { opacity: 1, duration: 0.3 }, 20.35);
-tl.to('#alertas-clip', { opacity: 0, duration: 0.25 }, 20.35);
-tl.fromTo('#t-d1', { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.35, ease: 'back.out(1.8)' }, 21.35);
-tl.fromTo('#t-d2', { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.35, ease: 'back.out(1.8)' }, 23.4);
-tl.fromTo('#t-d3', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 24.0);
-tl.to(['#t-dicas', '#t-d1', '#t-d2', '#t-d3'], { opacity: 0, duration: 0.25 }, 24.85);
+tl.to('#t-dicas', { opacity: 1, duration: 0.3 }, 30.6);
+tl.to('#alertas-clip', { opacity: 0, duration: 0.25 }, 30.6);
+[31.55, 33.6, 35.5, 37.55].forEach((t, i) => tl.fromTo('#t-d' + (i + 1), { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.35, ease: 'back.out(1.8)' }, t));
+tl.to(['#t-dicas', '#t-d1', '#t-d2', '#t-d3', '#t-d4'], { opacity: 0, duration: 0.25 }, 43.8);
+tl.to('#t-2fa', { opacity: 1, duration: 0.3 }, 43.9);
+tl.fromTo('#t-2fa-c', { scale: 0.3, svgOrigin: '540 900' }, { scale: 1, duration: 0.45, ease: 'back.out(2.2)' }, 45.95);
+tl.to('#t-2fa-c', { rotation: 6, svgOrigin: '540 900', duration: 0.12, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 46.5);
+tl.to('#t-2fa', { opacity: 0, duration: 0.25 }, 48.8);
 // a mãe liga pro número antigo… e o Léo de verdade atende
-tl.to('#ligacao', { opacity: 1, duration: 0.3 }, 24.9);
-tl.to('#lig-foto', { scale: 1.08, svgOrigin: `${W / 2} ${PY + 420}`, duration: 0.25, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 25.0);
-tl.to('#lig-video', { opacity: 1, duration: 0.2 }, 26.3);
-pop('#t-balao', 26.55, 0, 540, 640);
-tl.to('#cam', { x: 8, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 26.55);
-tl.to('#t-balao', { opacity: 0, duration: 0.2 }, 28.9);
-pop('#t-cta', 29.1, 0, 540, 1610);
-tl.to('#t-cta', { scale: 1.04, svgOrigin: '540 1610', duration: 0.3, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 29.6);
+tl.to('#ligacao', { opacity: 1, duration: 0.3 }, 48.9);
+tl.to('#lig-foto', { scale: 1.08, svgOrigin: `${W / 2} ${PY + 420}`, duration: 0.25, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 49.0);
+tl.to('#lig-video', { opacity: 1, duration: 0.2 }, 50.3);
+pop('#t-balao', 50.55, 0, 540, 640);
+tl.to('#cam', { x: 8, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 50.55);
+tl.to('#t-balao', { opacity: 0, duration: 0.2 }, 52.9);
+pop('#t-cta', 53.1, 0, 540, 1610);
+tl.to('#t-cta', { scale: 1.04, svgOrigin: '540 1610', duration: 0.3, yoyo: true, repeat: 9, ease: 'sine.inOut' }, 53.6);
 tl.set({}, {}, DUR);
 
 // ---------- relógio externo (skill edit) ----------
 window.__timeline = tl;
 window.__duration = DUR;
-window.__seek = t => { tl.seek(t, false); mae.desenhar(t); if (t > 26.2) leo.desenhar(t); leg.seek(t); };
+window.__seek = t => { tl.seek(t, false); mae.desenhar(t); if (t > 50.2) leo.desenhar(t); leg.seek(t); };
 window.__seek(0);
 </script></body></html>
