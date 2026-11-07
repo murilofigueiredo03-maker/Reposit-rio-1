@@ -1,0 +1,242 @@
+{
+ "duracao": 59.31,
+ "voz": "voz/fala_master.wav",
+ "biblioteca": [
+  "sons",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/ui",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/hoje",
+  "../../.claude/skills/sons-de-ambiente/biblioteca/escola"
+ ],
+ "ambientes": [
+  {
+   "som": "amb_sala",
+   "de": 0,
+   "ate": 7.35,
+   "db": -28,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_quarto_noite",
+   "de": 7.35,
+   "ate": 24.05,
+   "db": -24,
+   "fade": 0.4
+  },
+  {
+   "som": "amb_natureza",
+   "de": 24.05,
+   "ate": 36.55,
+   "db": -24,
+   "fade": 0.3
+  },
+  {
+   "som": "amb_sala",
+   "de": 36.55,
+   "ate": 52.5,
+   "db": -28,
+   "fade": 0.3
+  }
+ ],
+ "passos": [
+  {
+   "som": "sfx_passo_rua",
+   "de": 23.9,
+   "ate": 27.6,
+   "intervalo": 0.2,
+   "db": -16
+  },
+  {
+   "som": "sfx_passo_rua",
+   "de": 27.7,
+   "ate": 36.2,
+   "intervalo": 0.45,
+   "db": -18
+  }
+ ],
+ "efeitos": [
+  {
+   "som": "whoosh-short",
+   "em": 0.25,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 0.4,
+   "db": -10
+  },
+  {
+   "som": "pop",
+   "em": 4.6,
+   "db": -14
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 6.5,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 6.85,
+   "db": -12
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 14.6,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 14.95,
+   "db": -12
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 23.2,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 23.55,
+   "db": -12
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 35.7,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 36.05,
+   "db": -12
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 45.0,
+   "db": -12
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 45.35,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 11.35,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 12.25,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 17.0,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 18.65,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 28.75,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 31.35,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 33.55,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 39.05,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 42.05,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 43.35,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 46.85,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 49.75,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 50.6,
+   "db": -16
+  },
+  {
+   "som": "sfx_notificacao",
+   "em": 15.45,
+   "db": -12
+  },
+  {
+   "som": "whoosh",
+   "em": 16.4,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 42.05,
+   "db": -14
+  },
+  {
+   "som": "pop",
+   "em": 43.35,
+   "db": -12
+  },
+  {
+   "som": "sfx_goles",
+   "em": 46.7,
+   "db": -8
+  },
+  {
+   "som": "impact-bass-1",
+   "em": 49.75,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 50.6,
+   "db": -14
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 52.4,
+   "db": -12
+  },
+  {
+   "som": "chime",
+   "em": 52.6,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 54.5,
+   "db": -12
+  }
+ ],
+ "ducking": {
+  "db": 6
+ },
+ "volume_final_lufs": -10
+}

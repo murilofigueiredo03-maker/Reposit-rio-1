@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>5 hábitos saudáveis</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="gsap.min.js"></script>
+<script src="boneco.js"></script>
+<script src="cenario.js"></script>
+<script src="cidade.js"></script>
+<script src="escola.js"></script>
+<script src="marca.js"></script>
+<script src="legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="brilho-tela"><stop offset="0" stop-color="#7FC8FF" stop-opacity=".75"/><stop offset="1" stop-color="#7FC8FF" stop-opacity="0"/></radialGradient></defs>
+  <g id="cam">
+    <g id="cenarios"></g>
+    <g id="atras"></g>
+    <g id="atores"></g>
+    <g id="objetos"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="textos"></g>
+  <g id="numero" style="opacity:0"></g>
+  <g id="final" style="opacity:0"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO (1080×1920, 59 s) — tempos casados com a narração (voz/fala.wav, transcript.json)
+   0–7.1     gancho: "5 hábitos simples… salva pra não esquecer"
+   7.1–15.2  1 DURMA DE 7 A 9 HORAS — o corpo se recupera, a memória se organiza       [Cartilha do Sono 2025]
+   15.2–23.8 2 CELULAR LONGE 1 H ANTES DE DORMIR — a luz da tela atrapalha o sono     [Cartilha do Sono 2025]
+   23.8–36.3 3 MEXA O CORPO — 150 min/semana = 30 min × 5 dias, caminhar já conta     [OMS 2020]
+   36.3–45.6 4 COMIDA DE VERDADE — arroz, feijão, frutas, legumes; desembale menos, descasque mais [Guia Alimentar]
+   45.6–52.5 5 BEBA ÁGUA — ao longo do dia; troque o refrigerante por água            [Guia Alimentar]
+   52.5–59.3 "qual desses você já faz? comenta e manda pra quem precisa" */
+const W = 1080, H = 1920, Y = 1500, NS = 'http://www.w3.org/2000/svg', DUR = 59.31;
+const $ = q => document.querySelector(q);
+const LARANJA = '#FF7A00', L_ = '#1D1D2B', VERM = '#D7263D';
+const CENAS = { intro: [0, 7.1], sono: [7.1, 15.2], celular: [15.2, 23.8], mexer: [23.8, 36.3], comida: [36.3, 45.6], agua: [45.6, 52.5] };
+const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
+const Cn = (seed, hora, prefixo) => Cenario({ seed, luz: -1, hora, prefixo });
+
+// ---------- cenários ----------
+const E = Escola(Cn(61, 'noite', 'qt'));
+const CAMA = { x: 560, piso: Y, k: 1.3 }, COLCHAO = Y - 150 * 1.3;
+const criado = `<g><rect x="960" y="1290" width="160" height="210" rx="8" fill="#8A5A30" stroke="${L_}" stroke-width="6"/><rect x="975" y="1330" width="130" height="60" rx="6" fill="#A86A3A" stroke="${L_}" stroke-width="4"/><circle cx="1040" cy="1360" r="7" fill="#C9A24A"/>`
+  + `<path d="M1010 1290 l12 -90 h40 l12 90Z" fill="#F2E3B0" stroke="${L_}" stroke-width="5"/><rect x="1036" y="1200" width="12" height="90" fill="#5A3A22"/><ellipse cx="1042" cy="1210" rx="120" ry="80" fill="#FFF3C4" opacity=".15"/></g>`;
+const quarto = E.quarto({ chao: 1350, noite: true }) + E.cama(CAMA.x, CAMA.piso, CAMA.k, { noite: true }) + criado;
+const Zs = Cidade(Cn(62, 'dia', 'sl'));
+const sala = Zs.sala({ chao: 1300, tv: false, cortina: 'aberta', cor: '#EAD9B8' });
+// trilha (mesmo desenho do vídeo da picada de cobra)
+const Ct = Cn(63, 'dia', 'tr');
+let trilha = `<defs>${Ct.defs()}</defs>` + Ct.ceu({ nuvens: 3, astroX: 820, astroY: 300 }) + Ct.distante({ y: 1060, tipo: 'colinas', profundidade: 0.2 }) + Ct.distante({ y: 1180, tipo: 'colinas', profundidade: 0.5 });
+[[90, 1240, 420], [220, 1260, 360], [930, 1250, 440], [1030, 1270, 380]].forEach(([x, b, h]) => { trilha += Ct.pinheiro(x, b, h); });
+trilha += `<rect y="1230" width="${W}" height="${H - 1230}" fill="#8DB85A"/><path d="M0 1540 Q540 1450 1080 1540 L1080 1640 Q540 1550 0 1640Z" fill="#C9A26A"/>`;
+for (let i = 0; i < 26; i++) { const x = (i * 97) % W, yb = 1270 + (i * 53) % 620; trilha += `<path d="M${x} ${yb} q-8 -40 -18 -60 M${x} ${yb} q2 -50 6 -72 M${x} ${yb} q10 -40 22 -56" stroke="${i % 2 ? '#4E7A2A' : '#5E8A34'}" stroke-width="6" fill="none" stroke-linecap="round"/>`; }
+// mesa com prato de comida de verdade (arroz, feijão, salada, cenoura)
+const MESA_Y = Y - 150 * 1.4;
+const prato = `<g transform="translate(720 ${MESA_Y - 20})"><ellipse cx="0" cy="12" rx="190" ry="54" fill="#000" opacity=".18"/><ellipse cx="0" cy="0" rx="190" ry="56" fill="#F4F1EA" stroke="${L_}" stroke-width="6"/><ellipse cx="0" cy="-4" rx="150" ry="40" fill="#fff" stroke="#D9D3C7" stroke-width="3"/>`
+  + `<ellipse cx="-60" cy="-14" rx="62" ry="24" fill="#FFFDF4" stroke="#CFC6B0" stroke-width="3"/>${[...Array(14)].map((_, i) => `<ellipse cx="${-100 + (i % 7) * 13}" cy="${-22 + Math.floor(i / 7) * 12}" rx="5" ry="2.5" fill="#EAE2CC"/>`).join('')}`
+  + `<ellipse cx="34" cy="-12" rx="54" ry="22" fill="#6B3A1E" stroke="#4A2410" stroke-width="3"/>${[...Array(10)].map((_, i) => `<ellipse cx="${6 + (i % 5) * 13}" cy="${-18 + Math.floor(i / 5) * 10}" rx="6" ry="4" fill="#8A4A26"/>`).join('')}`
+  + `${[[100, -20], [120, -2], [86, 4]].map(([x, y]) => `<path d="M${x - 22} ${y} q22 -26 44 0 q-22 14 -44 0Z" fill="#4E9A3A" stroke="#2E6A22" stroke-width="3"/>`).join('')}`
+  + `${[[-10, 12], [10, 16], [-30, 14]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="12" ry="7" fill="#F28C28" stroke="#C95A00" stroke-width="2"/>`).join('')}</g>`;
+const mesa = E.mesa(720, Y, 1.4, { cor: '#C9A27A' });
+const ultra = `<g id="ultra"><g transform="translate(470 ${MESA_Y})"><path d="M-50 0 L-56 -130 Q0 -146 56 -130 L50 0Z" fill="#F2B705" stroke="${L_}" stroke-width="5"/><text x="0" y="-62" font-family="'Anton', sans-serif" font-size="26" fill="${VERM}" text-anchor="middle">SALGADO</text></g>`
+  + `<g transform="translate(580 ${MESA_Y})"><rect x="-40" y="-100" width="80" height="100" rx="6" fill="#3B7DD8" stroke="${L_}" stroke-width="5"/><text x="0" y="-44" font-family="'Anton', sans-serif" font-size="22" fill="#fff" text-anchor="middle">BISCOITO</text></g>`
+  + `<g id="ultra-x" style="opacity:0"><circle cx="525" cy="${MESA_Y - 70}" r="90" fill="none" stroke="${VERM}" stroke-width="16"/><path d="M462 ${MESA_Y - 133} l126 126" stroke="${VERM}" stroke-width="16" stroke-linecap="round"/></g></g>`;
+const frutas = `<g id="frutas" style="opacity:0" transform="translate(940 ${MESA_Y})"><path d="M-90 0 q90 60 180 0 l-10 -40 h-160Z" fill="#B07A44" stroke="${L_}" stroke-width="5"/><circle cx="-40" cy="-60" r="34" fill="${VERM}" stroke="${L_}" stroke-width="4"/><circle cx="20" cy="-62" r="34" fill="#F28C28" stroke="${L_}" stroke-width="4"/><path d="M-70 -40 q60 -110 130 -30" stroke="${L_}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M-70 -40 q60 -110 130 -30" stroke="#F2D23A" stroke-width="13" fill="none" stroke-linecap="round"/></g>`;
+const lata = `<g id="lata" transform="translate(900 ${MESA_Y})"><rect x="-34" y="-110" width="68" height="110" rx="8" fill="${VERM}" stroke="${L_}" stroke-width="5"/><ellipse cx="0" cy="-110" rx="34" ry="8" fill="#C9CFD5" stroke="${L_}" stroke-width="4"/><text x="0" y="-48" font-family="'Anton', sans-serif" font-size="24" fill="#fff" text-anchor="middle" transform="rotate(-90 0 -55)">REFRI</text>`
+  + `<g id="lata-x" style="opacity:0"><path d="M-60 -140 l120 150 M60 -140 l-120 150" stroke="${VERM}" stroke-width="16" stroke-linecap="round"/></g></g>`;
+const copo = `<g id="copo" style="opacity:0" transform="translate(760 ${MESA_Y})"><path d="M-40 -130 L-32 0 H32 L40 -130Z" fill="#CFEAF6" stroke="${L_}" stroke-width="5" opacity=".95"/><path d="M-37 -90 L-32 0 H32 L37 -90Z" fill="#7FC8F0" opacity=".9"/><path d="M-26 -120 L-20 -10" stroke="#fff" stroke-width="7" opacity=".7"/></g>`;
+const cen = {
+  intro: sala, sono: quarto, celular: quarto, mexer: trilha,
+  comida: sala + mesa + ultra + prato + frutas,
+  agua: sala + mesa + lata + copo,
+};
+Object.entries(cen).forEach(([k, s]) => { const g = mk($('#cenarios'), 'sc-' + k); g.innerHTML = s; g.style.opacity = k === 'intro' ? 1 : 0; });
+const C0 = Cn(3, 'dia', 'ac');
+$('#acabamento').innerHTML = `<defs>${C0.defs()}</defs>` + C0.atmosfera({ grao: 0.2 });
+// objetos na mão: celular (com brilho no rosto) e garrafinha d'água
+$('#objetos').innerHTML = `<g id="celular" style="opacity:0"><ellipse id="cel-brilho" cx="0" cy="-80" rx="170" ry="150" fill="url(#brilho-tela)"/><g id="cel-corpo"><rect x="-26" y="-48" width="52" height="96" rx="9" fill="#16161C" stroke="${L_}" stroke-width="4"/><rect x="-21" y="-40" width="42" height="78" rx="4" fill="#7FC8FF"/></g></g>`
+  + `<g id="garrafa" style="opacity:0"><g transform="rotate(-25)"><rect x="-22" y="-80" width="44" height="110" rx="12" fill="#9ED3F0" stroke="${L_}" stroke-width="5"/><rect x="-14" y="-100" width="28" height="22" rx="5" fill="#3B7DD8" stroke="${L_}" stroke-width="4"/><rect x="-22" y="-44" width="44" height="30" fill="#3B7DD8" opacity=".85"/></g></g>`;
+
+// ---------- Léo ----------
+const leo = new Boneco($('#atores'), { escala: 1.15, figurino: 'sobrevivente', seed: 6 });
+const fr = (x, extra = {}) => ({ x, y: Y, vista: 'frente', transicao: 0.25, ...extra });
+// gancho
+leo.base(0, 7.1, 'parado', fr(540));
+leo.braco('d', 0.3, 2.6, 'contar', { n: 5 });
+leo.braco('ambos', 2.8, 4.4, 'explicar');
+leo.braco('d', 4.6, 6.8, 'joinha');
+leo.expressao(0, 7.1, 'alegre');
+// 1 sono: dormindo na cama
+leo.base(7.1, 15.2, 'deitado', { x: 900, y: COLCHAO + 10, dir: 1, transicao: 0 });
+leo.expressao(7.1, 15.2, 'dormindo');
+// 2 celular: sentado na beira da cama, rosto azul da tela; larga o celular e dorme
+leo.base(15.2, 19.6, 'sentar', { x: 380, y: COLCHAO - 10, chao: Y, dir: 1, transicao: 0 });
+leo.base(19.6, 23.8, 'deitado', { x: 900, y: COLCHAO + 10, dir: 1, transicao: 0.5 });
+leo.braco('d', 15.2, 16.4, 'segurar');
+leo.braco('d', 16.4, 17.0, 'estender');
+leo.expressao(15.2, 16.4, 'cansado'); leo.expressao(16.4, 19.6, 'determinado'); leo.expressao(19.6, 23.8, 'dormindo');
+leo.cabeca(15.2, 16.3, { baixar: 12, olhar: [4, 6] });
+// 3 mexer: corre e depois caminha na trilha
+leo.base(23.8, 27.6, 'correr', { de: [-120, 1560], ate: [1200, 1560] });
+leo.base(27.6, 36.3, 'andar', { de: [-120, 1560], ate: [620, 1560] });
+leo.expressao(23.8, 36.3, 'determinado');
+leo.braco('d', 33.6, 35.0, 'joinha');
+// 4 comida: em pé ao lado da mesa, comendo
+leo.base(36.3, 45.6, 'parado', fr(260, { transicao: 0 }));
+leo.braco('d', 37.8, 40.8, 'explicar');
+leo.braco('d', 42.0, 43.2, 'apontar');
+leo.braco('d', 43.4, 45.4, 'comer');
+leo.expressao(36.3, 45.6, 'feliz');
+// 5 água: bebe da garrafinha; aponta o refri e troca por água
+leo.base(45.6, 52.5, 'parado', fr(300, { transicao: 0 }));
+leo.braco('d', 46.6, 48.4, 'comer');
+leo.braco('e', 49.6, 50.8, 'apontar');
+leo.braco('d', 50.9, 52.4, 'joinha');
+leo.expressao(45.6, 48.4, 'aliviado'); leo.expressao(48.4, 52.5, 'alegre');
+
+// ---------- textos ----------
+const T = $('#textos');
+const add = (id, svg) => { const g = mk(T, id); g.innerHTML = svg; g.style.opacity = 0; };
+add('t-5', Marca.impacto(540, 640, '5 HÁBITOS', { fs: 150 }));
+add('t-saud', Marca.faixa(540, 470, 'PRA VIVER MELHOR', { fs: 80 }));
+add('t-salva', Marca.apoio(540, 790, 'SALVA PRA NÃO ESQUECER', { fs: 58 }));
+const selo = (x, y, t, bom) => {
+  const fs = 38, w = Marca.largura(t, fs) + 108, h = 62;
+  const icone = bom ? `<circle cx="${x + 32}" cy="${y}" r="20" fill="${LARANJA}"/><path d="M${x + 22} ${y} l7 8 l14 -16" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+                    : `<circle cx="${x + 32}" cy="${y}" r="20" fill="${VERM}"/><path d="M${x + 24} ${y - 8} l16 16 M${x + 40} ${y - 8} l-16 16" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`;
+  return `<rect x="${x + 7}" y="${y - h / 2 + 7}" width="${w}" height="${h}" rx="${h / 2}" fill="#000" opacity=".35"/><rect x="${x}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="#111"/>${icone}<text x="${x + 64}" y="${y + fs * 0.36}" font-size="${fs}" fill="${bom ? LARANJA : '#fff'}">${t}</text>`;
+};
+const HAB = [   // id, número, título, selos [texto, bom?, instante]
+  ['sono', '1', 'DURMA 7 A 9 HORAS', [['O CORPO SE RECUPERA', 1, 11.35], ['A MEMÓRIA SE ORGANIZA', 1, 12.25]]],
+  ['celular', '2', 'CELULAR LONGE DA CAMA', [['1 HORA ANTES DE DORMIR', 1, 17.0], ['A LUZ DA TELA ATRAPALHA', 0, 18.65]]],
+  ['mexer', '3', 'MEXA O CORPO', [['150 MINUTOS POR SEMANA', 1, 28.75], ['= 30 MIN, 5 DIAS POR SEMANA', 1, 31.35], ['CAMINHAR JÁ CONTA', 1, 33.55]]],
+  ['comida', '4', 'COMIDA DE VERDADE', [['ARROZ, FEIJÃO, FRUTA, LEGUME', 1, 39.05], ['DESEMBALE MENOS', 1, 42.05], ['DESCASQUE MAIS', 1, 43.35]]],
+  ['agua', '5', 'BEBA ÁGUA', [['AO LONGO DO DIA', 1, 46.85], ['REFRIGERANTE', 0, 49.75], ['TROQUE POR ÁGUA', 1, 50.6]]],
+];
+HAB.forEach(([id, n, nome, selos]) => {
+  add('tt-' + id, Marca.faixa(540, 470, n + ' · ' + nome, { fs: 70 }));
+  selos.forEach(([t, bom], i) => add(`ts-${id}-${i}`, selo(50, 590 + i * 80, t, bom)));
+});
+add('t-zzz', `<g transform="translate(820 1060)">${['Z', 'Z', 'Z'].map((z, i) => `<text x="${i * 50}" y="${-i * 60}" font-size="${70 + i * 20}" fill="#fff" stroke="#111" stroke-width="8" paint-order="stroke">${z}</text>`).join('')}</g>`);
+// número do hábito em tela cheia (transição)
+$('#numero').innerHTML = `<rect width="${W}" height="${H}" fill="${LARANJA}"/><g opacity=".12" fill="#111">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + `<circle cx="540" cy="900" r="250" fill="#111"/><text id="num-txt" x="540" y="1000" font-size="300" fill="${LARANJA}" text-anchor="middle">1</text>`
+  + `<text x="540" y="1260" font-size="96" fill="#111" text-anchor="middle">HÁBITO</text>`;
+// final: lista dos 5 hábitos
+const lista = ['DORMIR 7 A 9 HORAS', 'CELULAR LONGE DA CAMA', 'MEXER O CORPO', 'COMIDA DE VERDADE', 'BEBER ÁGUA'];
+$('#final').innerHTML = `<rect width="${W}" height="${H}" fill="#111"/><g opacity=".14" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + `<g id="fim-t">${Marca.texto(540, 470, 'QUAL DESSES', { fs: 96, cor: '#fff', sombra: false })}${Marca.impacto(540, 590, 'VOCÊ JÁ FAZ?', { fs: 110 })}</g>`
+  + lista.map((t, i) => `<g id="fim-${i}" style="opacity:0"><rect x="120" y="${690 + i * 110}" width="840" height="90" rx="45" fill="#2A2A30" stroke="${LARANJA}" stroke-width="4"/><circle cx="175" cy="${735 + i * 110}" r="30" fill="${LARANJA}"/><text x="175" y="${750 + i * 110}" font-size="40" fill="#111" text-anchor="middle">${i + 1}</text><text x="230" y="${750 + i * 110}" font-size="44" fill="#fff">${t}</text></g>`).join('')
+  + `<g id="fim-c" transform="translate(540 1330)"><rect x="-400" y="-62" width="800" height="110" rx="55" fill="${LARANJA}"/><text y="18" font-size="48" text-anchor="middle" fill="#111">COMENTA E MANDA PRA ALGUÉM ↓</text></g>`
+  + `<text x="540" y="1450" font-family="'DejaVu Sans', sans-serif" font-size="22" fill="#9A9AA2" text-anchor="middle">Fontes: OMS (atividade física, 2020) · Guia Alimentar para a População Brasileira</text>`
+  + `<text x="540" y="1480" font-family="'DejaVu Sans', sans-serif" font-size="22" fill="#9A9AA2" text-anchor="middle">Cartilha do Sono 2025 (Academia Brasileira do Sono e associações)</text>`;
+
+// ---------- legenda ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 68, enfase: ['5', '7', '9', '1', '150', '30', 'ÁGUA', 'SONO', 'CELULAR', 'DESEMBALE', 'DESCASQUE', 'COMENTA'] })
+  .esconder([[52.5, 99]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const pop = (sel, t, dur, ox, oy) => {
+  tl.fromTo(sel, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to(sel, { opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' }, t + dur);
+};
+Object.entries(CENAS).forEach(([k, [a, b]]) => { if (k !== 'intro') tl.set('#sc-' + k, { opacity: 1 }, a + 0.25); tl.set('#sc-' + k, { opacity: 0 }, b + 0.25); });
+Object.values(CENAS).forEach(([a, b]) => tl.fromTo('#cam', { scale: 1, svgOrigin: '540 1250' }, { scale: 1.06, duration: b - a - 0.3, ease: 'sine.inOut' }, a + 0.25));
+// gancho
+pop('#t-saud', 0.25, 6.6, 540, 470);
+pop('#t-5', 0.4, 6.4, 540, 640);
+pop('#t-salva', 4.6, 2.2, 540, 790);
+// números entre os hábitos
+const numeros = [['1', 7.1], ['2', 15.2], ['3', 23.8], ['4', 36.3], ['5', 45.6]];
+numeros.forEach(([n, t]) => {
+  const t0 = t - 0.55;
+  tl.fromTo('#numero', { opacity: 0 }, { opacity: 1, duration: 0.12 }, t0);
+  tl.fromTo('#num-txt', { scale: 0.3, svgOrigin: '540 900' }, { scale: 1, duration: 0.35, ease: 'back.out(2.5)' }, t0);
+  tl.to('#numero', { opacity: 0, duration: 0.18 }, t + 0.42);
+});
+HAB.forEach(([id, , , selos]) => {
+  const [a, b] = CENAS[id];
+  pop('#tt-' + id, a + 0.6, b - a - 0.75, 540, 470);
+  selos.forEach(([, , t], i) => { tl.fromTo(`#ts-${id}-${i}`, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: 'back.out(1.8)' }, t); tl.to(`#ts-${id}-${i}`, { opacity: 0, duration: 0.15 }, b + 0.1); });
+});
+// sono: Zzz flutuando
+tl.fromTo('#t-zzz', { opacity: 0, y: 0 }, { opacity: 1, y: -40, duration: 1.2, ease: 'none' }, 7.8); tl.to('#t-zzz', { y: -120, opacity: 0.7, duration: 6, ease: 'none' }, 9.0); tl.to('#t-zzz', { opacity: 0, duration: 0.2 }, 15.0);
+tl.fromTo('#t-zzz', { opacity: 0, y: 0 }, { opacity: 1, y: -60, duration: 1.2, ease: 'none', immediateRender: false }, 20.4); tl.to('#t-zzz', { opacity: 0, duration: 0.2 }, 23.6);
+// celular: na mão, depois vai pro criado-mudo
+tl.set('#celular', { opacity: 1 }, 15.45); tl.set('#celular', { opacity: 0 }, 24.0);
+tl.to('#cel-brilho', { opacity: 0, duration: 0.3 }, 16.6);
+// comida: ultraprocessados riscados, frutas entram
+pop('#ultra-x', 42.05, 0, 525, MESA_Y - 70);
+pop('#frutas', 43.35, 0, 940, MESA_Y - 60);
+// água: garrafinha na mão; refri riscado; copo d'água
+tl.set('#garrafa', { opacity: 1 }, 45.85); tl.set('#garrafa', { opacity: 0 }, 48.6);
+pop('#lata-x', 49.75, 0, 900, MESA_Y - 60);
+pop('#copo', 50.6, 0, 760, MESA_Y - 60);
+// final
+tl.to('#final', { opacity: 1, duration: 0.25 }, 52.5);
+tl.fromTo('#fim-t', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 52.6);
+lista.forEach((l, i) => tl.fromTo('#fim-' + i, { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.25, ease: 'back.out(1.8)' }, 53.4 + i * 0.15));
+pop('#fim-c', 54.5, 0, 540, 1330);
+tl.to('#fim-c', { scale: 1.05, svgOrigin: '540 1330', duration: 0.3, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 55.0);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+const numTxt = $('#num-txt');
+const lerp = (a, b, u) => a + (b - a) * u;
+window.__timeline = tl;
+window.__duration = DUR;
+window.__seek = t => {
+  tl.seek(t, false);
+  leo.desenhar(t);
+  const [mx, my] = leo.mao('d');
+  // celular: na mão até 16.4; depois voa pro criado-mudo
+  const u = Math.max(0, Math.min(1, (t - 16.4) / 0.5));
+  const cx = lerp(mx, 1100, u), cy = lerp(my - 30, 1260, u);
+  $('#celular').setAttribute('transform', `translate(${cx} ${cy})`);
+  $('#garrafa').setAttribute('transform', `translate(${mx} ${my - 20})`);
+  const n = numeros.filter(([, tn]) => t >= tn - 0.6).pop();
+  numTxt.textContent = n ? n[0] : '1';
+  leg.seek(t);
+};
+window.__seek(0);
+</script></body></html>
