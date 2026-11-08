@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Ilha deserta — parte 1: a queda</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(../fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(../fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="../gsap.min.js"></script>
+<script src="../boneco.js"></script>
+<script src="../cenario.js"></script>
+<script src="../ilha.js"></script>
+<script src="../marca.js"></script>
+<script src="../legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <clipPath id="inset-clip"><circle cx="850" cy="1010" r="140"/></clipPath></defs>
+  <g id="cam">
+    <g id="praia"></g>
+    <g id="sombra-coq" style="opacity:0"><ellipse cx="190" cy="1585" rx="190" ry="40" fill="#000" opacity=".22"/></g>
+    <g id="atores"></g>
+    <g id="frente"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="queda" style="opacity:0"></g>
+  <g id="janela-g"></g>
+  <g id="preto" style="opacity:0"><rect width="1080" height="1920" fill="#000"/></g>
+  <g id="flash" style="opacity:0"><rect width="1080" height="1920" fill="#fff"/></g>
+  <g id="textos"></g>
+  <g id="final" style="opacity:0"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO — PARTE 1: A QUEDA (1080×1920, 60.7 s; tempos casados com voz/fala.wav)
+   0–6.6    janela do avião: nuvens, luz do cinto, turbulência, máscaras caem, o céu inclina
+   6.6–10.4 de fora: o avião em chamas desce até a ilha · splash · "HORAS DEPOIS..."
+   10.4–18  o Léo acorda na areia entre os destroços · ilha deserta · só água · único sobrevivente
+   18.7–27  PASSO 1 respire e cheque o corpo (cortes, sangramentos, fraturas) · primeiro você
+   27.2–37  PASSO 2 fumaça/combustível? afaste-se · mas não vá longe · do alto o avião é fácil de ver
+   38.1–45  PASSO 3 saia do sol, ache sombra · a água vai ser o maior problema
+   45.9–53  AS MALAS: ele abre uma mala e sai luz · "pode salvar sua vida"
+   53.9–60.7 "o que tem nas malas? comenta · parte 2 no perfil"
+   Orientações: ficar perto dos destroços (mais fácil de achar do alto), sair do sol/desidratação. */
+const W = 1080, H = 1920, Y = 1560, NS = 'http://www.w3.org/2000/svg', DUR = 60.7;
+const $ = q => document.querySelector(q);
+const LARANJA = '#FF7A00', L_ = '#1D1D2B', VERM = '#D7263D';
+const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
+const I = Ilha({ seed: 4 });
+
+// ---------- praia com os destroços ----------
+const malaAlvo = { x: 800, y: 1660, k: 0.72 };
+$('#praia').innerHTML = I.praia({ horizonte: 900, areia: 1250 })
+  + I.coqueiro(110, 1330, 0.95, { inclina: 0.3 }) + I.coqueiro(990, 1300, 0.85, { inclina: -0.3 })
+  + I.asa(300, 1480, 0.7) + I.cauda(960, 1470, 0.6) + `<g id="fus">${I.fuselagem(620, 1400, 0.85)}</g>`
+  + I.mala(380, 1720, 0.6, { cor: '#3B7DD8' }) + I.mala(1010, 1780, 0.55, { cor: '#2E9E5A' })
+  + `<g id="mala-fechada">${I.mala(malaAlvo.x, malaAlvo.y, malaAlvo.k, { cor: '#C8553D' })}</g>`
+  + `<g id="mala-aberta" style="opacity:0"><g id="raios">${[...Array(9)].map((_, i) => `<path d="M${malaAlvo.x} ${malaAlvo.y - 140} L${malaAlvo.x + Math.cos((-160 + i * 17.5) * Math.PI / 180) * 520} ${malaAlvo.y - 140 + Math.sin((-160 + i * 17.5) * Math.PI / 180) * 520}" stroke="#FFF3B0" stroke-width="${26 - Math.abs(i - 4) * 3}" opacity=".55" stroke-linecap="round"/>`).join('')}</g>${I.mala(malaAlvo.x, malaAlvo.y, malaAlvo.k, { cor: '#C8553D', aberta: true })}</g>`;
+const C0 = Cenario({ seed: 3, luz: -1, hora: 'dia', prefixo: 'ac' });
+$('#acabamento').innerHTML = `<defs>${C0.defs()}</defs>` + C0.atmosfera({ grao: 0.2 });
+
+// ---------- a queda vista de fora: avião em chamas descendo até a ilha ----------
+const ilhaLonge = `<g transform="translate(820 1120)"><ellipse cx="0" cy="0" rx="230" ry="44" fill="#F2DDA6" stroke="${L_}" stroke-width="5"/><ellipse cx="0" cy="-6" rx="230" ry="44" fill="none" stroke="#fff" stroke-width="8" opacity=".7"/>${I.coqueiro(-80, -10, 0.32, { inclina: 0.3 })}${I.coqueiro(40, -14, 0.28, { inclina: -0.2 })}</g>`;
+$('#queda').innerHTML = I.mar({ horizonte: 1100 }) + ilhaLonge
+  + `<g id="aviao-cai"><g id="rastro">${[...Array(7)].map((_, i) => `<circle cx="${-260 - i * 70}" cy="${80 - i * 26}" r="${30 + i * 10}" fill="#4A4A52" opacity="${0.6 - i * 0.07}"/>`).join('')}</g>${I.aviao(0, 0, 0.6)}<g id="fogo-motor"><path d="M-80 70 q-30 -20 -70 0 q20 30 70 20Z" fill="${LARANJA}"/><path d="M-80 76 q-20 -8 -40 2 q14 14 40 6Z" fill="#FFE27A"/></g></g>`
+  + `<g id="splash" style="opacity:0">${[...Array(10)].map((_, i) => { const a = (-170 + i * 18) * Math.PI / 180; return `<path d="M760 1130 Q${760 + Math.cos(a) * 120} ${1130 + Math.sin(a) * 240} ${760 + Math.cos(a) * 200} ${1130 + Math.sin(a) * 160}" stroke="#fff" stroke-width="22" fill="none" stroke-linecap="round"/>`; }).join('')}<ellipse cx="760" cy="1130" rx="200" ry="40" fill="#fff"/></g>`;
+
+// ---------- janela por dentro (POV) ----------
+$('#janela-g').innerHTML = `<g id="janela-tudo">${I.janela()}<g id="mascaras" style="opacity:0">${I.mascara(220, 760, 1.1)}${I.mascara(880, 820, 1.0)}</g></g>`;
+$('#lado-de-fora').innerHTML = `<g id="fora"><rect x="0" y="300" width="1080" height="1400" fill="#7FC0EA"/><rect x="0" y="1150" width="1080" height="600" fill="#2E8FC0"/>`
+  + `<g id="nuvens-fora">${[[380, 760, 1], [700, 900, 1.3], [480, 1060, 0.9], [820, 640, 0.8], [300, 1200, 1.1]].map(([x, y, k]) => `<g transform="translate(${x} ${y}) scale(${k})"><circle cx="-60" cy="0" r="50" fill="#fff"/><circle cx="0" cy="-20" r="64" fill="#fff"/><circle cx="60" cy="0" r="50" fill="#fff"/><rect x="-110" y="0" width="220" height="44" fill="#fff"/></g>`).join('')}</g></g>`;
+
+// ---------- Léo ----------
+const leo = new Boneco($('#atores'), { escala: 1.15, figurino: 'sobrevivente', seed: 6 });
+const fr = (x, extra = {}) => ({ x, y: Y, vista: 'frente', transicao: 0.3, ...extra });
+leo.base(10.4, 11.4, 'deitado', { x: 520, y: Y, dir: -1, transicao: 0 });
+leo.base(11.4, 27.9, 'parado', fr(480, { transicao: 0.9 }));
+leo.base(27.9, 30.9, 'andar', { de: [480, Y], ate: [200, Y] });
+leo.base(30.9, 46.2, 'parado', fr(200));
+leo.base(46.2, 48.3, 'andar', { de: [200, Y], ate: [560, Y] });
+leo.base(48.3, DUR, 'agachar', { x: 560, y: Y, vista: 'perfil', quanto: 80, dir: 1 });
+leo.braco('ambos', 11.6, 13.0, 'cabeca');
+leo.braco('ambos', 14.0, 15.0, 'encolher');
+leo.braco('ambos', 20.3, 21.4, 'cabeca');
+leo.braco('ambos', 21.5, 23.6, 'estender');
+leo.braco('d', 23.7, 25.2, 'joinha');
+leo.braco('d', 32.6, 35.6, 'apontar');
+leo.braco('e', 38.6, 41.0, 'testa');
+leo.braco('ambos', 48.5, 50.0, 'alcancar', { alvo: [720, 1560] });
+[[10.4, 'tonto'], [11.8, 'confuso'], [13.2, 'preocupado'], [15.6, 'medo'], [18.7, 'determinado'], [27.2, 'serio'], [31.6, 'determinado'],
+ [38.1, 'cansado'], [41.4, 'aliviado'], [45.9, 'pensando'], [49.4, 'surpreso'], [50.4, 'alegre']].forEach(([t, e], i, a) => leo.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
+leo.cabeca(13.8, 15.4, { gesto: 'balancar' });
+leo.cabeca(21.5, 23.6, { baixar: 14, olhar: [0, 6] });
+leo.cabeca(31.2, 32.6, { virar: 0.8, olhar: [6, 0] });
+
+// ---------- textos ----------
+const T = $('#textos');
+const add = (id, svg) => { const g = mk(T, id); g.innerHTML = svg; g.style.opacity = 0; return g; };
+add('t-turb', Marca.impacto(540, 1470, 'TURBULÊNCIA!', { fs: 120 }));
+add('t-horas', Marca.texto(540, 960, 'HORAS DEPOIS...', { fs: 90, cor: '#fff', sombra: false }));
+add('t-ilha', Marca.faixa(540, 470, 'ILHA DESERTA', { fs: 90 }));
+add('t-agua', Marca.apoio(540, 620, 'SÓ ÁGUA AO REDOR', { fs: 62 }));
+add('t-unico', Marca.impacto(540, 780, 'ÚNICO SOBREVIVENTE', { fs: 96 }));
+const selo = (x, y, t, bom) => {
+  const fs = 38, w = Marca.largura(t, fs) + 108, h = 62;
+  const icone = bom ? `<circle cx="${x + 32}" cy="${y}" r="20" fill="${LARANJA}"/><path d="M${x + 22} ${y} l7 8 l14 -16" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+                    : `<circle cx="${x + 32}" cy="${y}" r="20" fill="${VERM}"/><path d="M${x + 32} ${y - 11} v12 M${x + 32} ${y + 8} v2" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`;
+  return `<rect x="${x + 7}" y="${y - h / 2 + 7}" width="${w}" height="${h}" rx="${h / 2}" fill="#000" opacity=".35"/><rect x="${x}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="#111"/>${icone}<text x="${x + 64}" y="${y + fs * 0.36}" font-size="${fs}" fill="${bom ? LARANJA : '#fff'}">${t}</text>`;
+};
+const PASSOS = [   // id, título, [inicio, fim], selos [texto, bom, t]
+  ['p1', 'PASSO 1: CHEQUE O CORPO', [18.5, 27.0], [['RESPIRE FUNDO', 1, 20.35], ['CORTES? SANGRAMENTO?', 1, 22.15], ['FRATURAS?', 1, 23.15], ['PRIMEIRO VOCÊ', 1, 23.7]]],
+  ['p2', 'PASSO 2: E A FUMAÇA?', [27.0, 37.8], [['FUMAÇA? AFASTE-SE', 0, 28.35], ['MAS NÃO VÁ LONGE', 1, 31.55], ['AVIÃO SE VÊ DO ALTO', 1, 32.65]]],
+  ['p3', 'PASSO 3: SAIA DO SOL', [37.8, 45.6], [['ACHE UMA SOMBRA', 1, 39.1], ['O CALOR DESIDRATA', 0, 40.4], ['ÁGUA = MAIOR PROBLEMA', 0, 42.0]]],
+];
+PASSOS.forEach(([id, tit, , selos]) => { add('tt-' + id, Marca.faixa(540, 470, tit, { fs: 66 })); selos.forEach(([t, b], i) => add(`ts-${id}-${i}`, selo(50, 590 + i * 80, t, b))); });
+// vista do alto: o avião aparece, a pessoa sozinha quase não
+add('t-alto', `<circle cx="850" cy="1010" r="150" fill="#111"/><g clip-path="url(#inset-clip)"><rect x="700" y="860" width="300" height="300" fill="#2E8FC0"/><ellipse cx="850" cy="1020" rx="110" ry="80" fill="#F2DDA6"/><g transform="translate(830 1000) rotate(-20)"><rect x="-50" y="-9" width="100" height="18" rx="9" fill="#fff" stroke="${L_}" stroke-width="3"/><rect x="-10" y="-40" width="18" height="80" rx="6" fill="#E9ECEF" stroke="${L_}" stroke-width="3"/></g><circle cx="905" cy="1060" r="4" fill="${LARANJA}"/></g><circle cx="850" cy="1010" r="140" fill="none" stroke="${LARANJA}" stroke-width="8"/>`
+  + Marca.etiqueta(850, 1190, 'VISTA DO ALTO', { fs: 36 }));
+add('t-malas', Marca.faixa(540, 470, 'AS MALAS', { fs: 100 }));
+add('t-vida', Marca.impacto(540, 650, 'PODE SALVAR SUA VIDA', { fs: 84 }));
+// sol forte (passo 3)
+add('t-sol', `<circle cx="842" cy="252" r="190" fill="#FFE27A" opacity=".35"/><circle cx="842" cy="252" r="120" fill="#FFE27A" opacity=".45"/>`);
+// final
+$('#final').innerHTML = `<rect width="${W}" height="${H}" fill="#111"/><g opacity=".14" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + `<g id="fim-t">${Marca.texto(540, 520, 'O QUE TEM', { fs: 100, cor: '#fff', sombra: false })}${Marca.impacto(540, 650, 'NAS MALAS?', { fs: 120 })}</g>`
+  + `<g id="fim-m">${I.mala(540, 1080, 1.3, { cor: '#C8553D' })}${Marca.texto(540, 990, '?', { fs: 160, cor: '#fff' })}</g>`
+  + `<g id="fim-c" transform="translate(540 1230)"><rect x="-300" y="-62" width="600" height="110" rx="55" fill="${LARANJA}"/><text y="18" font-size="54" text-anchor="middle" fill="#111">COMENTA ↓</text></g>`
+  + `<g id="fim-p">${Marca.faixa(540, 1400, 'PARTE 2 NO PERFIL →', { fs: 64 })}</g>`;
+
+// ---------- legenda ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 66, enfase: ['CAIR', 'ILHA', 'DESERTA', 'ÚNICO', 'SOBREVIVENTE', 'PASSO', '1', '2', '3', 'SOMBRA', 'ÁGUA', 'MALAS', 'VIDA'] })
+  .esconder([[53.9, 99]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const pop = (sel, t, dur, ox, oy) => {
+  tl.fromTo(sel, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to(sel, { opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' }, t + dur);
+};
+// 1) janela: nuvens passando, luz do cinto, turbulência, máscaras, céu inclinando
+tl.fromTo('#nuvens-fora', { x: 300 }, { x: -500, duration: 6.6, ease: 'none' }, 0);
+tl.set('#aviso-luz', { attr: { fill: LARANJA } }, 2.8);
+tl.to('#aviso-luz', { opacity: 0.5, duration: 0.2, yoyo: true, repeat: 15, ease: 'none' }, 2.8);
+pop('#t-turb', 3.1, 2.0, 540, 1470);
+tl.to('#janela-tudo', { x: 14, y: -8, duration: 0.05, yoyo: true, repeat: 69, ease: 'none' }, 3.0);
+tl.fromTo('#mascaras', { opacity: 0, y: -400 }, { opacity: 1, y: 0, duration: 0.45, ease: 'bounce.out' }, 4.15);
+tl.to('#fora', { rotation: -28, svgOrigin: '540 920', y: -260, duration: 1.4, ease: 'power2.in' }, 5.2);
+tl.set('#janela-g', { opacity: 0 }, 6.6);
+// 2) de fora: avião descendo em chamas até a ilha, splash, tela preta
+tl.set('#queda', { opacity: 1 }, 6.6); tl.set('#queda', { opacity: 0 }, 10.4);
+tl.fromTo('#aviao-cai', { x: 120, y: 420, rotation: 14, svgOrigin: '0 0' }, { x: 760, y: 1100, rotation: 30, duration: 2.4, ease: 'power2.in' }, 6.6);
+tl.to('#fogo-motor', { scale: 1.3, svgOrigin: '-80 70', duration: 0.12, yoyo: true, repeat: 19, ease: 'none' }, 6.6);
+tl.set('#aviao-cai', { opacity: 0 }, 9.0);
+tl.fromTo('#splash', { opacity: 1, scale: 0.2, svgOrigin: '760 1130' }, { scale: 1.3, duration: 0.5, ease: 'power2.out' }, 9.0);
+tl.fromTo('#flash', { opacity: 0 }, { opacity: 0.9, duration: 0.06 }, 9.0); tl.to('#flash', { opacity: 0, duration: 0.3 }, 9.06);
+tl.to('#preto', { opacity: 1, duration: 0.3 }, 9.3);
+tl.fromTo('#t-horas', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 9.45); tl.to('#t-horas', { opacity: 0, duration: 0.2 }, 10.25);
+tl.to('#preto', { opacity: 0, duration: 0.8 }, 10.4);
+// 3) praia
+tl.fromTo('#cam', { scale: 1.25, svgOrigin: '520 1500' }, { scale: 1.0, duration: 5.5, ease: 'sine.inOut' }, 10.4);
+pop('#t-ilha', 13.1, 5.2, 540, 470);
+pop('#t-agua', 14.3, 3.9, 540, 620);
+pop('#t-unico', 15.7, 2.6, 540, 780);
+tl.to('#fus .fumaca', { y: -30, opacity: 0.6, duration: 1.5, yoyo: true, repeat: 32, ease: 'sine.inOut' }, 10.4);
+// passos
+PASSOS.forEach(([id, , [a, b], selos]) => {
+  pop('#tt-' + id, a + 0.2, b - a - 0.4, 540, 470);
+  selos.forEach(([, , t], i) => { tl.fromTo(`#ts-${id}-${i}`, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: 'back.out(1.8)' }, t); tl.to(`#ts-${id}-${i}`, { opacity: 0, duration: 0.15 }, b); });
+});
+tl.to('#fus .fumaca', { scale: 1.6, svgOrigin: '860 1180', duration: 1.2, ease: 'power2.out' }, 28.3);
+pop('#t-alto', 32.6, 4.9, 850, 1010);
+tl.fromTo('#t-sol', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 38.5); tl.to('#t-sol', { scale: 1.12, svgOrigin: '842 252', duration: 0.5, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 38.9); tl.to('#t-sol', { opacity: 0, duration: 0.3 }, 45.4);
+tl.to('#sombra-coq', { opacity: 1, duration: 0.4 }, 39.0); tl.to('#sombra-coq', { opacity: 0, duration: 0.3 }, 46.0);
+// malas
+pop('#t-malas', 46.7, 0, 540, 470);
+tl.fromTo('#cam', { scale: 1.0, svgOrigin: '780 1560' }, { scale: 1.3, duration: 3.5, ease: 'sine.inOut' }, 46.2);
+tl.set('#mala-fechada', { opacity: 0 }, 49.4); tl.set('#mala-aberta', { opacity: 1 }, 49.4);
+tl.fromTo('#raios', { opacity: 0, scale: 0.3, svgOrigin: `${malaAlvo.x} ${malaAlvo.y - 140}` }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, 49.4);
+tl.to('#raios', { rotation: 6, svgOrigin: `${malaAlvo.x} ${malaAlvo.y - 140}`, duration: 1, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 50.0);
+pop('#t-vida', 49.9, 3.8, 540, 650);
+// final
+tl.to('#final', { opacity: 1, duration: 0.3 }, 53.9);
+tl.fromTo('#fim-t', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 54.0);
+tl.fromTo('#fim-m', { opacity: 0, scale: 0.4, svgOrigin: '540 1000' }, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 54.6);
+tl.to('#fim-m', { rotation: 4, svgOrigin: '540 1080', duration: 0.15, yoyo: true, repeat: 11, ease: 'sine.inOut' }, 55.2);
+pop('#fim-c', 55.7, 0, 540, 1230);
+pop('#fim-p', 56.5, 0, 540, 1400);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+window.__timeline = tl;
+window.__duration = DUR;
+window.__seek = t => { tl.seek(t, false); if (t >= 10.3) leo.desenhar(t); leg.seek(t); };
+window.__seek(0);
+</script></body></html>

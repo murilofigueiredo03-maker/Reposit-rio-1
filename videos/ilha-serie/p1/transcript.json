@@ -1,0 +1,747 @@
+[
+{
+"text": "Você",
+"start": 0.54,
+"end": 0.81
+},
+{
+"text": "está",
+"start": 0.81,
+"end": 1.07
+},
+{
+"text": "num",
+"start": 1.07,
+"end": 1.31
+},
+{
+"text": "voo,",
+"start": 1.31,
+"end": 1.59
+},
+{
+"text": "olhando",
+"start": 1.59,
+"end": 1.93
+},
+{
+"text": "pela",
+"start": 1.93,
+"end": 2.32
+},
+{
+"text": "janela.",
+"start": 2.32,
+"end": 2.76
+},
+{
+"text": "De",
+"start": 2.76,
+"end": 2.99
+},
+{
+"text": "repente,",
+"start": 2.99,
+"end": 3.37
+},
+{
+"text": "turbulência.",
+"start": 3.37,
+"end": 4.01
+},
+{
+"text": "As",
+"start": 4.01,
+"end": 4.15
+},
+{
+"text": "máscaras",
+"start": 4.15,
+"end": 4.68
+},
+{
+"text": "caem...",
+"start": 4.68,
+"end": 5.0
+},
+{
+"text": "e",
+"start": 5.0,
+"end": 5.15
+},
+{
+"text": "o",
+"start": 5.15,
+"end": 5.23
+},
+{
+"text": "avião",
+"start": 5.18,
+"end": 5.42
+},
+{
+"text": "começa",
+"start": 5.42,
+"end": 6.03
+},
+{
+"text": "a",
+"start": 6.03,
+"end": 6.11
+},
+{
+"text": "cair.",
+"start": 6.07,
+"end": 6.32
+},
+{
+"text": "Você",
+"start": 10.577,
+"end": 10.857
+},
+{
+"text": "acorda",
+"start": 10.857,
+"end": 11.307
+},
+{
+"text": "na",
+"start": 11.307,
+"end": 11.527
+},
+{
+"text": "areia.",
+"start": 11.527,
+"end": 11.757
+},
+{
+"text": "O",
+"start": 11.757,
+"end": 11.957
+},
+{
+"text": "avião",
+"start": 11.957,
+"end": 12.187
+},
+{
+"text": "caiu",
+"start": 12.187,
+"end": 12.487
+},
+{
+"text": "perto",
+"start": 12.487,
+"end": 12.687
+},
+{
+"text": "de",
+"start": 12.687,
+"end": 12.817
+},
+{
+"text": "uma",
+"start": 12.817,
+"end": 13.157
+},
+{
+"text": "ilha",
+"start": 13.157,
+"end": 13.387
+},
+{
+"text": "deserta.",
+"start": 13.387,
+"end": 13.927
+},
+{
+"text": "Ao",
+"start": 13.927,
+"end": 14.077
+},
+{
+"text": "redor,",
+"start": 14.077,
+"end": 14.427
+},
+{
+"text": "só",
+"start": 14.427,
+"end": 14.567
+},
+{
+"text": "água.",
+"start": 14.567,
+"end": 15.057
+},
+{
+"text": "E",
+"start": 15.057,
+"end": 15.167
+},
+{
+"text": "você",
+"start": 15.167,
+"end": 15.307
+},
+{
+"text": "é",
+"start": 15.307,
+"end": 15.507
+},
+{
+"text": "o",
+"start": 15.507,
+"end": 15.777
+},
+{
+"text": "único",
+"start": 15.777,
+"end": 16.047
+},
+{
+"text": "sobrevivente.",
+"start": 16.047,
+"end": 16.937
+},
+{
+"text": "O",
+"start": 18.695,
+"end": 18.775
+},
+{
+"text": "que",
+"start": 18.765,
+"end": 18.995
+},
+{
+"text": "fazer",
+"start": 18.995,
+"end": 19.205
+},
+{
+"text": "primeiro?",
+"start": 19.205,
+"end": 19.785
+},
+{
+"text": "Passo",
+"start": 19.785,
+"end": 20.045
+},
+{
+"text": "um:",
+"start": 20.045,
+"end": 20.415
+},
+{
+"text": "respire,",
+"start": 20.415,
+"end": 20.995
+},
+{
+"text": "e",
+"start": 20.995,
+"end": 21.075
+},
+{
+"text": "cheque",
+"start": 20.995,
+"end": 21.345
+},
+{
+"text": "o",
+"start": 21.345,
+"end": 21.605
+},
+{
+"text": "seu",
+"start": 21.605,
+"end": 21.685
+},
+{
+"text": "corpo.",
+"start": 21.605,
+"end": 22.155
+},
+{
+"text": "Cortes,",
+"start": 22.155,
+"end": 22.415
+},
+{
+"text": "sangramentos,",
+"start": 22.415,
+"end": 23.235
+},
+{
+"text": "fraturas.",
+"start": 23.235,
+"end": 23.655
+},
+{
+"text": "Primeiro",
+"start": 23.655,
+"end": 24.185
+},
+{
+"text": "você,",
+"start": 24.185,
+"end": 24.505
+},
+{
+"text": "depois",
+"start": 24.505,
+"end": 24.795
+},
+{
+"text": "o",
+"start": 24.795,
+"end": 24.985
+},
+{
+"text": "resto.",
+"start": 24.985,
+"end": 25.375
+},
+{
+"text": "Passo",
+"start": 27.207,
+"end": 27.517
+},
+{
+"text": "dois:",
+"start": 27.517,
+"end": 27.757
+},
+{
+"text": "se",
+"start": 27.757,
+"end": 27.927
+},
+{
+"text": "ainda",
+"start": 27.927,
+"end": 28.207
+},
+{
+"text": "tem",
+"start": 28.207,
+"end": 28.397
+},
+{
+"text": "fumaça",
+"start": 28.397,
+"end": 28.827
+},
+{
+"text": "ou",
+"start": 28.827,
+"end": 29.037
+},
+{
+"text": "cheiro",
+"start": 29.037,
+"end": 29.427
+},
+{
+"text": "de",
+"start": 29.427,
+"end": 29.517
+},
+{
+"text": "combustível,",
+"start": 29.517,
+"end": 30.287
+},
+{
+"text": "afaste-se",
+"start": 30.287,
+"end": 30.947
+},
+{
+"text": "dos",
+"start": 30.947,
+"end": 31.027
+},
+{
+"text": "destroços.",
+"start": 30.967,
+"end": 31.647
+},
+{
+"text": "Mas",
+"start": 31.647,
+"end": 31.727
+},
+{
+"text": "não",
+"start": 31.657,
+"end": 31.947
+},
+{
+"text": "vá",
+"start": 31.947,
+"end": 32.027
+},
+{
+"text": "longe:",
+"start": 31.967,
+"end": 32.457
+},
+{
+"text": "do",
+"start": 32.457,
+"end": 32.717
+},
+{
+"text": "alto,",
+"start": 32.717,
+"end": 32.947
+},
+{
+"text": "um",
+"start": 32.947,
+"end": 33.287
+},
+{
+"text": "avião",
+"start": 33.287,
+"end": 33.487
+},
+{
+"text": "é",
+"start": 33.487,
+"end": 33.697
+},
+{
+"text": "muito",
+"start": 33.697,
+"end": 33.967
+},
+{
+"text": "mais",
+"start": 33.967,
+"end": 34.177
+},
+{
+"text": "fácil",
+"start": 34.177,
+"end": 34.547
+},
+{
+"text": "de",
+"start": 34.547,
+"end": 34.627
+},
+{
+"text": "ver",
+"start": 34.607,
+"end": 34.767
+},
+{
+"text": "do",
+"start": 34.767,
+"end": 34.977
+},
+{
+"text": "que",
+"start": 34.977,
+"end": 35.097
+},
+{
+"text": "uma",
+"start": 35.097,
+"end": 35.347
+},
+{
+"text": "pessoa",
+"start": 35.347,
+"end": 35.747
+},
+{
+"text": "sozinha.",
+"start": 35.747,
+"end": 36.287
+},
+{
+"text": "Passo",
+"start": 38.12,
+"end": 38.4
+},
+{
+"text": "três:",
+"start": 38.4,
+"end": 38.65
+},
+{
+"text": "saia",
+"start": 38.65,
+"end": 38.82
+},
+{
+"text": "do",
+"start": 38.82,
+"end": 39.04
+},
+{
+"text": "sol.",
+"start": 39.04,
+"end": 39.12
+},
+{
+"text": "Ache",
+"start": 39.11,
+"end": 39.53
+},
+{
+"text": "uma",
+"start": 39.53,
+"end": 39.76
+},
+{
+"text": "sombra.",
+"start": 39.76,
+"end": 40.23
+},
+{
+"text": "O",
+"start": 40.23,
+"end": 40.39
+},
+{
+"text": "calor",
+"start": 40.39,
+"end": 40.57
+},
+{
+"text": "desidrata",
+"start": 40.57,
+"end": 41.23
+},
+{
+"text": "rápido,",
+"start": 41.23,
+"end": 41.74
+},
+{
+"text": "e",
+"start": 41.74,
+"end": 41.99
+},
+{
+"text": "a",
+"start": 41.99,
+"end": 42.07
+},
+{
+"text": "água",
+"start": 41.99,
+"end": 42.43
+},
+{
+"text": "vai",
+"start": 42.43,
+"end": 42.51
+},
+{
+"text": "ser",
+"start": 42.43,
+"end": 42.72
+},
+{
+"text": "o",
+"start": 42.72,
+"end": 42.8
+},
+{
+"text": "seu",
+"start": 42.8,
+"end": 42.88
+},
+{
+"text": "maior",
+"start": 42.88,
+"end": 43.09
+},
+{
+"text": "problema",
+"start": 43.09,
+"end": 43.51
+},
+{
+"text": "aqui.",
+"start": 43.51,
+"end": 43.96
+},
+{
+"text": "E",
+"start": 45.967,
+"end": 46.127
+},
+{
+"text": "agora,",
+"start": 46.127,
+"end": 46.777
+},
+{
+"text": "a",
+"start": 46.777,
+"end": 46.857
+},
+{
+"text": "parte",
+"start": 46.777,
+"end": 47.167
+},
+{
+"text": "mais",
+"start": 47.167,
+"end": 47.347
+},
+{
+"text": "importante:",
+"start": 47.347,
+"end": 48.007
+},
+{
+"text": "as",
+"start": 48.007,
+"end": 48.177
+},
+{
+"text": "malas.",
+"start": 48.177,
+"end": 48.657
+},
+{
+"text": "O",
+"start": 48.657,
+"end": 48.827
+},
+{
+"text": "que",
+"start": 48.827,
+"end": 49.077
+},
+{
+"text": "tem",
+"start": 49.077,
+"end": 49.157
+},
+{
+"text": "dentro",
+"start": 49.097,
+"end": 49.537
+},
+{
+"text": "delas",
+"start": 49.537,
+"end": 49.877
+},
+{
+"text": "pode",
+"start": 49.877,
+"end": 50.017
+},
+{
+"text": "salvar",
+"start": 50.017,
+"end": 50.487
+},
+{
+"text": "a",
+"start": 50.487,
+"end": 50.567
+},
+{
+"text": "sua",
+"start": 50.507,
+"end": 50.767
+},
+{
+"text": "vida.",
+"start": 50.767,
+"end": 51.177
+},
+{
+"text": "O",
+"start": 53.933,
+"end": 54.013
+},
+{
+"text": "que",
+"start": 54.013,
+"end": 54.173
+},
+{
+"text": "você",
+"start": 54.173,
+"end": 54.623
+},
+{
+"text": "acha",
+"start": 54.623,
+"end": 54.933
+},
+{
+"text": "que",
+"start": 54.933,
+"end": 55.183
+},
+{
+"text": "tem",
+"start": 55.183,
+"end": 55.303
+},
+{
+"text": "nas",
+"start": 55.303,
+"end": 55.513
+},
+{
+"text": "malas?",
+"start": 55.513,
+"end": 55.783
+},
+{
+"text": "Comenta.",
+"start": 55.783,
+"end": 56.433
+},
+{
+"text": "A",
+"start": 56.433,
+"end": 56.613
+},
+{
+"text": "parte",
+"start": 56.613,
+"end": 56.983
+},
+{
+"text": "dois",
+"start": 56.983,
+"end": 57.193
+},
+{
+"text": "já",
+"start": 57.193,
+"end": 57.373
+},
+{
+"text": "tá",
+"start": 57.373,
+"end": 57.453
+},
+{
+"text": "no",
+"start": 57.393,
+"end": 57.623
+},
+{
+"text": "perfil.",
+"start": 57.623,
+"end": 58.053
+}
+]
