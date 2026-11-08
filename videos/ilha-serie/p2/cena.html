@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Ilha deserta — parte 2: as malas</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(../fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(../fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="../gsap.min.js"></script>
+<script src="../boneco.js"></script>
+<script src="../cenario.js"></script>
+<script src="../ilha.js"></script>
+<script src="../marca.js"></script>
+<script src="../legenda.js"></script>
+<script src="legenda-dados.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <g id="cam">
+    <g id="praia"></g>
+    <g id="beira" style="opacity:0"></g>
+    <g id="atores"></g>
+    <g id="acabamento"></g>
+  </g>
+  <g id="painel" style="opacity:0"></g>
+  <g id="textos"></g>
+  <g id="final" style="opacity:0"></g>
+  <g id="legenda"></g>
+</svg>
+<script>
+/* ROTEIRO — PARTE 2: AS MALAS (1080×1920, 61.0 s; tempos casados com voz/fala.wav)
+   0–6.3    recapitulação: único sobrevivente numa ilha deserta · "hora de abrir as malas"
+   8.1–12.7 ROUPAS: protegem do sol · viram abrigo · pano coa a sujeira da água
+   15.0–21.2 GARRAFAS E SACOS: guardar água da chuva · água doce = item mais valioso
+   23.6–29.1 ESPELHINHO: o reflexo do sol pode ser visto por um avião a quilômetros
+   31.4–35.7 ISQUEIRO: ferver água · aquecer à noite · fazer fumaça
+   38.0–43.8 DO AVIÃO: colete salva-vidas com apito e luz · kit de primeiros socorros
+   46.2–51.2 REGRA DE OURO: nunca beba água do mar — o sal faz o corpo perder ainda mais água
+   53.4–61.0 "como ser resgatado? parte 3 no perfil"
+   Fontes: BBC (água do mar), guias de sinalização e sobrevivência; instruções de segurança dos voos. */
+const W = 1080, H = 1920, Y = 1560, NS = 'http://www.w3.org/2000/svg', DUR = 61.0;
+const $ = q => document.querySelector(q);
+const LARANJA = '#FF7A00', L_ = '#1D1D2B', VERM = '#D7263D';
+const mk = (pai, id) => { const g = document.createElementNS(NS, 'g'); if (id) g.id = id; pai.appendChild(g); return g; };
+const I = Ilha({ seed: 4 });
+
+// ---------- praia (a mesma da parte 1) ----------
+$('#praia').innerHTML = I.praia({ horizonte: 900, areia: 1250 })
+  + I.coqueiro(110, 1330, 0.95, { inclina: 0.3 }) + I.coqueiro(990, 1300, 0.85, { inclina: -0.3 })
+  + I.asa(300, 1480, 0.7) + I.cauda(960, 1470, 0.6) + I.fuselagem(620, 1400, 0.85)
+  + I.mala(380, 1720, 0.6, { cor: '#3B7DD8', aberta: true }) + I.mala(1010, 1780, 0.55, { cor: '#2E9E5A', aberta: true })
+  + I.mala(800, 1660, 0.72, { cor: '#C8553D', aberta: true })
+  + `<g id="no-chao" style="opacity:0">${[['roupas', 470, 1830, 0.5], ['garrafa', 570, 1840, 0.45], ['saco', 650, 1840, 0.45], ['espelho', 740, 1850, 0.45], ['isqueiro', 820, 1850, 0.45], ['colete', 220, 1840, 0.5], ['kit', 340, 1850, 0.45]].map(([n, x, y, k]) => I.item(n, x, y, k)).join('')}</g>`;
+// trecho limpo da beira do mar (cena da água do mar)
+$('#beira').innerHTML = I.praia({ horizonte: 760, areia: 1420 }) + I.coqueiro(980, 1560, 1.0, { inclina: -0.3 });
+const C0 = Cenario({ seed: 3, luz: -1, hora: 'dia', prefixo: 'ac' });
+$('#acabamento').innerHTML = `<defs>${C0.defs()}</defs>` + C0.atmosfera({ grao: 0.2 });
+
+// ---------- Léo ----------
+const leo = new Boneco($('#atores'), { escala: 1.05, figurino: 'sobrevivente', seed: 6 });
+const fr = (x, extra = {}) => ({ x, y: Y, vista: 'frente', transicao: 0.3, ...extra });
+leo.base(0, 7.6, 'agachar', { x: 560, y: Y, vista: 'perfil', quanto: 80, dir: 1, transicao: 0 });
+leo.base(7.6, 44.8, 'parado', fr(190, { transicao: 0.5 }));
+leo.base(44.8, 46.6, 'andar', { de: [60, 1620], ate: [430, 1620] });
+leo.base(46.6, 48.4, 'agachar', { x: 430, y: 1620, vista: 'perfil', quanto: 90, dir: 1 });
+leo.base(48.4, 53.3, 'parado', { x: 430, y: 1620, vista: 'frente', transicao: 0.4 });
+leo.base(53.3, DUR, 'parado', fr(540, { transicao: 0 }));
+leo.braco('ambos', 0.4, 6.0, 'alcancar', { alvo: [720, 1560] });
+leo.braco('d', 8.2, 12.6, 'segurar');
+leo.braco('d', 15.0, 21.0, 'segurar');
+leo.braco('d', 23.6, 29.0, 'cima');
+leo.braco('d', 31.4, 35.6, 'segurar');
+leo.braco('ambos', 38.0, 43.6, 'explicar');
+leo.braco('ambos', 46.8, 48.2, 'comer');
+leo.braco('ambos', 48.5, 50.6, 'parar');
+leo.braco('d', 54.0, 57.6, 'queixo');
+[[0, 'determinado'], [7.6, 'alegre'], [14.8, 'feliz'], [23.4, 'surpreso'], [25.0, 'alegre'], [31.2, 'determinado'], [37.8, 'feliz'],
+ [46.2, 'cansado'], [47.6, 'susto'], [48.6, 'serio'], [53.3, 'pensando']].forEach(([t, e], i, a) => leo.expressao(t, a[i + 1] ? a[i + 1][0] : DUR, e));
+leo.cabeca(23.8, 28.8, { inclinar: -10, olhar: [5, -6] });
+
+// ---------- painel de destaque do item ----------
+const PCX = 600, PCY = 900;
+$('#painel').innerHTML = `<rect x="${PCX - 290}" y="${PCY - 250}" width="580" height="460" rx="40" fill="#111" opacity=".82"/><rect x="${PCX - 290}" y="${PCY - 250}" width="580" height="460" rx="40" fill="none" stroke="${LARANJA}" stroke-width="7"/>`
+  + `<g id="brilho-item">${[...Array(12)].map((_, i) => { const a = i / 12 * Math.PI * 2; return `<path d="M${PCX + Math.cos(a) * 120} ${PCY - 30 + Math.sin(a) * 120} L${PCX + Math.cos(a) * 200} ${PCY - 30 + Math.sin(a) * 200}" stroke="#FFF3B0" stroke-width="8" opacity=".4" stroke-linecap="round"/>`; }).join('')}</g>`;
+const ITENS = [   // id, desenho no painel, título, selos [texto, bom, t], [ini, fim]
+  ['roupas', I.item('roupas', PCX, PCY + 100, 1.7), 'ROUPAS', [['PROTEGEM DO SOL', 1, 8.95], ['VIRAM ABRIGO', 1, 9.45], ['PANO: COA A SUJEIRA', 1, 10.4]], [7.9, 14.4]],
+  ['garrafa', I.item('garrafa', PCX - 110, PCY + 120, 1.4) + I.item('saco', PCX + 110, PCY + 120, 1.3), 'GARRAFAS E SACOS', [['GUARDAM ÁGUA DA CHUVA', 1, 16.65], ['ÁGUA DOCE = Nº 1', 1, 18.45]], [14.8, 22.9]],
+  ['espelho', I.item('espelho', PCX, PCY + 90, 2.2), 'ESPELHINHO', [['REFLETE O SOL', 1, 25.15], ['VISTO A QUILÔMETROS', 1, 27.6]], [23.4, 30.8]],
+  ['isqueiro', I.item('isqueiro', PCX, PCY + 140, 1.9), 'ISQUEIRO', [['FERVER ÁGUA', 1, 32.45], ['AQUECER À NOITE', 1, 33.45], ['FAZER FUMAÇA', 1, 34.55]], [31.2, 37.4]],
+  ['colete', I.item('colete', PCX - 120, PCY + 140, 1.3) + I.item('kit', PCX + 130, PCY + 120, 1.1), 'DO AVIÃO', [['COLETE: APITO E LUZ', 1, 39.85], ['KIT DE PRIMEIROS SOCORROS', 1, 41.05]], [37.8, 45.0]],
+];
+const T = $('#textos');
+const add = (id, svg, pai = T) => { const g = mk(pai, id); g.innerHTML = svg; g.style.opacity = 0; return g; };
+const selo = (x, y, t, bom) => {
+  const fs = 36, w = Marca.largura(t, fs) + 104, h = 60;
+  const icone = bom ? `<circle cx="${x + 31}" cy="${y}" r="19" fill="${LARANJA}"/><path d="M${x + 21} ${y} l7 8 l14 -16" stroke="#111" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+                    : `<circle cx="${x + 31}" cy="${y}" r="19" fill="${VERM}"/><path d="M${x + 23} ${y - 8} l16 16 M${x + 39} ${y - 8} l-16 16" stroke="#fff" stroke-width="6" stroke-linecap="round"/>`;
+  return `<rect x="${x + 7}" y="${y - h / 2 + 7}" width="${w}" height="${h}" rx="${h / 2}" fill="#000" opacity=".35"/><rect x="${x}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2}" fill="#111"/>${icone}<text x="${x + 62}" y="${y + fs * 0.36}" font-size="${fs}" fill="${bom ? LARANJA : '#fff'}">${t}</text>`;
+};
+ITENS.forEach(([id, desenho, tit, selos]) => {
+  add('it-' + id, desenho, $('#painel'));
+  add('tt-' + id, Marca.faixa(540, 470, tit, { fs: 84 }));
+  selos.forEach(([t, b], i) => add(`ts-${id}-${i}`, selo(330, 1220 + i * 76, t, b)));
+});
+// espelho: avião lá longe e o feixe de luz
+add('t-feixe', `<path d="M${PCX + 40} ${PCY - 40} L1000 300" stroke="#FFF3B0" stroke-width="18" opacity=".8" stroke-linecap="round"/>${I.aviao(960, 280, 0.18)}`);
+add('t-parte', Marca.faixa(540, 470, 'PARTE 2: AS MALAS', { fs: 80 }));
+add('t-unico', Marca.apoio(540, 620, 'ÚNICO SOBREVIVENTE', { fs: 62 }));
+add('t-regra', Marca.faixa(540, 470, 'REGRA DE OURO', { fs: 90 }));
+add('t-nunca', Marca.impacto(540, 700, 'NUNCA BEBA', { fs: 120 }) + Marca.impacto(540, 840, 'ÁGUA DO MAR!', { fs: 120 }));
+add('t-xis', `<circle cx="760" cy="1300" r="120" fill="none" stroke="${VERM}" stroke-width="22"/><path d="M675 1215 l170 170" stroke="${VERM}" stroke-width="22" stroke-linecap="round"/><path class="onda" d="M690 1300 q35 -20 70 0 t70 0" stroke="#4FD1D9" stroke-width="14" fill="none"/>`);
+add('t-sal', selo(220, 935, 'O SAL DESIDRATA AINDA MAIS', false));
+// final
+$('#final').innerHTML = `<rect width="${W}" height="${H}" fill="#111"/><g opacity=".14" fill="${LARANJA}">${[0, 1, 2, 3, 4].map(k => `<rect x="${60 + k * 230}" y="0" width="70" height="${H}"/>`).join('')}</g>`
+  + `<g id="fim-t">${Marca.texto(540, 520, 'MAS COMO SER', { fs: 96, cor: '#fff', sombra: false })}${Marca.impacto(540, 650, 'RESGATADO?', { fs: 130 })}</g>`
+  + `<g id="fim-h">${I.helicoptero(540, 1020, 1.3)}</g>`
+  + `<g id="fim-p">${Marca.faixa(540, 1290, 'PARTE 3 NO PERFIL →', { fs: 66 })}</g>`
+  + `<g id="fim-c" transform="translate(540 1440)"><rect x="-330" y="-56" width="660" height="100" rx="50" fill="${LARANJA}"/><text y="16" font-size="46" text-anchor="middle" fill="#111">SEGUE PRA NÃO PERDER</text></g>`;
+
+// ---------- legenda ----------
+const leg = Legenda($('#legenda'), LEGENDA, { y: 330, fs: 66, enfase: ['MALAS', 'ROUPAS', 'CHUVA', 'ÁGUA', 'ESPELHINHO', 'QUILÔMETROS', 'ISQUEIRO', 'APITO', 'LUZ', 'NUNCA', 'MAR', 'RESGATADO', '3'] })
+  .esconder([[53.3, 99]]);
+
+// ---------- timeline ----------
+const tl = gsap.timeline({ paused: true });
+const pop = (sel, t, dur, ox, oy) => {
+  tl.fromTo(sel, { opacity: 0, scale: 0.2, svgOrigin: `${ox} ${oy}` }, { opacity: 1, scale: 1, duration: 0.32, ease: 'back.out(2.2)' }, t);
+  if (dur) tl.to(sel, { opacity: 0, scale: 0.85, duration: 0.16, ease: 'power2.in' }, t + dur);
+};
+tl.fromTo('#cam', { scale: 1.25, svgOrigin: '700 1560' }, { scale: 1.0, duration: 7.0, ease: 'sine.inOut' }, 0);
+pop('#t-parte', 0.3, 7.0, 540, 470);
+pop('#t-unico', 1.9, 4.6, 540, 620);
+// cada item: o painel abre, o item sai da mala girando, os selos entram
+ITENS.forEach(([id, , , selos, [a, b]]) => {
+  tl.fromTo('#painel', { opacity: 0 }, { opacity: 1, duration: 0.25, immediateRender: false }, a);
+  tl.fromTo('#it-' + id, { opacity: 0, scale: 0.2, rotation: -40, svgOrigin: `${PCX} ${PCY}` }, { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(1.8)' }, a + 0.15);
+  tl.to('#it-' + id, { opacity: 0, duration: 0.2 }, b - 0.2);
+  tl.to('#painel', { opacity: 0, duration: 0.2 }, b - 0.2);
+  pop('#tt-' + id, a + 0.2, b - a - 0.4, 540, 470);
+  selos.forEach(([, , t], i) => { tl.fromTo(`#ts-${id}-${i}`, { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: 'back.out(1.8)' }, t); tl.to(`#ts-${id}-${i}`, { opacity: 0, duration: 0.15 }, b - 0.2); });
+});
+tl.to('#brilho-item', { rotation: 360, svgOrigin: `${PCX} ${PCY - 30}`, duration: 37, ease: 'none' }, 7.9);
+tl.fromTo('#t-feixe', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 25.2); tl.to('#t-feixe', { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 9, ease: 'none' }, 25.5); tl.to('#t-feixe', { opacity: 0, duration: 0.2 }, 30.6);
+// os itens vão ficando na areia
+tl.to('#no-chao', { opacity: 1, duration: 0.5 }, 43.0);
+tl.set('#beira', { opacity: 1 }, 44.8); tl.set('#beira', { opacity: 0 }, 53.3);
+// regra de ouro: ele vai beber a água do mar… e para
+pop('#t-regra', 46.3, 6.8, 540, 470);
+tl.fromTo('#cam', { scale: 1.0, svgOrigin: '480 1500' }, { scale: 1.12, duration: 3, ease: 'sine.inOut', immediateRender: false }, 46.2);
+pop('#t-nunca', 47.4, 5.6, 540, 770);
+pop('#t-xis', 47.7, 5.3, 760, 1300);
+tl.fromTo('#t-sal', { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: 0.3, ease: 'back.out(1.8)' }, 48.7); tl.to('#t-sal', { opacity: 0, duration: 0.2 }, 53.1);
+// final
+tl.to('#final', { opacity: 1, duration: 0.3 }, 53.3);
+tl.fromTo('#fim-t', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: 'back.out(2)' }, 53.4);
+tl.fromTo('#fim-h', { opacity: 0, x: -500 }, { opacity: 1, x: 0, duration: 1.2, ease: 'power2.out' }, 54.2);
+tl.to('#fim-h .rotor', { scaleX: 0.15, svgOrigin: '592 846', duration: 0.07, yoyo: true, repeat: 99, ease: 'none' }, 54.2);
+tl.to('#fim-h', { y: -14, duration: 0.6, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 55.4);
+pop('#fim-p', 57.0, 0, 540, 1290);
+pop('#fim-c', 57.7, 0, 540, 1440);
+tl.set({}, {}, DUR);
+
+// ---------- relógio externo (skill edit) ----------
+window.__timeline = tl;
+window.__duration = DUR;
+window.__seek = t => { tl.seek(t, false); leo.desenhar(t); leg.seek(t); };
+window.__seek(0);
+</script></body></html>

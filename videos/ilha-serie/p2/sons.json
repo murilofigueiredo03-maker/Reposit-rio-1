@@ -1,0 +1,194 @@
+{
+ "duracao": 61.0,
+ "voz": "voz/fala_master.wav",
+ "biblioteca": [
+  "../sons",
+  "../../../.claude/skills/sons-de-ambiente/biblioteca/ui",
+  "../../../.claude/skills/sons-de-ambiente/biblioteca/hoje",
+  "../../../.claude/skills/sons-de-ambiente/biblioteca/roma"
+ ],
+ "ambientes": [
+  {
+   "som": "amb_mar",
+   "de": 0,
+   "ate": 53.3,
+   "db": -22,
+   "fade": 0.5
+  }
+ ],
+ "passos": [
+  {
+   "som": "sfx_passo_rua",
+   "de": 44.8,
+   "ate": 46.6,
+   "intervalo": 0.45,
+   "db": -20
+  }
+ ],
+ "efeitos": [
+  {
+   "som": "whoosh-short",
+   "em": 0.3,
+   "db": -14
+  },
+  {
+   "som": "pop",
+   "em": 1.9,
+   "db": -16
+  },
+  {
+   "som": "whoosh",
+   "em": 7.9,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 8.1,
+   "db": -16
+  },
+  {
+   "som": "whoosh",
+   "em": 14.8,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 15.0,
+   "db": -16
+  },
+  {
+   "som": "whoosh",
+   "em": 23.4,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 23.6,
+   "db": -16
+  },
+  {
+   "som": "whoosh",
+   "em": 31.2,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 31.4,
+   "db": -16
+  },
+  {
+   "som": "whoosh",
+   "em": 37.8,
+   "db": -14
+  },
+  {
+   "som": "chime",
+   "em": 38.0,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 8.95,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 9.45,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 10.4,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 16.65,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 18.45,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 25.15,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 27.6,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 32.45,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 33.45,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 34.55,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 39.85,
+   "db": -16
+  },
+  {
+   "som": "pop",
+   "em": 41.05,
+   "db": -16
+  },
+  {
+   "som": "sparkle",
+   "em": 25.2,
+   "db": -12
+  },
+  {
+   "som": "sfx_fogo_acende",
+   "em": 31.6,
+   "db": -12
+  },
+  {
+   "som": "whoosh-short",
+   "em": 46.3,
+   "db": -14
+  },
+  {
+   "som": "impact-bass-2",
+   "em": 47.4,
+   "db": -6
+  },
+  {
+   "som": "sfx_splash",
+   "em": 46.8,
+   "db": -16
+  },
+  {
+   "som": "whoosh-cinematic",
+   "em": 53.2,
+   "db": -12
+  },
+  {
+   "som": "pop",
+   "em": 57.0,
+   "db": -12
+  },
+  {
+   "som": "chime",
+   "em": 57.7,
+   "db": -14
+  }
+ ],
+ "ducking": {
+  "db": 6
+ },
+ "volume_final_lufs": -10
+}
