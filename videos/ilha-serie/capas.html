@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Capas — Sobrevivente na ilha</title>
+<style>
+  @font-face { font-family: 'Luckiest Guy'; src: url(fontes/luckiest-guy.woff2); }
+  @font-face { font-family: 'Anton'; src: url(fontes/anton.woff2); }
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { width: 1080px; height: 1920px; display: block; }
+  text:not([font-family]) { font-family: 'Luckiest Guy', 'DejaVu Sans', sans-serif; }
+</style>
+<script src="boneco.js"></script>
+<script src="cenario.js"></script>
+<script src="cidade.js"></script>
+<script src="ilha.js"></script>
+<script src="marca.js"></script>
+</head><body>
+<svg id="stage" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg">
+  <defs><filter id="outline" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="5" result="d"/><feFlood flood-color="#1D1D2B"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="vinheta" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs>
+  <g id="capa1"></g><g id="capa2" style="display:none"></g><g id="capa3" style="display:none"></g>
+</svg>
+<script>
+/* Capas da série (1080×1920). Título e número da parte ficam dentro da área central 3:4
+   (y 240–1680), que é o que o grid do perfil do TikTok/Instagram mostra.
+   Renderize com --frames 0.5,1.5,2.5 (uma capa por segundo). */
+const W = 1080, H = 1920, NS = 'http://www.w3.org/2000/svg';
+const $ = q => document.querySelector(q);
+const LARANJA = '#FF7A00', L_ = '#1D1D2B', VERM = '#D7263D';
+const I = Ilha({ seed: 4 });
+const Z = Cidade(Cenario({ seed: 9, luz: -1, hora: 'dia', prefixo: 'cp' }));
+const mk = (pai) => { const g = document.createElementNS(NS, 'g'); pai.appendChild(g); return g; };
+// selo da série (topo) e número da parte (círculo grande)
+const serie = `<g transform="translate(540 300) rotate(-3)"><rect x="-430" y="-62" width="860" height="124" rx="22" fill="#111"/><rect x="-430" y="44" width="860" height="18" fill="${LARANJA}"/><text y="26" font-size="70" fill="${LARANJA}" text-anchor="middle">SOBREVIVENTE NA ILHA</text></g>`;
+const parte = (n, sub, y = 530) => `<g transform="translate(540 ${y})"><circle cx="-300" cy="0" r="120" fill="#111" stroke="#fff" stroke-width="10"/><text x="-300" y="52" font-size="150" fill="${LARANJA}" text-anchor="middle">${n}</text>`
+  + `<text x="-150" y="-20" font-size="70" fill="#fff" stroke="#111" stroke-width="16" paint-order="stroke">PARTE ${n}</text>`
+  + `<text x="-150" y="80" font-size="96" fill="${LARANJA}" stroke="#111" stroke-width="18" paint-order="stroke">${sub}</text></g>`;
+const vinheta = `<rect width="${W}" height="${H}" fill="url(#vinheta)"/>`;
+
+// ---------- PARTE 1: A QUEDA — avião em chamas mergulhando para a ilha, Léo apavorado ----------
+{
+  const g = $('#capa1');
+  g.innerHTML = I.mar({ horizonte: 1180 })
+    + `<g transform="translate(780 1210)"><ellipse rx="300" ry="54" fill="#F2DDA6" stroke="${L_}" stroke-width="6"/>${I.coqueiro(-110, -10, 0.42, { inclina: 0.3 })}${I.coqueiro(60, -14, 0.36, { inclina: -0.2 })}</g>`
+    + `<g transform="translate(560 900) rotate(28)">${[...Array(8)].map((_, i) => `<circle cx="${-330 - i * 80}" cy="${70 - i * 30}" r="${36 + i * 14}" fill="#3A3A42" opacity="${0.7 - i * 0.07}"/>`).join('')}${I.aviao(0, 0, 1.05)}<path d="M-120 70 q-50 -36 -120 0 q36 50 120 34Z" fill="${LARANJA}"/><path d="M-120 78 q-30 -14 -64 4 q24 22 64 10Z" fill="#FFE27A"/></g>`
+    + [...Array(6)].map((_, i) => `<path d="M${120 + i * 150} ${560 + (i % 2) * 90} l-60 -120" stroke="#fff" stroke-width="7" opacity=".5" stroke-linecap="round"/>`).join('')
+    + vinheta + serie
+    + `<g transform="translate(540 1120) rotate(-6)"><text font-size="150" fill="${LARANJA}" stroke="#111" stroke-width="24" paint-order="stroke" text-anchor="middle">CAIU!</text></g>`
+    + parte(1, 'A QUEDA');
+  const leo = new Boneco(mk(g), { escala: 1.0, figurino: 'sobrevivente', seed: 6 });
+  leo.base(0, 9, 'parado', { x: 880, y: 1880, vista: 'frente' }); leo.braco('ambos', 0, 9, 'desespero'); leo.expressao(0, 9, 'espanto'); leo.desenhar(0.5);
+}
+// ---------- PARTE 2: AS MALAS — mala aberta brilhando, itens voando, Léo animado ----------
+{
+  const g = $('#capa2');
+  g.innerHTML = I.praia({ horizonte: 760, areia: 1100 }) + I.coqueiro(100, 1180, 1.0, { inclina: 0.3 }) + I.fuselagem(700, 1240, 0.75)
+    + `<g>${[...Array(14)].map((_, i) => { const a = (-180 + i * 13.8) * Math.PI / 180; return `<path d="M540 1060 L${540 + Math.cos(a) * 900} ${1060 + Math.sin(a) * 900}" stroke="#FFF3B0" stroke-width="${36 - Math.abs(i - 7) * 4}" opacity=".5" stroke-linecap="round"/>`; }).join('')}</g>`
+    + I.mala(540, 1210, 1.5, { cor: '#C8553D', aberta: true })
+    + [['garrafa', 230, 860, 0.9, -20], ['espelho', 840, 820, 0.9, 15], ['isqueiro', 300, 790, 0.8, -15], ['colete', 790, 760, 0.7, 10], ['kit', 900, 1050, 0.7, -8], ['roupas', 170, 1100, 0.75, 6]].map(([n, x, y, k, r]) => `<g transform="rotate(${r} ${x} ${y})">${I.item(n, x, y, k)}</g>`).join('')
+    + vinheta + serie
+    + `<g transform="translate(560 1440) rotate(-3)"><text font-size="76" fill="#fff" stroke="#111" stroke-width="18" paint-order="stroke" text-anchor="middle">O QUE TEM DENTRO?</text></g>`
+    + parte(2, 'AS MALAS');
+  const leo = new Boneco(mk(g), { escala: 0.8, figurino: 'sobrevivente', seed: 6 });
+  leo.base(0, 9, 'parado', { x: 120, y: 1910, vista: 'frente' }); leo.braco('ambos', 0, 9, 'cima'); leo.expressao(0, 9, 'alegre'); leo.desenhar(0.5);
+}
+// ---------- PARTE 3: O RESGATE — helicóptero sobre o SOS, fumaça, Léo acenando ----------
+{
+  const g = $('#capa3');
+  g.innerHTML = I.praia({ horizonte: 900, areia: 1180 }) + I.coqueiro(990, 1240, 0.9, { inclina: -0.3 }) + I.abrigo(860, 1400, 0.8)
+    + I.sos(540, 1420, 0.95)
+    + `<g>${Z.fogueira(170, 1420, 1.1)}${[0, 1, 2, 3, 4].map(i => `<circle cx="${170 + Math.sin(i) * 26}" cy="${1300 - i * 120}" r="${44 + i * 20}" fill="#6A6A72" opacity="${0.6 - i * 0.1}"/>`).join('')}</g>`
+    + `<g transform="translate(600 900)">${I.helicoptero(0, 0, 1.4)}<path d="M-280 -201 H420" stroke="#9AA0A8" stroke-width="5" opacity=".6"/></g>`
+    + `<path d="M640 940 L380 1420 L860 1420Z" fill="#FFF3B0" opacity=".18"/>`
+    + vinheta + serie
+    + `<g transform="translate(540 1130) rotate(-5)"><rect x="-330" y="-90" width="660" height="130" rx="18" fill="${LARANJA}" stroke="#111" stroke-width="10"/><text y="10" font-size="104" fill="#111" text-anchor="middle">RESGATADO?</text></g>`
+    + parte(3, 'O RESGATE');
+  const leo = new Boneco(mk(g), { escala: 0.85, figurino: 'sobrevivente', seed: 6 });
+  leo.base(0, 9, 'parado', { x: 960, y: 1900, vista: 'frente' }); leo.braco('ambos', 0, 9, 'acenar'); leo.expressao(0, 9, 'gritando'); leo.desenhar(0.5);
+}
+window.__duration = 3;
+window.__seek = t => { const n = Math.min(3, Math.floor(t) + 1); [1, 2, 3].forEach(k => { $('#capa' + k).style.display = k === n ? '' : 'none'; }); };
+window.__seek(0);
+</script></body></html>
